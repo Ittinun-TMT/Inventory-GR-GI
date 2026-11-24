@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data Inventory GRGI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+  :root{
+    --navy:#0c3843; --yellow:#fdc440; --orange:#ff6a05; --blue:#8bbade;
+    --bg:#f4f6f8; --card:#fff; --line:#dfe5ea; --text:#1d2b31; --muted:#64767e;
+    --ok:#2e8b57; --warn:#e0a100; --bad:#d64545;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Sarabun',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:15px}
+  header{background:var(--navy);color:#fff;display:flex;align-items:center;gap:16px;padding:10px 20px;border-bottom:4px solid var(--yellow)}
+  header h1{font-size:19px;margin:0;font-weight:700}
+  header h1 span{color:var(--yellow)}
+  header .user{margin-left:auto;font-size:14px;display:flex;gap:10px;align-items:center}
+  .role{background:var(--yellow);color:var(--navy);border-radius:10px;padding:1px 9px;font-weight:700;font-size:12px}
+  nav{display:flex;gap:4px;background:#fff;padding:0 20px;border-bottom:1px solid var(--line);overflow-x:auto}
+  nav button{border:0;background:none;padding:12px 16px;font:inherit;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+  nav button.active{color:var(--navy);font-weight:700;border-bottom-color:var(--orange)}
+  main{padding:20px;max-width:1400px;margin:0 auto}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:16px}
+  .card h2{margin:0 0 12px;font-size:17px;color:var(--navy)}
+  .card h3{margin:14px 0 8px;font-size:15px;color:var(--navy)}
+  .btn{background:var(--navy);color:#fff;border:0;border-radius:7px;padding:8px 16px;font:inherit;cursor:pointer}
+  .btn:hover{filter:brightness(1.15)}
+  .btn.orange{background:var(--orange)} .btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--navy)}
+  .btn.sm{padding:4px 10px;font-size:13px}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  input,select{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:#fff}
+  table{border-collapse:collapse;width:100%;font-size:13.5px}
+  th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:middle}
+  th{background:#eef3f6;color:var(--navy);position:sticky;top:0;font-weight:600}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .tbl{max-height:460px;overflow:auto;border:1px solid var(--line);border-radius:8px}
+  .muted{color:var(--muted);font-size:13px}
+  .grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}
+  .kpi{background:#fff;border:1px solid var(--line);border-left:5px solid var(--blue);border-radius:9px;padding:12px}
+  .kpi .v{font-size:24px;font-weight:700;color:var(--navy)}
+  .kpi .l{font-size:13px;color:var(--muted)}
+  .kpi.g{border-left-color:var(--ok)} .kpi.a{border-left-color:var(--warn)} .kpi.r{border-left-color:var(--bad)} .kpi.o{border-left-color:var(--orange)}
+  .drop{border:2px dashed var(--blue);border-radius:10px;padding:28px;text-align:center;background:#f7fbfd;cursor:pointer}
+  .drop.over{background:#e6f2fa;border-color:var(--navy)}
+  .pill{display:inline-block;border-radius:10px;padding:1px 8px;font-size:12px;font-weight:600}
+  .pill.ok{background:#e1f3e9;color:var(--ok)} .pill.warn{background:#fff4d6;color:#8a6400} .pill.bad{background:#fde5e5;color:var(--bad)} .pill.info{background:#e4eff8;color:var(--navy)}
+  .sheet{border:1px solid var(--line);border-radius:9px;padding:12px;margin-bottom:10px;background:#fcfdfe}
+  .sheet-head{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .sheet-head b{font-size:15px;color:var(--navy)}
+  .msgs{margin:6px 0 0 0;padding-left:18px;font-size:13px}
+  .msgs li.bad{color:var(--bad)} .msgs li.warn{color:#8a6400}
+  .bar{height:9px;background:#e8edf0;border-radius:5px;overflow:hidden;min-width:90px}
+  .bar i{display:block;height:100%;background:var(--blue)}
+  .bar i.hi{background:var(--orange)} .bar i.over{background:var(--bad)}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  #login{max-width:380px;margin:80px auto}
+  #login input{width:100%;font-size:20px;letter-spacing:3px;text-align:center;margin:10px 0}
+  .hidden{display:none!important}
+  #toast{position:fixed;right:18px;bottom:18px;background:var(--navy);color:#fff;padding:10px 16px;border-radius:8px;box-shadow:0 4px 14px #0003;max-width:420px;z-index:9}
+  #toast.err{background:var(--bad)}
+  .log{font-family:ui-monospace,monospace;font-size:12.5px;background:#0c3843;color:#e9f3f7;padding:10px;border-radius:8px;max-height:220px;overflow:auto;white-space:pre-wrap}
+  @media (max-width:700px){main{padding:10px}header{flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Data Inventory <span>GRGI</span></h1>
+  <div class="user hidden" id="userBox"><span id="userName"></span><span class="role" id="userRole"></span>
+    <button class="btn sm ghost" id="logoutBtn" style="background:transparent;color:#fff;border-color:#fff">ออกจากระบบ</button></div>
+</header>
+
+<!-- ===== LOGIN ===== -->
+<section id="login" class="card">
+  <h2>เข้าสู่ระบบ</h2>
+  <div class="muted">กรอกรหัสพนักงาน 8 หลัก</div>
+  <input id="empCode" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="••••••••">
+  <button class="btn orange" id="loginBtn" style="width:100%">เข้าสู่ระบบ</button>
+  <div id="loginErr" class="muted" style="color:var(--bad);margin-top:8px"></div>
+</section>
+
+<div id="app" class="hidden">
+<nav id="tabs">
+  <button data-tab="import" class="active">📥 นำเข้าข้อมูล</button>
+  <button data-tab="summary">📊 สรุปผล</button>
+  <button data-tab="stock">📦 Stock คงเหลือ</button>
+  <button data-tab="settings">⚙️ ตั้งค่า</button>
+  <button data-tab="history">🕘 ประวัตินำเข้า</button>
+</nav>
+<main>
+
+<!-- ===== IMPORT ===== -->
+<section data-page="import">
+  <div class="card">
+    <h2>นำเข้าไฟล์ Excel</h2>
+    <div class="muted" style="margin-bottom:10px">รองรับชีท <b>Area · Mov.Type · Master · ZSDR0013 · ZMMR0004 · ZSDR0010</b> (ชีท Condition ไม่นำเข้า — เงื่อนไขอยู่ในหน้า ตั้งค่า)
+      · ใส่หลายชีทในไฟล์เดียว หรือแยกไฟล์ก็ได้ · ระบบจำชีทจากชื่อชีทหรือหัวคอลัมน์</div>
+    <div id="viewerNote" class="pill warn hidden" style="margin-bottom:10px">สิทธิ์ Viewer ดูตัวอย่างได้ แต่นำเข้าไม่ได้ — ติดต่อ Admin</div>
+    <div class="drop" id="drop">ลากไฟล์ .xlsx มาวาง หรือ <u>คลิกเลือกไฟล์</u><input type="file" id="fileIn" accept=".xlsx,.xls" multiple hidden></div>
+  </div>
+  <div class="card hidden" id="previewCard">
+    <h2>ตรวจข้อมูลก่อนนำเข้า</h2>
+    <div class="row" style="margin-bottom:10px">
+      <label>วันที่ Stock ตั้งต้น (ZSDR0013): <input type="date" id="asOf"></label>
+      <span class="muted">นำเข้าซ้ำวันเดิม = แทนที่ของเดิม (ไม่นับซ้ำ, ข้อมูลเดิมเก็บไว้ในประวัติ)</span>
+    </div>
+    <div id="sheets"></div>
+    <div class="row">
+      <button class="btn orange" id="importBtn">นำเข้าชีทที่เลือก</button>
+      <button class="btn ghost" id="clearBtn">ล้าง</button>
+    </div>
+    <div id="importLog" class="log hidden" style="margin-top:12px"></div>
+  </div>
+</section>
+
+<!-- ===== SUMMARY ===== -->
+<section data-page="summary" class="hidden">
+  <div class="row" style="margin-bottom:12px"><button class="btn sm ghost" id="refreshSummary">↻ รีเฟรช</button><span class="muted" id="sumAsOf"></span></div>
+  <div class="grid" id="kpis" style="margin-bottom:16px"></div>
+  <div class="card"><h2>การใช้พื้นที่ต่อโรง (ตัน เทียบความจุจริงจากชีท Area)</h2><div class="tbl" id="facTbl"></div></div>
+  <div class="card"><h2>ตรวจคุณภาพข้อมูล</h2><div class="tbl" id="dqTbl"></div></div>
+  <div class="card"><h2>ผลตัดสินเงื่อนไข ZMMR0004</h2>
+    <div class="row" style="margin-bottom:8px"><label><input type="checkbox" id="onlyExcluded"> เฉพาะที่ถูกตัดออก</label></div>
+    <div class="tbl" id="ruleTbl"></div></div>
+  <div class="card"><h2>รายการน้ำหนัก 0 และวิธีแก้</h2>
+    <div class="row" style="margin-bottom:8px"><button class="btn sm ghost" id="zeroCsv">ดาวน์โหลด CSV</button></div>
+    <div class="tbl" id="zeroTbl"></div></div>
+</section>
+
+<!-- ===== STOCK ===== -->
+<section data-page="stock" class="hidden">
+  <div class="card"><h2>Stock คงเหลือ = ตั้งต้น + เข้า − ออก (เฉพาะรายการที่ผ่านเงื่อนไข)</h2>
+    <div class="row" style="margin-bottom:10px">
+      <input id="stkSearch" placeholder="ค้นหา Material / Batch">
+      <select id="stkCat"><option value="">ทุกหมวด</option><option>Flat</option><option>Trading</option><option>Long</option><option>Other</option></select>
+      <select id="stkSloc"><option value="">ทุก Sloc</option></select>
+      <label><input type="checkbox" id="stkNeg"> เฉพาะติดลบ</label>
+      <button class="btn sm" id="stkGo">ค้นหา</button>
+      <button class="btn sm ghost" id="stkCsv">ดาวน์โหลด CSV</button>
+      <span class="muted" id="stkInfo"></span>
+    </div>
+    <div class="tbl" id="stkTbl" style="max-height:620px"></div>
+  </div>
+</section>
+
+<!-- ===== SETTINGS ===== -->
+<section data-page="settings" class="hidden">
+  <div id="settingsRO" class="pill info hidden" style="margin-bottom:10px">ดูได้อย่างเดียว — แก้ไขได้เฉพาะ Admin</div>
+  <div class="card"><h2>Sloc และประเภท</h2>
+    <div class="muted">ระบบหาประเภทจาก: ตั้งค่าราย Sloc (ถ้าไม่ใช่ UNKNOWN) → รูปแบบรหัส → UNKNOWN · WH=คลัง, PD=ผลิต, TEMP=พักชั่วคราว, OTH=2OTH, REW=REW1</div>
+    <h3>รูปแบบรหัส Sloc</h3><div class="tbl" id="patTbl"></div>
+    <h3>Sloc รายตัว</h3><div class="tbl" id="slocTbl"></div></div>
+  <div class="card"><h2>กลุ่มสินค้า → หมวดเงื่อนไข (Flat / Trading / Long)</h2><div class="tbl" id="catTbl"></div></div>
+  <div class="card"><h2>กฎการเคลื่อนไหว (ชีท Condition)</h2>
+    <div class="muted">IN = จำนวนบวก, OUT = จำนวนลบ · ช่องว่าง = ไม่สนใจ · ปิดกฎด้วยการเอาเครื่องหมาย ✓ ใช้งาน ออก (ไม่ลบ)</div>
+    <div class="tbl" id="ruleCfgTbl" style="max-height:560px"></div></div>
+  <div class="card" id="empCard"><h2>ผู้ใช้งาน</h2>
+    <div class="muted">Admin = นำเข้า + ตั้งค่า + จัดการผู้ใช้ · Uploader = นำเข้า · Viewer = ดูอย่างเดียว</div>
+    <div class="tbl" id="empTbl"></div></div>
+</section>
+
+<!-- ===== HISTORY ===== -->
+<section data-page="history" class="hidden">
+  <div class="card"><h2>ประวัติการนำเข้า (100 ครั้งล่าสุด)</h2><div class="tbl" id="histTbl" style="max-height:640px"></div></div>
+</section>
+</main>
+</div>
+<div id="toast" class="hidden"></div>
+
+<script>
+// =====================================================================
+// CONFIG — โปรเจกต์ Supabase "Data Inventory GRGI"
+// publishable key เปิดเผยได้ (อ่านอย่างเดียว) — การเขียนทุกอย่างผ่าน RPC ที่ตรวจสิทธิ์รหัสพนักงาน
+// =====================================================================
+const SUPABASE_URL = 'https://yyqsgrztjultylawtygy.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_3pa5h1GdNF1Du2XoD8FBiQ_v4XyCpNc';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { persistSession: false } });
+
+const SLOC_TYPES = ['WH','PD','TEMP','OTH','REW','UNKNOWN'];
+const CATS = ['Flat','Trading','Long','Other'];
+const ROLES = ['Admin','Uploader','Viewer'];
+const IMPORT_ORDER = ['Area','Mov.Type','Master','ZSDR0013','ZSDR0010','ZMMR0004'];
+
+// ---------- นิยามชีท: คอลัมน์ในระบบ ← ชื่อหัวคอลัมน์ใน Excel (รองรับหลายชื่อ) ----------
+// type: text | code (รหัส, ตัด .0) | num | date ; req = ต้องมีค่า
+const SHEETS = {
+  'Area': { cols: {
+    factory:{h:['Location','โรง','Factory'],t:'text',req:1},
+    area_sqm:{h:['พื้นที่จัดเก็บ ตรม. 100%','ตรม.'],t:'num',req:1},
+    capacity_ton_100:{h:['พื้นที่จัดเก็บ Tons. 100%'],t:'num',req:1},
+    capacity_ton_actual:{h:['พื้นที่จัดเก็บจริง Tons.'],t:'num',req:1} } },
+  'Mov.Type': { cols: {
+    mov_type:{h:['Movement Type','Mov.Type','MvT'],t:'code',req:1},
+    description:{h:['คำอธิบาย Movement Type','คำอธิบาย','Description'],t:'text'} } },
+  'Master': { cols: {
+    mat_code:{h:['Mat.Code','Material Code'],t:'code',req:1},
+    description:{h:['Description'],t:'text'},
+    weight_spec:{h:['Weight Spec'],t:'num'},
+    group_sale:{h:['Group Sale'],t:'text'},
+    group_product:{h:['Group Product'],t:'text'},
+    product_type:{h:['Product Type'],t:'text'},
+    sloc:{h:['Sloc.','Sloc'],t:'code'} } },
+  'ZSDR0013': { cols: {
+    material:{h:['Material'],t:'code',req:1},
+    material_desc:{h:['Material Description'],t:'text'},
+    batch:{h:['Batch'],t:'code',req:1},
+    sloc:{h:['Storage Location','Sloc'],t:'code',req:1},
+    qty:{h:['Quantity'],t:'num',req:1},
+    weight_kg:{h:['น้ำหนัก spec','Weight'],t:'num',req:1} } },
+  'ZMMR0004': { cols: {
+    posting_date:{h:['Posting Date'],t:'date',req:1},
+    material:{h:['Material'],t:'code',req:1},
+    material_desc:{h:['Material Description'],t:'text'},
+    mat_doc:{h:['Material Document','Mat. Doc.'],t:'code',req:1},
+    mat_doc_item:{h:['Material Doc.Item','Mat. Doc. Item','Material Document Item','Item'],t:'code',opt:1},
+    batch:{h:['Batch'],t:'code'},
+    mov_type:{h:['Movement Type','MvT'],t:'code',req:1},
+    sloc:{h:['Storage Location','Sloc'],t:'code',req:1},
+    from_sloc:{h:['Sloc ต้นทาง','ต้นทาง','From Sloc','Issuing Sloc','Issuing Storage Location','Issuing Stor. Loc.'],t:'code',opt:1},
+    to_sloc:{h:['Sloc ปลายทาง','ปลายทาง','To Sloc','Receiving Sloc','Receiving Storage Location','Receiving stor. loc.'],t:'code',opt:1},
+    qty:{h:['Qty in Un. of Entry','Quantity'],t:'num',req:1},
+    uom:{h:['Base Unit of Measure','Unit of Entry'],t:'text'},
+    weight_kg:{h:['น้ำหนัก spec','Weight'],t:'num'},
+    sales_order:{h:['Sales Order'],t:'code'},
+    so_item:{h:['Sales Order Item'],t:'code'} } },
+  'ZSDR0010': { cols: {
+    gi_date:{h:['Actual GI date','GI Date'],t:'date',req:1},
+    delivery_no:{h:['Delivery no.','Delivery'],t:'code',req:1},
+    payer_name:{h:['Payer name'],t:'text'},
+    material:{h:['Material Code','Material'],t:'code',req:1},
+    material_desc:{h:['Description'],t:'text'},
+    qty:{h:['Quantity'],t:'num',req:1},
+    uom:{h:['Quantity Unit'],t:'text'},
+    net_weight_kg:{h:['Net Weight'],t:'num'},
+    sales_order:{h:['Sale Order No.','Sales Order'],t:'code',req:1},
+    so_item:{h:['Sale Order Item','Sales Order Item'],t:'code',req:1} } },
+};
+
+// ---------- helpers ----------
+const $ = s => document.querySelector(s);
+const norm = s => String(s ?? '').toLowerCase().replace(/[\s.\-_/()%]+/g,'');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = (n, d=2) => (n===null||n===undefined||n==='') ? '' : Number(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const fmt0 = n => fmt(n,0);
+function toast(msg, err=false){ const t=$('#toast'); t.textContent=msg; t.className=err?'err':''; clearTimeout(t._h); t._h=setTimeout(()=>t.className='hidden',4500); }
+function store(k,v){ try{ v===null?sessionStorage.removeItem(k):sessionStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function load(k){ try{ return JSON.parse(sessionStorage.getItem(k)); }catch(e){ return null; } }
+function ymd(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+function errMsg(e){ return (e && (e.message || e.details || e.hint)) || String(e); }
+
+// ---------- แปลงค่าตามชนิดคอลัมน์ ----------
+function conv(v, t){
+  if (v === null || v === undefined || (typeof v === 'string' && v.trim() === '')) return null;
+  if (t === 'num'){
+    if (typeof v === 'number') return v;
+    const n = Number(String(v).replace(/,/g,'').trim());
+    return Number.isFinite(n) ? n : NaN;
+  }
+  if (t === 'date'){
+    if (v instanceof Date && !isNaN(v)) return ymd(v);
+    if (typeof v === 'number'){ const p = XLSX.SSF.parse_date_code(v); return p ? `${p.y}-${String(p.m).padStart(2,'0')}-${String(p.d).padStart(2,'0')}` : 'INVALID'; }
+    const s = String(v).trim(); let m;
+    if ((m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/))) return `${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`;
+    if ((m = s.match(/^(\d{1,2})[./](\d{1,2})[./](\d{4})$/))) return `${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`; // dd.mm.yyyy (SAP)
+    return 'INVALID';
+  }
+  if (t === 'code'){
+    if (typeof v === 'number') return Number.isInteger(v) ? String(v) : String(v).replace(/\.0+$/,'');
+    return String(v).trim().replace(/^(\d+)\.0+$/,'$1');
+  }
+  return String(v).trim();
+}
+
+// ---------- จับคู่ชีท ----------
+function detectSheet(name, headers){
+  const n = norm(name);
+  for (const k of Object.keys(SHEETS)) if (norm(k) === n) return k;
+  const hs = new Set(headers.map(norm));
+  // จำจากหัวคอลัมน์บังคับ (ตรวจชีทที่เฉพาะเจาะจงก่อน)
+  for (const k of ['ZMMR0004','ZSDR0010','ZSDR0013','Master','Area','Mov.Type']){
+    const req = Object.values(SHEETS[k].cols).filter(c=>c.req);
+    if (req.every(c => c.h.some(h => hs.has(norm(h))))) return k;
+  }
+  return null;
+}
+
+function parseSheet(kind, ws, fileName, sheetName){
+  const aoa = XLSX.utils.sheet_to_json(ws, { header:1, raw:true, defval:null, blankrows:false });
+  const headers = (aoa[0]||[]).map(h => h===null ? '' : String(h));
+  const hn = headers.map(norm);
+  const spec = SHEETS[kind].cols, map = {}, msgs = [];
+  for (const [col, c] of Object.entries(spec)){
+    const idx = c.h.map(norm).map(h => hn.indexOf(h)).find(i => i >= 0);
+    if (idx === undefined){ if (c.req) msgs.push(['bad', `ไม่พบคอลัมน์ "${c.h[0]}"`]); continue; }
+    map[col] = idx;
+  }
+  const rows = [], errs = [];
+  for (let r = 1; r < aoa.length; r++){
+    const a = aoa[r]; if (!a || a.every(v => v===null || String(v).trim()==='')) continue;
+    const o = { row_no: r+1 };
+    for (const [col, c] of Object.entries(spec)){
+      const v = map[col] === undefined ? null : conv(a[map[col]], c.t);
+      if (c.t==='num' && Number.isNaN(v)) errs.push(`แถว ${r+1}: ${c.h[0]} ไม่ใช่ตัวเลข`);
+      if (c.t==='date' && v==='INVALID') errs.push(`แถว ${r+1}: ${c.h[0]} วันที่ไม่ถูกต้อง`);
+      if (c.req && (v===null || v==='')) errs.push(`แถว ${r+1}: ${c.h[0]} ว่าง`);
+      o[col] = v;
+    }
+    if (kind==='ZSDR0013' && o.qty < 0) errs.push(`แถว ${r+1}: Quantity ติดลบ`);
+    rows.push(o);
+  }
+  if (errs.length) msgs.push(['bad', `ข้อมูลผิด ${errs.length} จุด เช่น ${errs.slice(0,5).join(' · ')}`]);
+  // ---- สถิติ + คำเตือน ----
+  const st = { rows: rows.length };
+  const sum = k => rows.reduce((s,o)=>s+(Number(o[k])||0),0);
+  if (kind==='ZSDR0013'){ st.qty=sum('qty'); st.kg=sum('weight_kg'); st.mats=new Set(rows.map(o=>o.material)).size; }
+  if (kind==='ZMMR0004'){
+    st.qty=sum('qty'); st.kg=sum('weight_kg'); const ds=rows.map(o=>o.posting_date).filter(Boolean).sort(); st.from=ds[0]; st.to=ds[ds.length-1];
+    const z = rows.filter(o=>!o.weight_kg).length; if (z) msgs.push(['warn', `น้ำหนัก 0 จำนวน ${z} แถว — ระบบจะเติมจาก ZSDR0010 (SO+Item) หรือ Weight Spec ใน Master และแสดงในหน้า สรุปผล`]);
+    if (map.from_sloc===undefined && map.to_sloc===undefined) msgs.push(['warn','ไม่มีคอลัมน์ Sloc ต้นทาง/ปลายทาง — Mov 311 ตรวจเงื่อนไขต้นทางไม่ได้ (จะถูกตัดออก)']);
+    if (map.mat_doc_item===undefined){ const k=new Set(), d=rows.filter(o=>{const s=JSON.stringify([o.mat_doc,o.material,o.batch,o.qty,o.mov_type]); if(k.has(s)) return true; k.add(s); return false;}).length;
+      if (d) msgs.push(['info', `มีแถวหน้าตาเหมือนกัน ${d} แถว (ไฟล์ไม่มีเลข Item) — เก็บทุกแถวตามที่ตกลง`]); }
+  }
+  if (kind==='ZSDR0010'){ st.qty=sum('qty'); st.kg=sum('net_weight_kg'); const ds=rows.map(o=>o.gi_date).filter(Boolean).sort(); st.from=ds[0]; st.to=ds[ds.length-1]; }
+  if (kind==='Master'){ st.mats=new Set(rows.map(o=>o.mat_code)).size; msgs.push(['info','Master เป็นชุดเต็ม — นำเข้าแล้วจะแทนที่ Master เดิมทั้งหมด']); }
+  if (kind==='Area'){ st.cap=sum('capacity_ton_actual'); }
+  return { kind, fileName, sheetName, rows, msgs, st, ok: !msgs.some(m=>m[0]==='bad'), selected: !msgs.some(m=>m[0]==='bad') };
+}
+
+// =====================================================================
+// LOGIN
+// =====================================================================
+let USER = load('grgi_user');
+async function doLogin(){
+  const code = $('#empCode').value.trim(); $('#loginErr').textContent='';
+  if (!/^\d{8}$/.test(code)){ $('#loginErr').textContent='กรุณากรอกรหัส 8 หลัก'; return; }
+  $('#loginBtn').disabled = true;
+  const { data, error } = await sb.rpc('app_login', { p_emp_code: code });
+  $('#loginBtn').disabled = false;
+  if (error){ $('#loginErr').textContent = errMsg(error); return; }
+  USER = data; store('grgi_user', USER); enterApp();
+}
+function enterApp(){
+  $('#login').classList.add('hidden'); $('#app').classList.remove('hidden'); $('#userBox').classList.remove('hidden');
+  $('#userName').textContent = `${USER.emp_code} ${USER.full_name}`; $('#userRole').textContent = USER.role;
+  $('#viewerNote').classList.toggle('hidden', canImport());
+  $('#importBtn').disabled = !canImport();
+  $('#settingsRO').classList.toggle('hidden', isAdmin());
+  $('#empCard').classList.toggle('hidden', !isAdmin());
+}
+const isAdmin = () => USER && USER.role === 'Admin';
+const canImport = () => USER && (USER.role === 'Admin' || USER.role === 'Uploader');
+$('#loginBtn').onclick = doLogin;
+$('#empCode').addEventListener('keydown', e => { if (e.key==='Enter') doLogin(); });
+$('#logoutBtn').onclick = () => { USER=null; store('grgi_user', null); location.reload(); };
+
+// ---------- tabs ----------
+const loaders = { summary: loadSummary, stock: loadStock, settings: loadSettings, history: loadHistory };
+document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('active', x===b));
+  document.querySelectorAll('[data-page]').forEach(p => p.classList.toggle('hidden', p.dataset.page !== b.dataset.tab));
+  if (loaders[b.dataset.tab]) loaders[b.dataset.tab]();
+});
+
+// =====================================================================
+// IMPORT
+// =====================================================================
+let PARSED = [];
+const drop = $('#drop'), fileIn = $('#fileIn');
+drop.onclick = () => fileIn.click();
+drop.ondragover = e => { e.preventDefault(); drop.classList.add('over'); };
+drop.ondragleave = () => drop.classList.remove('over');
+drop.ondrop = e => { e.preventDefault(); drop.classList.remove('over'); handleFiles(e.dataTransfer.files); };
+fileIn.onchange = () => { handleFiles(fileIn.files); fileIn.value=''; };
+
+async function handleFiles(files){
+  for (const f of files){
+    try{
+      const wb = XLSX.read(await f.arrayBuffer(), { type:'array', cellDates:false });
+      for (const sn of wb.SheetNames){
+        const ws = wb.Sheets[sn];
+        const head = (XLSX.utils.sheet_to_json(ws,{header:1,range:0,defval:null})[0]||[]).map(String);
+        const kind = detectSheet(sn, head);
+        if (!kind){ if (norm(sn)!=='condition') toast(`ข้ามชีท "${sn}" (ไม่รู้จัก)`); continue; }
+        PARSED = PARSED.filter(p => p.kind !== kind);   // ชีทชนิดเดียวกันใช้ตัวล่าสุด
+        PARSED.push(parseSheet(kind, ws, f.name, sn));
+      }
+    }catch(e){ toast(`อ่านไฟล์ ${f.name} ไม่ได้: ${errMsg(e)}`, true); }
+  }
+  PARSED.sort((a,b)=>IMPORT_ORDER.indexOf(a.kind)-IMPORT_ORDER.indexOf(b.kind));
+  const z4 = PARSED.find(p=>p.kind==='ZMMR0004');
+  if (!$('#asOf').value) $('#asOf').value = (z4 && z4.st.from) || ymd(new Date());
+  renderPreview();
+}
+
+function renderPreview(){
+  $('#previewCard').classList.toggle('hidden', !PARSED.length);
+  $('#sheets').innerHTML = PARSED.map((p,i) => {
+    const s = p.st, parts = [`${fmt0(s.rows)} แถว`];
+    if (s.mats!==undefined) parts.push(`${fmt0(s.mats)} Material`);
+    if (s.qty!==undefined) parts.push(`จำนวน ${fmt0(s.qty)}`);
+    if (s.kg!==undefined) parts.push(`น้ำหนัก ${fmt(s.kg/1000,3)} ตัน`);
+    if (s.from) parts.push(`วันที่ ${s.from}${s.to!==s.from?' ถึง '+s.to:''}`);
+    if (s.cap!==undefined) parts.push(`ความจุจริงรวม ${fmt(s.cap)} ตัน`);
+    return `<div class="sheet"><div class="sheet-head">
+      <input type="checkbox" data-i="${i}" ${p.selected?'checked':''} ${p.ok?'':'disabled'}>
+      <b>${esc(p.kind)}</b><span class="muted">${esc(p.fileName)} › ${esc(p.sheetName)}</span>
+      <span class="pill ${p.ok?'ok':'bad'}">${p.ok?'พร้อมนำเข้า':'มีข้อผิดพลาด'}</span>
+      <span class="muted">${parts.join(' · ')}</span></div>
+      ${p.msgs.length?`<ul class="msgs">${p.msgs.map(m=>`<li class="${m[0]}">${esc(m[1])}</li>`).join('')}</ul>`:''}</div>`;
+  }).join('');
+  $('#sheets').querySelectorAll('input[type=checkbox]').forEach(c => c.onchange = () => PARSED[c.dataset.i].selected = c.checked);
+}
+$('#clearBtn').onclick = () => { PARSED=[]; $('#asOf').value=''; $('#importLog').classList.add('hidden'); renderPreview(); };
+
+$('#importBtn').onclick = async () => {
+  if (!canImport()) return toast('ไม่มีสิทธิ์นำเข้า', true);
+  const todo = PARSED.filter(p => p.selected && p.ok);
+  if (!todo.length) return toast('ยังไม่ได้เลือกชีท', true);
+  const asOf = $('#asOf').value || null;
+  if (todo.some(p=>p.kind==='ZSDR0013') && !asOf) return toast('ระบุวันที่ Stock ตั้งต้นก่อน', true);
+  const log = $('#importLog'); log.classList.remove('hidden'); log.textContent='';
+  const say = s => { log.textContent += s + '\n'; log.scrollTop = 1e9; };
+  $('#importBtn').disabled = true;
+  let ok = 0;
+  for (const p of todo){
+    say(`⏳ ${p.kind}: ส่ง ${fmt0(p.rows.length)} แถว...`);
+    const { data, error } = await sb.rpc('import_grgi_sheet', {
+      p_emp_code: USER.emp_code, p_sheet: p.kind, p_file_name: p.fileName,
+      p_as_of: p.kind==='ZSDR0013' ? asOf : (p.st.from || null), p_rows: p.rows });
+    if (error){ say(`❌ ${p.kind}: ${errMsg(error)} (ชีทนี้ไม่ถูกนำเข้าเลย)`); continue; }
+    ok++; say(`✅ ${p.kind}: นำเข้า ${fmt0(data.inserted)} แถว · แทนที่ของเดิม ${fmt0(data.superseded)} แถว · batch #${data.batch_id}`);
+  }
+  $('#importBtn').disabled = !canImport();
+  say(`เสร็จ ${ok}/${todo.length} ชีท`);
+  toast(`นำเข้าเสร็จ ${ok}/${todo.length} ชีท`, ok!==todo.length);
+};
+
+// =====================================================================
+// SUMMARY
+// =====================================================================
+function table(cols, rows, empty='ไม่มีข้อมูล'){
+  if (!rows || !rows.length) return `<div class="muted" style="padding:12px">${empty}</div>`;
+  return `<table><thead><tr>${cols.map(c=>`<th class="${c.num?'num':''}">${esc(c.l)}</th>`).join('')}</tr></thead><tbody>${
+    rows.map(r=>`<tr>${cols.map(c=>`<td class="${c.num?'num':''}">${c.f?c.f(r[c.k],r):esc(r[c.k])}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+}
+async function q(view, build){ let x = sb.from(view).select('*'); if (build) x = build(x); const { data, error } = await x; if (error){ toast(`${view}: ${errMsg(error)}`, true); return []; } return data; }
+
+let ZERO = [];
+async function loadSummary(){
+  const [k] = await q('v_kpi_summary');
+  if (k){
+    $('#sumAsOf').textContent = `Stock ตั้งต้น ณ ${k.snapshot_date||'-'} · เคลื่อนไหวล่าสุด ${k.last_posting_date||'-'}`;
+    const util = k.capacity_ton_actual ? 100*k.closing_ton/k.capacity_ton_actual : null;
+    const cards = [
+      ['ตั้งต้น (ตัน)', fmt(k.opening_ton,3), ''], ['รับเข้า (ตัน)', fmt(k.in_ton,3), 'g'], ['จ่ายออก (ตัน)', fmt(Math.abs(k.out_ton),3), 'o'],
+      ['คงเหลือ (ตัน)', fmt(k.closing_ton,3), ''], ['ใช้พื้นที่รวม', util===null?'-':fmt(util,1)+'%', util>90?'r':util>75?'a':'g'],
+      ['รายการผ่านเงื่อนไข', fmt0(k.valid_rows), 'g'], ['รายการถูกตัดออก', fmt0(k.excluded_rows), k.excluded_rows?'a':'g'],
+      ['น้ำหนัก 0 ที่ยังแก้ไม่ได้', fmt0(k.zero_weight_unfixed), k.zero_weight_unfixed?'r':'g'], ['Stock ติดลบ (บรรทัด)', fmt0(k.negative_lines), k.negative_lines?'r':'g'] ];
+    $('#kpis').innerHTML = cards.map(c=>`<div class="kpi ${c[2]}"><div class="l">${c[0]}</div><div class="v">${c[1]}</div></div>`).join('');
+  }
+  const fac = await q('v_stock_by_factory', x=>x.order('factory'));
+  $('#facTbl').innerHTML = table([
+    {k:'factory',l:'โรง'}, {k:'capacity_ton_actual',l:'ความจุจริง (ตัน)',num:1,f:v=>fmt(v)}, {k:'stock_ton',l:'Stock (ตัน)',num:1,f:v=>fmt(v,3)},
+    {k:'utilization_pct',l:'% ใช้พื้นที่',num:1,f:v=>v===null?'-':fmt(v,1)+'%'},
+    {k:'utilization_pct',l:'',f:v=>`<div class="bar"><i class="${v>100?'over':v>85?'hi':''}" style="width:${Math.min(v||0,100)}%"></i></div>`} ], fac);
+  const dq = await q('v_data_quality');
+  $('#dqTbl').innerHTML = table([{k:'check_name',l:'รายการตรวจ'},{k:'row_count',l:'จำนวน',num:1,f:v=>`<span class="pill ${v>0?'warn':'ok'}">${fmt0(v)}</span>`}], dq);
+  await loadRules();
+  ZERO = await q('v_zero_weight_report', x=>x.order('posting_date',{ascending:false}).limit(1000));
+  $('#zeroTbl').innerHTML = table([{k:'posting_date',l:'วันที่'},{k:'material',l:'Material'},{k:'mov_type',l:'Mov'},{k:'qty',l:'จำนวน',num:1,f:fmt0},
+    {k:'sales_order',l:'SO'},{k:'so_item',l:'Item'},{k:'weight_final_kg',l:'น้ำหนักที่ใช้ (กก.)',num:1,f:v=>fmt(v,2)},
+    {k:'weight_source',l:'ที่มา',f:v=>`<span class="pill ${v.startsWith('ไม่พบ')?'bad':'info'}">${esc(v)}</span>`},
+    {k:'is_valid',l:'ผ่านเงื่อนไข',f:v=>v?'✓':'—'}], ZERO, 'ไม่มีรายการน้ำหนัก 0 🎉');
+}
+async function loadRules(){
+  const rs = await q('v_movement_rule_summary', x=>{ x=x.order('posting_date',{ascending:false}).order('category').order('mov_type'); return $('#onlyExcluded').checked ? x.eq('is_valid',false) : x; });
+  $('#ruleTbl').innerHTML = table([{k:'posting_date',l:'วันที่'},{k:'category',l:'หมวด'},{k:'mov_type',l:'Mov'},{k:'direction',l:'ทิศ'},
+    {k:'is_valid',l:'ผล',f:v=>`<span class="pill ${v?'ok':'bad'}">${v?'ผ่าน':'ตัดออก'}</span>`},{k:'rule_or_reason',l:'กฎ / เหตุผล'},
+    {k:'rows',l:'แถว',num:1,f:fmt0},{k:'qty',l:'จำนวน',num:1,f:fmt0},{k:'ton',l:'ตัน',num:1,f:v=>fmt(v,3)}], rs);
+}
+$('#onlyExcluded').onchange = loadRules;
+$('#refreshSummary').onclick = loadSummary;
+$('#zeroCsv').onclick = () => downloadCsv('zero_weight.csv', ZERO);
+
+function downloadCsv(name, rows){
+  if (!rows.length) return toast('ไม่มีข้อมูล', true);
+  const cols = Object.keys(rows[0]);
+  const csv = '﻿' + [cols.join(','), ...rows.map(r=>cols.map(c=>{ const v=r[c]??''; return /[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g,'""')}"` : v; }).join(','))].join('\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})); a.download = name; a.click();
+}
+
+// =====================================================================
+// STOCK
+// =====================================================================
+let STK = [];
+async function loadStock(){
+  const sl = $('#stkSloc'); if (sl.options.length <= 1){
+    const ss = await q('sloc_master', x=>x.order('sloc'));
+    ss.forEach(s => sl.add(new Option(`${s.sloc}${s.factory?' ('+s.factory+')':''}`, s.sloc)));
+  }
+  const term = $('#stkSearch').value.trim().replace(/[,()%*]/g,'');
+  STK = await q('v_stock_balance', x => {
+    if (term) x = x.or(`material.ilike.%${term}%,batch.ilike.%${term}%`);
+    if ($('#stkCat').value) x = x.eq('category', $('#stkCat').value);
+    if ($('#stkSloc').value) x = x.eq('sloc', $('#stkSloc').value);
+    if ($('#stkNeg').checked) x = x.eq('is_negative', true);
+    return x.order('material').order('batch').limit(1000);
+  });
+  $('#stkInfo').textContent = `${fmt0(STK.length)} บรรทัด${STK.length===1000?' (แสดงสูงสุด 1,000 — กรองเพิ่ม)':''}`;
+  $('#stkTbl').innerHTML = table([{k:'material',l:'Material'},{k:'description',l:'Description'},{k:'category',l:'หมวด'},{k:'batch',l:'Batch'},
+    {k:'sloc',l:'Sloc'},{k:'factory',l:'โรง'},{k:'open_qty',l:'ตั้งต้น',num:1,f:fmt0},{k:'in_qty',l:'เข้า',num:1,f:fmt0},{k:'out_qty',l:'ออก',num:1,f:fmt0},
+    {k:'closing_qty',l:'คงเหลือ',num:1,f:(v,r)=>`<b style="color:${r.is_negative?'var(--bad)':'inherit'}">${fmt0(v)}</b>`},
+    {k:'closing_kg',l:'คงเหลือ (กก.)',num:1,f:v=>fmt(v,2)}], STK);
+}
+$('#stkGo').onclick = loadStock;
+$('#stkSearch').addEventListener('keydown', e => { if (e.key==='Enter') loadStock(); });
+$('#stkCsv').onclick = () => downloadCsv('stock_balance.csv', STK);
+
+// =====================================================================
+// SETTINGS (Admin แก้ได้ / คนอื่นดู)
+// =====================================================================
+const sel = (opts, v, cls='') => `<select class="${cls}" ${isAdmin()?'':'disabled'}>${opts.map(o=>`<option ${o===v?'selected':''}>${esc(o)}</option>`).join('')}</select>`;
+const inp = (v, w=120, cls='') => `<input class="${cls}" style="width:${w}px" value="${esc(v??'')}" ${isAdmin()?'':'disabled'}>`;
+const saveBtn = () => isAdmin() ? `<button class="btn sm">บันทึก</button>` : '';
+async function rpc(fn, args, okMsg='บันทึกแล้ว'){
+  const { data, error } = await sb.rpc(fn, { p_emp_code: USER.emp_code, ...args });
+  if (error){ toast(errMsg(error), true); return null; } toast(okMsg); return data ?? true;
+}
+function bindRows(container, onSave){
+  container.querySelectorAll('tbody tr').forEach(tr => { const b = tr.querySelector('button'); if (b) b.onclick = () => onSave(tr, [...tr.querySelectorAll('input,select')]); });
+}
+let FACTORIES = [];
+async function loadSettings(){
+  FACTORIES = (await q('factory_area', x=>x.order('factory'))).map(f=>f.factory);
+  // ---- patterns ----
+  const pats = await q('sloc_type_patterns', x=>x.order('priority'));
+  const patRows = [...pats, ...(isAdmin()?[{pattern:'',sloc_type:'WH',priority:100,note:'',_new:1}]:[])];
+  $('#patTbl').innerHTML = `<table><thead><tr><th>รูปแบบ (เช่น 2G%)</th><th>ประเภท</th><th>ลำดับ</th><th>หมายเหตุ</th><th></th></tr></thead><tbody>${
+    patRows.map(p=>`<tr><td>${p._new?inp('',110):`<b>${esc(p.pattern)}</b>`}</td><td>${sel(SLOC_TYPES.slice(0,5),p.sloc_type)}</td><td>${inp(p.priority,60)}</td><td>${inp(p.note,320)}</td><td>${saveBtn()}</td></tr>`).join('')}</tbody></table>`;
+  bindRows($('#patTbl'), async (tr, el) => {
+    const isNew = el.length === 4; const pattern = isNew ? el[0].value.trim() : tr.cells[0].textContent.trim();
+    if (!pattern) return toast('ใส่รูปแบบก่อน', true);
+    const o = isNew ? 1 : 0;
+    if (await rpc('admin_upsert_sloc_pattern', { p_pattern: pattern, p_sloc_type: el[o].value, p_priority: Number(el[o+1].value)||100, p_note: el[o+2].value })) loadSettings();
+  });
+  // ---- slocs ----
+  const slocs = await q('v_sloc_effective', x=>x.order('sloc'));
+  const slRows = [...slocs, ...(isAdmin()?[{sloc:'',set_type:'WH',effective_type:'',factory:'',description:'',_new:1}]:[])];
+  $('#slocTbl').innerHTML = `<table><thead><tr><th>Sloc</th><th>ตั้งค่า</th><th>ใช้จริง</th><th>โรง</th><th>คำอธิบาย</th><th></th></tr></thead><tbody>${
+    slRows.map(s=>`<tr><td>${s._new?inp('',80):`<b>${esc(s.sloc)}</b>`}</td><td>${sel(SLOC_TYPES,s.set_type)}</td>
+      <td>${s._new?'':`<span class="pill ${s.effective_type==='UNKNOWN'?'bad':'info'}">${esc(s.effective_type)}</span>`}</td>
+      <td>${sel(['',...FACTORIES],s.factory||'')}</td><td>${inp(s.description,280)}</td><td>${saveBtn()}</td></tr>`).join('')}</tbody></table>`;
+  bindRows($('#slocTbl'), async (tr, el) => {
+    const isNew = el.length === 4; const sloc = isNew ? el[0].value.trim().toUpperCase() : tr.cells[0].textContent.trim();
+    if (!sloc) return toast('ใส่รหัส Sloc ก่อน', true);
+    const o = isNew ? 1 : 0;
+    if (await rpc('admin_upsert_sloc', { p_sloc: sloc, p_sloc_type: el[o].value, p_factory: el[o+1].value, p_description: el[o+2].value })) loadSettings();
+  });
+  // ---- category ----
+  const cats = await q('product_category_map', x=>x.order('category').order('group_product'));
+  const groups = await q('v_group_products');
+  const known = new Set(cats.map(c=>c.group_product));
+  groups.map(g=>g.group_product).filter(g=>!known.has(g)).forEach(g => cats.push({group_product:g, category:'Other', owner:'', _missing:1}));
+  $('#catTbl').innerHTML = `<table><thead><tr><th>Group Product (Master)</th><th>หมวด</th><th>ผู้รับผิดชอบ</th><th></th></tr></thead><tbody>${
+    cats.map(c=>`<tr><td><b>${esc(c.group_product)}</b> ${c._missing?'<span class="pill bad">ยังไม่ตั้ง</span>':''}</td><td>${sel(CATS,c.category)}</td><td>${inp(c.owner,160)}</td><td>${saveBtn()}</td></tr>`).join('')}</tbody></table>`;
+  bindRows($('#catTbl'), async (tr, el) => {
+    if (await rpc('admin_set_category', { p_group_product: tr.cells[0].querySelector('b').textContent, p_category: el[0].value, p_owner: el[1].value })) loadSettings();
+  });
+  // ---- rules ----
+  const rules = await q('movement_rules', x=>x.order('category').order('direction').order('id'));
+  const blank = {id:null,category:'Long',direction:'OUT',mov_type:'',from_sloc_type:'',to_sloc_type:'',mat_code_prefix:'',require_diff_sloc:false,is_active:true,rule_label:'',note:''};
+  const ruleRows = [...rules, ...(isAdmin()?[blank]:[])];
+  const ST = ['','WH','PD','TEMP','OTH','REW'];
+  const chk = v => `<input type="checkbox" ${v?'checked':''} ${isAdmin()?'':'disabled'}>`;
+  $('#ruleCfgTbl').innerHTML = `<table><thead><tr><th>#</th><th>ใช้งาน</th><th>หมวด</th><th>ทิศ</th><th>Mov</th><th>ต้นทาง</th><th>ปลายทาง</th><th>Code</th><th>Sloc ต่างกัน</th><th>ชื่อกฎ</th><th>หมายเหตุ</th><th></th></tr></thead><tbody>${
+    ruleRows.map(r=>`<tr data-id="${r.id??''}"><td>${r.id??'<span class="pill info">ใหม่</span>'}</td><td>${chk(r.is_active)}</td><td>${sel(CATS,r.category)}</td><td>${sel(['IN','OUT'],r.direction)}</td>
+      <td>${inp(r.mov_type,60)}</td><td>${sel(ST,r.from_sloc_type||'')}</td><td>${sel(ST,r.to_sloc_type||'')}</td><td>${sel(['','1','2','3'],r.mat_code_prefix||'')}</td>
+      <td>${chk(r.require_diff_sloc)}</td><td>${inp(r.rule_label,230)}</td><td>${inp(r.note,200)}</td><td>${saveBtn()}</td></tr>`).join('')}</tbody></table>`;
+  bindRows($('#ruleCfgTbl'), async (tr, el) => {
+    const [act,cat,dir,mov,fr,to,pre,diff,label,note] = el;
+    if (!mov.value.trim() || !label.value.trim()) return toast('ใส่ Mov และชื่อกฎ', true);
+    if (await rpc('admin_upsert_rule', { p_id: tr.dataset.id ? Number(tr.dataset.id) : null, p_category: cat.value, p_direction: dir.value,
+      p_mov_type: mov.value.trim(), p_from_sloc_type: fr.value, p_to_sloc_type: to.value, p_mat_code_prefix: pre.value,
+      p_require_diff_sloc: diff.checked, p_is_active: act.checked, p_rule_label: label.value.trim(), p_note: note.value })) loadSettings();
+  });
+  // ---- employees (Admin) ----
+  if (isAdmin()){
+    const { data: emps, error } = await sb.rpc('admin_list_employees', { p_emp_code: USER.emp_code });
+    if (error) return toast(errMsg(error), true);
+    const er = [...emps, {emp_code:'',full_name:'',role:'Viewer',is_active:true,_new:1}];
+    $('#empTbl').innerHTML = `<table><thead><tr><th>รหัส</th><th>ชื่อ-สกุล</th><th>สิทธิ์</th><th>ใช้งาน</th><th></th></tr></thead><tbody>${
+      er.map(e=>`<tr><td>${e._new?inp('',100):`<b>${esc(e.emp_code)}</b>`}</td><td>${inp(e.full_name,240)}</td><td>${sel(ROLES,e.role)}</td><td>${chk(e.is_active)}</td><td>${saveBtn()}</td></tr>`).join('')}</tbody></table>`;
+    bindRows($('#empTbl'), async (tr, el) => {
+      const isNew = el.length === 4; const code = isNew ? el[0].value.trim() : tr.cells[0].textContent.trim(); const o = isNew ? 1 : 0;
+      if (!/^\d{8}$/.test(code)) return toast('รหัสต้องเป็นตัวเลข 8 หลัก', true);
+      if (await rpc('admin_set_employee', { p_target: code, p_full_name: el[o].value, p_role: el[o+1].value, p_is_active: el[o+2].checked })) loadSettings();
+    });
+  }
+}
+
+// =====================================================================
+// HISTORY
+// =====================================================================
+async function loadHistory(){
+  const h = await q('import_batches', x=>x.order('id',{ascending:false}).limit(100));
+  $('#histTbl').innerHTML = table([{k:'id',l:'#'},{k:'imported_at',l:'เวลา',f:v=>new Date(v).toLocaleString('th-TH')},{k:'sheet_name',l:'ชีท'},
+    {k:'file_name',l:'ไฟล์'},{k:'as_of_date',l:'วันที่ข้อมูล'},{k:'row_count',l:'แถว',num:1,f:fmt0},{k:'superseded_rows',l:'แทนที่ของเดิม',num:1,f:fmt0},{k:'imported_by',l:'ผู้นำเข้า'}], h);
+}
+
+// ---------- start ----------
+if (USER) enterApp();
+</script>
+</body>
+</html>
