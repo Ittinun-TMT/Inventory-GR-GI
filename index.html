@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
   :root{
     --navy:#0c3843; --navy-2:#0a2f38; --navy-3:#124b58; --orange:#ff6a05; --orange-2:#ff8a3d; --orange-soft:#fff1e7;
@@ -74,35 +75,64 @@
   input:disabled,select:disabled{background:#f6f8f9;color:var(--muted)}
   input[type=checkbox]{accent-color:var(--orange);width:16px;height:16px}
 
-  /* ================= SHELL: แถบเมนูด้านบน (สไตล์เดียวกับแดชบอร์ด WH2 เดิม) ================= */
-  .navbar{height:68px;background:#fff;display:flex;align-items:center;gap:22px;padding:0 26px;position:sticky;top:0;z-index:30;
-    border-bottom:2px solid var(--navy);box-shadow:0 1px 0 rgba(12,56,67,.06)}
-  .brand{display:flex;align-items:center;gap:11px;white-space:nowrap}
-  .brand .lg{width:40px;height:40px;border-radius:11px;background:var(--navy);display:grid;place-items:center;flex:none;transition:transform .3s var(--ease)}
+  /* ================= SHELL: แถบเมนูด้านซ้าย (หุบได้) ================= */
+  #app{display:flex;min-height:100vh}
+  .side{width:var(--side);background:linear-gradient(180deg,var(--navy) 0%,var(--navy-2) 100%);color:#cfdde2;display:flex;flex-direction:column;
+    position:fixed;inset:0 auto 0 0;z-index:40;transition:width .32s var(--ease),transform .32s var(--ease)}
+  .side::after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(260px 200px at 110% 105%,rgba(255,106,5,.18),transparent 70%)}
+  .brand{display:flex;align-items:center;gap:12px;padding:18px 18px 16px;border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap;overflow:hidden}
+  .brand .lg{width:40px;height:40px;border-radius:11px;background:#fff;display:grid;place-items:center;flex:none;box-shadow:0 6px 16px rgba(0,0,0,.2);transition:transform .3s var(--ease)}
   .brand:hover .lg{transform:rotate(-6deg) scale(1.05)}
-  .brand .t b{display:block;color:var(--navy);font-size:17px;font-weight:600;line-height:1.1}
-  .brand .t small{font-size:11px;color:var(--muted);letter-spacing:1.4px}
-  .tabs{display:flex;gap:2px;height:100%;align-items:stretch;overflow-x:auto;scrollbar-width:none;flex:1}
-  .tabs::-webkit-scrollbar{display:none}
-  .mi{display:flex;align-items:center;gap:8px;padding:0 16px;border:0;background:none;color:#4a6b75;font-size:15px;cursor:pointer;position:relative;white-space:nowrap;transition:color .2s,background .2s}
-  .mi svg{transition:transform .25s var(--ease)}
-  .mi:hover{color:var(--navy);background:#f2f6f7}
-  .mi:hover svg{transform:translateY(-2px)}
-  .mi::after{content:'';position:absolute;left:14px;right:14px;bottom:-2px;height:3px;border-radius:3px 3px 0 0;background:var(--orange);transform:scaleX(0);transition:transform .3s var(--ease)}
-  .mi.active{color:var(--navy);font-weight:500}
-  .mi.active::after{transform:scaleX(1)}
+  .brand .t b{display:block;color:#fff;font-size:16px;font-weight:500;line-height:1.15}
+  .brand .t small{font-size:11px;opacity:.6;letter-spacing:1.2px}
+  .menu{flex:1;overflow-y:auto;overflow-x:hidden;padding:10px 10px 14px;scrollbar-width:thin}
+  .grp{margin-top:6px}
+  .grp-h{display:flex;align-items:center;gap:8px;width:100%;background:none;border:0;color:#8fb0b9;font-size:11.5px;letter-spacing:1px;text-transform:uppercase;
+    padding:12px 12px 6px;cursor:pointer;white-space:nowrap;font-family:inherit}
+  .grp-h:hover{color:#fff}
+  .grp-h .chev{margin-left:auto;width:14px;height:14px;transition:transform .25s var(--ease)}
+  .grp.closed .grp-h .chev{transform:rotate(-90deg)}
+  .grp-items{display:flex;flex-direction:column;gap:3px;overflow:hidden;max-height:400px;transition:max-height .35s var(--ease),opacity .25s}
+  .grp.closed .grp-items{max-height:0;opacity:0}
+  .mi{display:flex;align-items:center;gap:12px;padding:10px 13px;border-radius:11px;color:#c9d9de;cursor:pointer;border:0;background:none;font-size:15px;
+    text-align:left;position:relative;white-space:nowrap;transition:background .2s,color .2s,transform .2s var(--ease)}
+  .mi:hover{background:rgba(255,255,255,.08);color:#fff;transform:translateX(3px)}
+  .mi.active{background:#fff;color:var(--navy);font-weight:500;box-shadow:0 6px 16px rgba(0,0,0,.2)}
+  .mi.active::before{content:'';position:absolute;left:-10px;top:9px;bottom:9px;width:4px;border-radius:0 4px 4px 0;background:var(--orange);animation:grow .35s var(--ease)}
   .mi.active svg{color:var(--orange)}
-  .mi .badge{background:var(--orange);color:#fff;border-radius:10px;font-size:11px;padding:0 7px;line-height:18px;animation:pop .35s var(--ease)}
-  .me{position:relative;margin-left:auto}
-  .me-btn{display:flex;align-items:center;gap:10px;background:none;border:1px solid var(--line);border-radius:30px;padding:4px 12px 4px 4px;cursor:pointer;transition:.2s}
-  .me-btn:hover{border-color:var(--navy);box-shadow:var(--shadow)}
-  .me .av{width:34px;height:34px;border-radius:50%;background:var(--orange);color:#fff;display:grid;place-items:center;font-weight:500;flex:none}
-  .me .nm{text-align:left;line-height:1.15}
-  .me .nm b{display:block;color:var(--navy);font-size:14px;max-width:190px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .me .nm small{font-size:12px;color:var(--muted)}
-  .me-menu{position:absolute;right:0;top:calc(100% + 8px);background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-h);min-width:200px;padding:6px;transform-origin:top right;animation:pop .22s var(--ease)}
+  .mi .badge{margin-left:auto;background:var(--orange);color:#fff;border-radius:10px;font-size:11px;padding:0 7px;line-height:18px;animation:pop .35s var(--ease)}
+  .mi .home{margin-left:auto;font-size:10.5px;border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:0 6px;opacity:.7}
+  .mi.active .home{border-color:var(--line);color:var(--muted)}
+  .me{position:relative;margin:10px;z-index:1}
+  .me-btn{display:flex;align-items:center;gap:10px;width:100%;background:rgba(255,255,255,.07);border:0;border-radius:12px;padding:9px;cursor:pointer;transition:.2s;color:#fff;text-align:left}
+  .me-btn:hover{background:rgba(255,255,255,.13)}
+  .me .av{width:36px;height:36px;border-radius:50%;background:var(--orange);color:#fff;display:grid;place-items:center;font-weight:500;flex:none}
+  .me .nm{min-width:0;line-height:1.2;flex:1}
+  .me .nm b{display:block;font-size:14px;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .me .nm small{font-size:12px;opacity:.65;white-space:nowrap}
+  .me-menu{position:absolute;left:0;right:0;bottom:calc(100% + 8px);background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-h);min-width:190px;padding:6px;transform-origin:bottom left;animation:pop .22s var(--ease)}
   .me-menu button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;padding:10px 12px;border-radius:8px;font-size:14px;color:var(--text);cursor:pointer;text-align:left}
   .me-menu button:hover{background:var(--orange-soft);color:var(--orange)}
+  .collapse-btn{position:absolute;right:-14px;top:26px;width:28px;height:28px;border-radius:50%;background:#fff;color:var(--navy);border:1px solid var(--line);
+    display:grid;place-items:center;cursor:pointer;box-shadow:var(--shadow);z-index:2;transition:transform .32s var(--ease),background .2s}
+  .collapse-btn:hover{background:var(--orange);color:#fff;border-color:var(--orange)}
+  /* หุบเมนู: เหลือแต่ไอคอน */
+  body.mini .side{width:76px}
+  body.mini .brand{padding:18px 18px 16px}
+  body.mini .brand .t, body.mini .mi span, body.mini .mi .badge, body.mini .mi .home, body.mini .grp-h span, body.mini .grp-h .chev, body.mini .me .nm{display:none}
+  body.mini .grp-h{padding:8px 0 4px;justify-content:center}
+  body.mini .grp-h::before{content:'';width:26px;height:1px;background:rgba(255,255,255,.15)}
+  body.mini .grp.closed .grp-items{max-height:400px;opacity:1}
+  body.mini .mi{justify-content:center;padding:12px 0}
+  body.mini .mi:hover{transform:none}
+  body.mini .mi.dq::after{content:'';position:absolute;top:8px;right:14px;width:8px;height:8px;border-radius:50%;background:var(--orange)}
+  body.mini .me-btn{justify-content:center;padding:7px 0}
+  body.mini .me-menu{right:auto;left:0;width:200px}
+  body.mini .collapse-btn{transform:rotate(180deg)}
+  body.mini .main{margin-left:76px}
+  .main{flex:1;margin-left:var(--side);transition:margin .32s var(--ease);min-width:0}
+  .hamb{display:none;background:#fff;border:1px solid var(--line);border-radius:10px;color:var(--navy);cursor:pointer;padding:6px}
+  .overlay{display:none}
   .pagehead{display:flex;align-items:flex-end;gap:12px;margin-bottom:18px;flex-wrap:wrap}
   .pagehead h1{margin:0;font-size:22px;color:var(--navy);font-weight:500;display:flex;align-items:center;gap:10px}
   .pagehead h1::before{content:'';width:4px;height:22px;border-radius:3px;background:linear-gradient(180deg,var(--orange),var(--orange-2))}
@@ -121,7 +151,7 @@
   .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
   .muted{color:var(--muted);font-size:13px}
 
-  .kpis{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));margin-bottom:18px}
+  .kpis{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));margin-bottom:18px}
   .kpi{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:16px;display:flex;gap:12px;align-items:flex-start;box-shadow:var(--shadow);transition:transform .25s var(--ease),box-shadow .25s;animation:fadeUp .5s var(--ease) both}
   .kpi:hover{transform:translateY(-3px);box-shadow:var(--shadow-h)}
   .kpi .ic{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;background:var(--info-soft);color:var(--navy);flex:none}
@@ -199,12 +229,133 @@
 
   @media (max-width:900px){
     #login{grid-template-columns:1fr} .lg-hero{padding:36px 28px;min-height:220px} .lg-hero h1{font-size:32px}
-    .navbar{padding:0 12px;gap:10px;height:60px} .brand .t{display:none} .me .nm{display:none} .me-btn{padding:3px}
-    .mi{padding:0 11px;font-size:14px} .mi span{display:none} .mi.active span{display:inline}
+    .side,body.mini .side{width:var(--side);transform:translateX(-100%)} body.nav-open .side{transform:none;box-shadow:0 0 40px rgba(0,0,0,.3)}
+    body.mini .brand .t, body.mini .mi span, body.mini .grp-h span, body.mini .me .nm{display:revert}
+    body.nav-open .overlay{display:block;position:fixed;inset:0;background:rgba(8,30,36,.4);z-index:35;animation:fade .2s}
+    .main,body.mini .main{margin-left:0} .hamb{display:grid} .collapse-btn{display:none}
+    .pagehead{align-items:center}
     .content{padding:16px}
     .kpis{grid-template-columns:1fr 1fr;gap:10px} .kpi{padding:12px;gap:9px} .kpi .ic{width:32px;height:32px} .kpi .v{font-size:18px;word-break:break-all}
     .seg{flex-wrap:wrap}
   }
+
+  /* ================= ตัวกรองทั้งระบบ ================= */
+  .filterbar{position:sticky;top:0;z-index:25;background:rgba(245,247,249,.92);backdrop-filter:blur(8px);margin:-6px -26px 18px;padding:10px 26px;
+    border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center;flex-wrap:wrap;animation:fadeUp .4s var(--ease) both}
+  .filterbar .fl{display:flex;align-items:center;gap:6px;color:var(--navy);font-weight:500;font-size:14px}
+  .filterbar .fl em{font-style:normal;background:var(--orange);color:#fff;border-radius:10px;font-size:11px;padding:0 7px;line-height:18px}
+  .filterbar input[type=date]{padding:5px 8px}
+  .chips{display:inline-flex;gap:4px;flex-wrap:wrap}
+  .chip{border:1px solid var(--line);background:#fff;border-radius:20px;padding:4px 12px;font-size:13px;color:#4a6b75;cursor:pointer;transition:.18s}
+  .chip:hover{border-color:var(--navy);color:var(--navy)}
+  .chip.on{background:var(--navy);border-color:var(--navy);color:#fff}
+  .msel{position:relative}
+  .msel-btn{display:flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:9px;padding:6px 10px;font-size:13px;color:var(--text);cursor:pointer;min-width:130px;transition:.18s}
+  .msel-btn:hover{border-color:var(--navy)} .msel-btn b{font-weight:500;color:var(--navy)} .msel-btn.on{border-color:var(--orange);background:var(--orange-soft)}
+  .msel-btn svg{margin-left:auto;width:14px;height:14px}
+  .msel-pop{position:absolute;top:calc(100% + 6px);left:0;z-index:60;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-h);width:260px;padding:8px;animation:pop .2s var(--ease)}
+  .msel-pop input[type=search]{width:100%;margin-bottom:6px}
+  .msel-pop .acts{display:flex;gap:12px;font-size:12.5px;padding:2px 4px 6px;border-bottom:1px solid var(--line);margin-bottom:4px}
+  .msel-pop .acts button{border:0;background:none;color:var(--orange);cursor:pointer;padding:0;font-size:12.5px}
+  .msel-pop .list{max-height:260px;overflow:auto}
+  .msel-pop label{display:flex;gap:8px;align-items:center;padding:5px 6px;border-radius:7px;font-size:13.5px;cursor:pointer}
+  .msel-pop label:hover{background:#f4f7f8}
+  .fbadge{font-size:12px;color:var(--muted)}
+  .note{font-size:12.5px;color:var(--muted);background:#fff;border:1px dashed var(--line);border-radius:10px;padding:8px 12px;margin-bottom:14px}
+
+  /* ================= Executive brief ================= */
+  .brief{background:linear-gradient(160deg,#fff 0%,#fff 60%,#fff6ef 130%);border:1px solid var(--line);border-radius:18px;padding:22px 24px;margin-bottom:18px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .brief::after{content:'';position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(255,106,5,.12),transparent 70%)}
+  .brief .eyebrow{font-size:12.5px;letter-spacing:1.2px;color:var(--muted)}
+  .brief h2.headline{font-size:clamp(21px,2.6vw,30px);line-height:1.4;margin:6px 0 6px;color:var(--navy);font-weight:500}
+  .brief h2.headline .alert{color:#c24e00}
+  .brief .lede{color:#33525b;line-height:1.7;margin:0 0 16px;max-width:900px}
+  .bk-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .bk{background:#fff;border-radius:14px;padding:14px 16px;border-top:4px solid var(--accent,var(--navy));box-shadow:var(--shadow);min-width:0;animation:fadeUp .5s var(--ease) both}
+  .bk .l{font-size:13px;color:var(--muted)} .bk .v{font-size:clamp(20px,2vw,26px);font-weight:500;color:var(--navy);font-variant-numeric:tabular-nums}
+  .bk .v small{font-size:13px;color:var(--muted);font-weight:300} .bk .s{font-size:13px;color:var(--navy)} .bk .s.up{color:#c24e00} .bk .n{font-size:12px;color:var(--muted)}
+  .acts-h{font-size:16px;color:var(--navy);margin:20px 0 10px;font-weight:500}
+  .act-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+  .act{display:flex;flex-direction:column;gap:5px;text-align:left;background:#fff;border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:12px;padding:12px 14px;
+    font-family:inherit;color:var(--text);cursor:default;transition:transform .2s var(--ease),box-shadow .2s;animation:fadeUp .5s var(--ease) both}
+  button.act{cursor:pointer} button.act:hover{transform:translateY(-2px);box-shadow:var(--shadow-h)}
+  .act .tag{font-size:11.5px;color:var(--accent);font-weight:500;letter-spacing:.5px} .act .tt{font-weight:500;color:var(--navy)} .act .bd{font-size:13px;color:#4a6b75;line-height:1.55}
+  .act .more{font-size:12px;color:var(--orange);margin-top:2px}
+  .brief .foot{font-size:12px;color:var(--muted);margin-top:12px}
+
+  .cap-row{display:grid;grid-template-columns:200px 1fr;gap:20px;align-items:center}
+  .gauge{position:relative;width:170px;height:170px;margin:auto}
+  .gauge svg{transform:rotate(-90deg)}
+  .gauge .arc{transition:stroke-dashoffset 1.2s var(--ease),stroke .3s}
+  .gauge .c{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+  .gauge .c b{font-size:30px;font-weight:500;color:var(--navy);display:block;line-height:1} .gauge .c span{font-size:12px;color:var(--muted)}
+  .cap-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .cap-card{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff}
+  .cap-card .l{font-size:13px;color:var(--muted)} .cap-card .v{font-size:22px;font-weight:500;color:var(--navy)} .cap-card .s{font-size:12px;color:var(--muted)}
+  .tier{display:inline-flex;align-items:center;gap:4px;border-radius:20px;padding:2px 10px;font-size:12px;white-space:nowrap}
+  .tier.normal{background:#e8f1f8;color:#2f74a8} .tier.warn{background:#fff6dc;color:#946300} .tier.critical{background:#ffe9dc;color:#c24e00} .tier.none{background:#eef1f3;color:var(--muted)}
+
+  .fam-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+  .fam{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;border-top:4px solid var(--fc);box-shadow:var(--shadow);transition:transform .25s var(--ease),box-shadow .25s;animation:fadeUp .5s var(--ease) both}
+  .fam:hover{transform:translateY(-3px);box-shadow:var(--shadow-h)}
+  .fam .hd{display:flex;align-items:baseline;gap:8px} .fam .hd b{font-size:17px;color:var(--navy);font-weight:500} .fam .hd .pct{margin-left:auto;font-size:22px;font-weight:500;color:var(--fc)}
+  .fam .ton{font-size:13px;color:var(--muted);text-align:right}
+  .fam .io{display:flex;gap:12px;font-size:13px;margin:8px 0 10px} .fam .io span{display:flex;align-items:center;gap:4px}
+  .stack{display:flex;height:9px;border-radius:6px;overflow:hidden;background:#eef2f4;margin-bottom:10px}
+  .stack i{display:block;height:100%;transition:width 1s var(--ease)}
+  .fam ul{list-style:none;margin:0;padding:0;font-size:13.5px}
+  .fam li{display:flex;gap:8px;align-items:center;padding:4px 0;border-bottom:1px dashed #eef2f4}
+  .fam li .dot{width:8px;height:8px;border-radius:50%;flex:none} .fam li .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .fam li .p{color:var(--muted);font-size:12.5px;width:52px;text-align:right} .fam li .t{width:86px;text-align:right;font-variant-numeric:tabular-nums}
+
+  .fac-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+  .fac{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;gap:14px;align-items:center;cursor:pointer;text-align:left;font-family:inherit;color:var(--text);
+    transition:transform .25s var(--ease),box-shadow .25s,border-color .2s;animation:fadeUp .5s var(--ease) both}
+  .fac:hover{transform:translateY(-3px);box-shadow:var(--shadow-h);border-color:#c9d5da}
+  .fac.critical{border-color:#ffc9a6;background:linear-gradient(160deg,#fff,#fff5ee)} .fac.warn{border-color:#ffe3a1}
+  .ring{position:relative;width:72px;height:72px;flex:none}
+  .ring svg{transform:rotate(-90deg)} .ring .arc{transition:stroke-dashoffset 1s var(--ease)}
+  .ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:15px;font-weight:500;color:var(--navy)}
+  .fac .info{min-width:0;flex:1} .fac .info b{font-size:16px;color:var(--navy);font-weight:500;display:flex;gap:6px;align-items:center}
+  .fac .info .s{font-size:12.5px;color:var(--muted);line-height:1.5}
+  .fac .info .c{font-size:12px;color:#4a6b75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  /* analysis */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .hbar{display:grid;grid-template-columns:minmax(150px,2fr) 2fr 84px;gap:10px;align-items:center;padding:6px 0;border-bottom:1px dashed #eef2f4;font-size:13.5px}
+  .hbar .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .hbar .v{text-align:right;font-variant-numeric:tabular-nums}
+  .hbar .tr{height:10px;background:#eef2f4;border-radius:6px;overflow:hidden;display:flex}
+  .hbar .tr i{display:block;height:100%;width:0;transition:width 1s var(--ease)}
+  .abc-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
+  .abc{border:1px solid var(--line);border-radius:12px;padding:12px 14px;border-left:5px solid var(--ac)}
+  .abc b{font-size:22px;color:var(--ac);font-weight:600} .abc .s{font-size:12.5px;color:var(--muted)}
+  .rank{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--orange-soft);color:var(--orange);font-size:12px;font-weight:500}
+  textarea{font-family:inherit;font-size:14px;border:1px solid var(--line);border-radius:10px;padding:10px;width:100%;min-height:110px;outline:none;resize:vertical}
+  textarea:focus{border-color:var(--orange);box-shadow:0 0 0 3px var(--orange-soft)}
+
+  /* import per sheet */
+  .sheet-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:12px;margin-bottom:18px}
+  .sc{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;text-align:left;font-family:inherit;color:var(--text);cursor:pointer;position:relative;
+    transition:transform .22s var(--ease),box-shadow .22s,border-color .2s;animation:fadeUp .45s var(--ease) both}
+  .sc:hover{transform:translateY(-2px);box-shadow:var(--shadow-h)}
+  .sc.on{border-color:var(--orange);box-shadow:0 0 0 3px var(--orange-soft)}
+  .sc .nm{font-size:16px;font-weight:500;color:var(--navy);display:flex;align-items:center;gap:8px}
+  .sc .tc{font-size:12px;color:var(--muted)} .sc .last{font-size:12.5px;margin-top:8px;color:#4a6b75;line-height:1.45}
+  .sc .ok{position:absolute;right:12px;top:12px;width:10px;height:10px;border-radius:50%;background:var(--ok)} .sc .ok.none{background:#d5dde1}
+  .rule-box{background:#f7f9fa;border-radius:10px;padding:10px 14px;font-size:13px;color:#4a6b75;line-height:1.6;margin-bottom:14px}
+  .st{display:inline-block;border-radius:20px;padding:2px 10px;font-size:12px}
+  .st.NEW{background:var(--ok-soft);color:var(--ok)} .st.SAME{background:#eef1f3;color:var(--muted)} .st.CHANGED{background:var(--warn-soft);color:#946300}
+  .cov{border-collapse:separate;border-spacing:3px;font-size:12.5px;width:auto}
+  .cov th,.cov td{border:0;padding:4px 6px;text-align:center;background:none}
+  .cov th{position:sticky;top:0;background:#fff;color:var(--muted);font-weight:400}
+  .cov td.s{text-align:left;font-weight:500;color:var(--navy);white-space:nowrap;position:sticky;left:0;background:#fff}
+  .cov td.y{background:var(--ok-soft);color:var(--ok);border-radius:6px;min-width:44px}
+  .cov td.n{background:#fdf1f1;color:#e0a0a0;border-radius:6px} .cov td.x{background:#f6f8f9;border-radius:6px;color:#c5cfd3}
+  .cov-legend{display:flex;gap:14px;font-size:12.5px;color:var(--muted);margin-top:8px} .cov-legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+  .modal.wide{width:min(860px,94vw);max-height:88vh;overflow:auto}
+  @media (max-width:1100px){ .bk-grid,.cap-cards{grid-template-columns:repeat(2,1fr)} .grid2{grid-template-columns:1fr} .cap-row{grid-template-columns:1fr} }
+  @media (max-width:900px){ .filterbar{margin:-6px -16px 14px;padding:8px 16px;position:static} .abc-cards{grid-template-columns:1fr} }
+
 </style>
 </head>
 <body>
@@ -228,6 +379,11 @@
   <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 9v4m0 4h.01M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></symbol>
   <symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 3v18M5 7h14M5 7l-3 7a4 4 0 006 0L5 7zm14 0l-3 7a4 4 0 006 0l-3-7z"/></symbol>
   <symbol id="i-trend" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8M15 7h6v6"/></symbol>
+  <symbol id="i-pie" viewBox="0 0 24 24"><path d="M21 12A9 9 0 1112 3v9z"/><path d="M15 3.5A9 9 0 0120.5 9H15z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
+  <symbol id="i-filter" viewBox="0 0 24 24"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M3 8a2 2 0 012-2h2l2-2h6l2 2h2a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><circle cx="12" cy="13" r="4"/></symbol>
+  <symbol id="i-down2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
   <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v12m0 0l-4-4m4 4l4-4M5 20h14"/></symbol>
 </svg>
 
@@ -275,77 +431,151 @@
 
 <!-- ================= APP ================= -->
 <div id="app" class="hidden">
-  <header class="navbar">
+  <aside class="side">
+    <button class="collapse-btn" id="collapseBtn" title="หุบ/ขยายเมนู"><svg class="i" style="width:15px;height:15px"><use href="#i-chev"/></svg></button>
     <div class="brand"><div class="lg"><svg width="24" height="24" viewBox="0 0 36 36"><path d="M8 27V13l10-6 10 6v14M14 27v-8h8v8" fill="none" stroke="#ff6a05" stroke-width="2.6" stroke-linejoin="round"/></svg></div>
       <div class="t"><b>Data Inventory GRGI</b><small>WAREHOUSE 2 · เข้า–ออก</small></div></div>
-    <nav class="tabs" id="menu">
-      <button class="mi active" data-tab="import"><svg class="i"><use href="#i-upload"/></svg><span>นำเข้าข้อมูล</span></button>
-      <button class="mi" data-tab="trends"><svg class="i"><use href="#i-trend"/></svg><span>แนวโน้มเข้า–ออก</span></button>
-      <button class="mi" data-tab="summary"><svg class="i"><use href="#i-chart"/></svg><span>สรุปผล</span><em class="badge hidden" id="dqBadge"></em></button>
-      <button class="mi" data-tab="stock"><svg class="i"><use href="#i-box"/></svg><span>Stock คงเหลือ</span></button>
-      <button class="mi" data-tab="settings"><svg class="i"><use href="#i-gear"/></svg><span>ตั้งค่า</span></button>
-      <button class="mi" data-tab="history"><svg class="i"><use href="#i-clock"/></svg><span>ประวัติ</span></button>
+    <nav class="menu" id="menu">
+      <div class="grp"><button class="grp-h"><span>ภาพรวม</span><svg class="i chev"><use href="#i-down2"/></svg></button><div class="grp-items">
+        <button class="mi active" data-tab="summary" title="สรุปผล"><svg class="i"><use href="#i-chart"/></svg><span>สรุปผล</span><em class="home">หน้าหลัก</em></button>
+        <button class="mi" data-tab="trends" title="แนวโน้มเข้า–ออก"><svg class="i"><use href="#i-trend"/></svg><span>แนวโน้มเข้า–ออก</span></button>
+      </div></div>
+      <div class="grp"><button class="grp-h"><span>วิเคราะห์</span><svg class="i chev"><use href="#i-down2"/></svg></button><div class="grp-items">
+        <button class="mi" data-tab="analysis" title="วิเคราะห์สต็อก"><svg class="i"><use href="#i-pie"/></svg><span>วิเคราะห์สต็อก</span></button>
+        <button class="mi" data-tab="stock" title="Stock คงเหลือ"><svg class="i"><use href="#i-box"/></svg><span>Stock คงเหลือ</span></button>
+        <button class="mi" data-tab="lookup" title="ค้นหา Material"><svg class="i"><use href="#i-search"/></svg><span>ค้นหา Material</span></button>
+      </div></div>
+      <div class="grp"><button class="grp-h"><span>จัดการข้อมูล</span><svg class="i chev"><use href="#i-down2"/></svg></button><div class="grp-items">
+        <button class="mi" data-tab="import" title="นำเข้าข้อมูล"><svg class="i"><use href="#i-upload"/></svg><span>นำเข้าข้อมูล</span></button>
+        <button class="mi" data-tab="quality" title="ตรวจคุณภาพข้อมูล"><svg class="i"><use href="#i-alert"/></svg><span>ตรวจคุณภาพข้อมูล</span><em class="badge hidden" id="dqBadge"></em></button>
+        <button class="mi" data-tab="history" title="ประวัตินำเข้า"><svg class="i"><use href="#i-clock"/></svg><span>ประวัตินำเข้า</span></button>
+      </div></div>
+      <div class="grp"><button class="grp-h"><span>ระบบ</span><svg class="i chev"><use href="#i-down2"/></svg></button><div class="grp-items">
+        <button class="mi" data-tab="settings" title="ตั้งค่า"><svg class="i"><use href="#i-gear"/></svg><span>ตั้งค่า</span></button>
+      </div></div>
     </nav>
     <div class="me">
-      <button class="me-btn" id="meBtn"><div class="av" id="meAv"></div><div class="nm"><b id="meName"></b><small id="meRole"></small></div></button>
       <div class="me-menu hidden" id="meMenu">
         <button id="chgPinBtn"><svg class="i" style="width:17px;height:17px"><use href="#i-key"/></svg>เปลี่ยน PIN</button>
         <button id="logoutBtn"><svg class="i" style="width:17px;height:17px"><use href="#i-logout"/></svg>ออกจากระบบ</button>
       </div>
+      <button class="me-btn" id="meBtn" title="บัญชีผู้ใช้"><div class="av" id="meAv"></div><div class="nm"><b id="meName"></b><small id="meRole"></small></div></button>
     </div>
-  </header>
+  </aside>
+  <div class="overlay" id="overlay"></div>
+
   <div class="main">
     <div class="content">
-      <div class="pagehead"><h1 id="pageTitle">นำเข้าข้อมูล</h1><span class="right" id="today"></span></div>
+      <div class="pagehead"><button class="hamb" id="hamb" aria-label="เมนู"><svg class="i" style="width:22px;height:22px"><use href="#i-menu"/></svg></button>
+        <h1 id="pageTitle">สรุปผล</h1>
+        <span class="right"><span id="dataAsOf"></span> <button class="btn ghost sm" id="reloadBtn" title="โหลดข้อมูลใหม่"><svg class="i" style="width:15px;height:15px"><use href="#i-refresh"/></svg>รีเฟรช</button></span></div>
 
-<!-- ===== IMPORT ===== -->
-<section data-page="import" class="page">
-  <div class="card">
-    <h2><span class="dot"></span>นำเข้าไฟล์ Excel</h2>
-    <p class="desc">รองรับชีท <b>Area · Mov.Type · Master · ZSDR0013 · ZMMR0004 · ZSDR0010</b> — ชีท Condition ไม่นำเข้า (เงื่อนไขอยู่ในเมนู ตั้งค่า) · ใส่หลายชีทในไฟล์เดียวหรือแยกไฟล์ก็ได้</p>
-    <div id="viewerNote" class="pill warn hidden" style="margin-bottom:12px">สิทธิ์ Viewer ตรวจไฟล์ได้ แต่นำเข้าไม่ได้ — ติดต่อ Admin</div>
-    <div class="drop" id="drop"><div class="ic"><svg class="i" style="width:26px;height:26px"><use href="#i-upload"/></svg></div>
-      <b>ลากไฟล์ .xlsx มาวางที่นี่</b><div class="muted">หรือคลิกเพื่อเลือกไฟล์</div>
-      <input type="file" id="fileIn" accept=".xlsx,.xls" multiple hidden></div>
-  </div>
-  <div class="card hidden" id="previewCard">
-    <h2><span class="dot"></span>ตรวจข้อมูลก่อนนำเข้า</h2>
-    <p class="desc">นำเข้าซ้ำวันเดิม = แทนที่ของเดิม (ไม่นับซ้ำ · ข้อมูลเดิมยังเก็บในประวัติ) · แต่ละชีทเข้าทั้งก้อนหรือไม่เข้าเลย</p>
-    <div class="row" style="margin-bottom:14px"><label class="muted">วันที่ Stock ตั้งต้น (ZSDR0013)</label><input type="date" id="asOf"></div>
-    <div id="sheets"></div>
-    <div class="row" style="margin-top:6px">
-      <button class="btn orange" id="importBtn"><svg class="i" style="width:17px;height:17px"><use href="#i-upload"/></svg>นำเข้าชีทที่เลือก</button>
-      <button class="btn ghost" id="clearBtn">ล้าง</button>
-    </div>
-    <div class="progress hidden" id="prog"><i></i></div>
-    <div id="importLog" class="log hidden"></div>
-  </div>
+      <!-- ===== ตัวกรองทั้งระบบ (ใช้กับ สรุปผล / แนวโน้ม / วิเคราะห์ / Stock) ===== -->
+      <div class="filterbar hidden" id="filterbar">
+        <span class="fl"><svg class="i" style="width:17px;height:17px"><use href="#i-filter"/></svg>ตัวกรอง <em id="fCount" class="hidden"></em></span>
+        <div class="seg" id="fPreset"><button data-p="7">7 วัน</button><button data-p="30">30 วัน</button><button data-p="90">90 วัน</button><button data-p="all">ทั้งหมด</button></div>
+        <input type="date" id="fFrom" title="ตั้งแต่วันที่"><span class="muted">–</span><input type="date" id="fTo" title="ถึงวันที่">
+        <div class="chips" id="fCats"></div>
+        <div class="msel" id="fFac"></div>
+        <div class="msel" id="fGp"></div>
+        <div class="msel" id="fGs"></div>
+        <button class="btn ghost sm" id="fReset">ล้างตัวกรอง</button>
+      </div>
+
+<!-- ===== SUMMARY (หน้าหลัก) ===== -->
+<section data-page="summary" class="page">
+  <section class="brief" id="brief">
+    <div class="row"><div class="eyebrow" id="bEyebrow">รายงานประจำวัน</div>
+      <div style="margin-left:auto" class="row"><button class="btn ghost sm" id="capBtn" data-cap="brief"><svg class="i" style="width:15px;height:15px"><use href="#i-camera"/></svg>แคปรูปสรุป</button>
+      <button class="btn ghost sm" id="capAllBtn" data-cap="page"><svg class="i" style="width:15px;height:15px"><use href="#i-camera"/></svg>แคปทั้งหน้า</button></div></div>
+    <h2 class="headline" id="bHead">กำลังสรุปข้อมูล…</h2>
+    <p class="lede" id="bLede"></p>
+    <div class="bk-grid" id="bKpis"></div>
+    <div class="acts-h">ต้องดูวันนี้</div>
+    <div class="act-grid" id="bActs"></div>
+    <div class="foot" id="bFoot"></div>
+  </section>
+  <div class="card"><h2><span class="dot"></span>ภาพรวมพื้นที่คลัง</h2><p class="desc" id="capDesc">พื้นที่ทั้งหมด / ใช้งานปัจจุบัน / คงเหลือ ตามความจุจริงจากชีท Area</p>
+    <div class="cap-row"><div class="gauge" id="gauge"></div><div><div class="cap-cards" id="capCards"></div>
+      <div class="muted" style="margin-top:10px;line-height:1.8">เกณฑ์ต่อโรง: <span class="tier normal">ปกติ</span> ≤ 80% · <span class="tier warn">ใกล้เต็ม</span> 80–100% · <span class="tier critical">เกินพิกัด</span> &gt; 100% · % ใช้พื้นที่รวม = Stock รวม ÷ ความจุจริงรวม</div></div></div></div>
+  <div class="card"><h2><span class="dot"></span>ภาพรวมตามหมวดสินค้า</h2><p class="desc">Flat / Trading / Long / Other · แยก Group Product · รับเข้า–จ่ายออกตามช่วงวันที่ในตัวกรอง</p><div class="fam-grid" id="famCards"></div></div>
+  <div class="card"><h2><span class="dot"></span>รายโรงงาน เรียงจากวิกฤตที่สุดก่อน</h2><p class="desc">คลิกการ์ดเพื่อดูว่าโรงนั้นเก็บอะไรบ้าง</p><div class="fac-grid" id="facCards"></div></div>
 </section>
 
 <!-- ===== TRENDS ===== -->
 <section data-page="trends" class="page hidden">
-  <div class="row" style="margin-bottom:14px">
-    <div class="seg" id="trRange"><button data-r="7">7 วัน</button><button data-r="30" class="active">30 วัน</button><button data-r="90">90 วัน</button><button data-r="all">ทั้งหมด</button></div>
-    <div class="seg" id="trCat"><button data-c="" class="active">ทุกหมวด</button><button data-c="Flat">Flat</button><button data-c="Trading">Trading</button><button data-c="Long">Long</button><button data-c="Other">Other</button></div>
-    <span class="muted" id="trInfo"></span>
-  </div>
   <div class="kpis" id="trKpis"></div>
   <div class="card"><h2><span class="dot"></span>รับเข้า–จ่ายออก รายวัน (ตัน)</h2><p class="desc">แท่งบน = รับเข้า · แท่งล่าง = จ่ายออก · เส้นประ = สุทธิ (เฉพาะรายการที่ผ่านเงื่อนไข)</p><div id="trFlow"></div></div>
   <div class="card"><h2><span class="dot"></span>ระดับ Stock สะสม (ตัน)</h2><p class="desc">Stock ตั้งต้น (ZSDR0013) + สุทธิสะสมรายวัน · <span id="trCapNote"></span></p><div id="trLevel"></div></div>
-  <div class="card"><h2><span class="dot"></span>เข้า–ออก แยกหมวด (ตัน)</h2><p class="desc">Flat / Trading / Long / Other รายวัน</p>
-    <div class="seg" id="trDim" style="margin-bottom:10px"><button data-m="in" class="active">รับเข้า</button><button data-m="out">จ่ายออก</button><button data-m="net">สุทธิ</button></div>
+  <div class="card"><h2><span class="dot"></span>แนวโน้มรายพื้นที่</h2><p class="desc">เรียงตามความเร่งด่วน (% ใช้พื้นที่) · คลิกแถวเพื่อกรองเฉพาะโรงนั้น</p><div class="tbl" id="trFacTbl"></div></div>
+  <div class="card"><h2><span class="dot"></span>แนวโน้มแยกตามมิติ (ตัน)</h2>
+    <div class="row" style="margin-bottom:10px"><div class="seg" id="trDimBy"><button data-v="category" class="active">หมวด</button><button data-v="factory">โรง</button><button data-v="group_product">Group Product</button><button data-v="group_sale">Group Sale</button></div>
+      <div class="seg" id="trDim"><button data-m="in" class="active">รับเข้า</button><button data-m="out">จ่ายออก</button><button data-m="net">สุทธิ</button></div></div>
     <div id="trCatChart"></div></div>
   <div class="card"><h2><span class="dot"></span>ตารางรายวัน</h2>
     <div class="row" style="margin:4px 0 12px"><button class="btn ghost sm" id="trCsv"><svg class="i" style="width:15px;height:15px"><use href="#i-down"/></svg>CSV</button></div>
     <div class="tbl" id="trTbl"></div></div>
 </section>
 
-<!-- ===== SUMMARY ===== -->
-<section data-page="summary" class="page hidden">
-  <div class="row" style="margin-bottom:14px"><button class="btn ghost sm" id="refreshSummary"><svg class="i" style="width:15px;height:15px"><use href="#i-refresh"/></svg>รีเฟรช</button><span class="muted" id="sumAsOf"></span></div>
-  <div class="kpis" id="kpis"></div>
-  <div class="card"><h2><span class="dot"></span>การใช้พื้นที่ต่อโรง</h2><p class="desc">Stock คงเหลือ (ตัน) เทียบความจุจริงจากชีท Area</p><div class="tbl" id="facTbl"></div></div>
+<!-- ===== ANALYSIS ===== -->
+<section data-page="analysis" class="page hidden">
+  <div class="kpis" id="anKpis"></div>
+  <div class="card"><h2><span class="dot"></span>สรุปตามมิติ</h2><p class="desc">Stock คงเหลือ (ตัน) · รับเข้า/จ่ายออกในช่วงวันที่ · จำนวน SKU</p>
+    <div class="seg" id="anDim" style="margin-bottom:12px"><button data-v="factory" class="active">โรงงาน</button><button data-v="group_sale">Group Sale</button><button data-v="product_type">Product Type</button><button data-v="group_product">Group Product</button></div>
+    <div class="grid2"><div id="anBars"></div><div class="tbl" id="anTbl"></div></div></div>
+  <div class="grid2">
+    <div class="card"><h2><span class="dot"></span>Top 5 จ่ายออกมากสุด</h2><p class="desc">ตัน · ในช่วงวันที่ · รวมทุก Batch/Sloc</p><div id="topOut"></div></div>
+    <div class="card"><h2><span class="dot"></span>Top 5 รับเข้ามากสุด</h2><p class="desc">ตัน · ในช่วงวันที่</p><div id="topIn"></div></div>
+  </div>
+  <div class="grid2">
+    <div class="card"><h2><span class="dot"></span>Top 5 Stock คงเหลือมากสุด</h2><p class="desc">ตัน · ณ ปัจจุบัน</p><div id="topStock"></div></div>
+    <div class="card"><h2><span class="dot"></span>ABC ตามความเร็วการจ่ายออก</h2><p class="desc">A = สะสมถึง 80% ของน้ำหนักจ่ายออก · B = ถึง 95% · C = ที่เหลือ</p><div class="abc-cards" id="abcCards"></div><div id="abcChart"></div></div>
+  </div>
+  <div class="card"><h2><span class="dot"></span>Stock ไม่เคลื่อนไหว (Dead / Slow)</h2><p class="desc">มี Stock คงเหลือ แต่ไม่มีการจ่ายออกในช่วงวันที่ที่เลือก · เรียงตามน้ำหนัก</p>
+    <div class="row" style="margin:4px 0 12px"><button class="btn ghost sm" id="deadCsv"><svg class="i" style="width:15px;height:15px"><use href="#i-down"/></svg>CSV</button><span class="muted" id="deadInfo"></span></div>
+    <div class="tbl" id="deadTbl"></div></div>
+</section>
+
+<!-- ===== STOCK ===== -->
+<section data-page="stock" class="page hidden">
+  <div class="card"><h2><span class="dot"></span>Stock คงเหลือ</h2><p class="desc">ตั้งต้น + เข้า − ออก (เฉพาะรายการที่ผ่านเงื่อนไข) · ใช้ตัวกรองด้านบน</p>
+    <div class="row" style="margin-bottom:14px">
+      <input id="stkSearch" placeholder="ค้นหา Material / Batch / Description" style="min-width:260px">
+      <div class="seg" id="stkBy"><button data-v="row" class="active">ราย Batch/Sloc</button><button data-v="mat">รวมต่อ Material</button></div>
+      <label class="row muted" style="gap:6px"><input type="checkbox" id="stkNeg"> เฉพาะติดลบ</label>
+      <button class="btn ghost sm" id="stkCsv"><svg class="i" style="width:15px;height:15px"><use href="#i-down"/></svg>CSV</button>
+      <span class="muted" id="stkInfo"></span>
+    </div>
+    <div class="tbl" id="stkTbl" style="max-height:640px"></div>
+  </div>
+</section>
+
+<!-- ===== LOOKUP ===== -->
+<section data-page="lookup" class="page hidden">
+  <div class="card"><h2><span class="dot"></span>ค้นหา Material</h2><p class="desc">วางรหัสจาก Excel ได้หลายรายการพร้อมกัน (ขึ้นบรรทัดใหม่ / เว้นวรรค / จุลภาค)</p>
+    <textarea id="lkIn" placeholder="เช่น&#10;3RPTSL0753816-0153&#10;1GI-BS-M-006-015"></textarea>
+    <div class="row" style="margin-top:10px"><button class="btn orange" id="lkGo"><svg class="i" style="width:16px;height:16px"><use href="#i-search"/></svg>ค้นหา</button><button class="btn ghost" id="lkClear">ล้าง</button><span class="muted" id="lkInfo"></span></div></div>
+  <div id="lkOut"></div>
+</section>
+
+<!-- ===== IMPORT (แยกตามชีท) ===== -->
+<section data-page="import" class="page hidden">
+  <div id="viewerNote" class="note hidden">สิทธิ์ Viewer ตรวจไฟล์ได้ แต่นำเข้าไม่ได้ — ติดต่อ Admin</div>
+  <div class="sheet-grid" id="sheetCards"></div>
+  <div class="card" id="sheetPanel"></div>
+  <div class="card"><h2><span class="dot"></span>Sloc ไหนวางข้อมูลแล้ว</h2><p class="desc">ภาพรวมข้อมูลที่อยู่ในระบบ แยกวันที่ × Sloc · ช่องเขียว = มีข้อมูล (จำนวนแถว) · ช่องแดง = Sloc คลังที่ยังไม่มีข้อมูลในวันที่มีคนอื่นวางแล้ว</p>
+    <div class="row" style="margin-bottom:12px"><div class="seg" id="covSheet"><button data-v="ZMMR0004" class="active">ZMMR0004</button><button data-v="ZSDR0013">ZSDR0013</button><button data-v="ZSDR0010">ZSDR0010</button></div>
+      <div class="seg" id="covDays"><button data-v="14" class="active">14 วันล่าสุด</button><button data-v="31">31 วัน</button><button data-v="all">ทั้งหมด</button></div></div>
+    <div class="tbl" id="covTbl" style="max-height:520px"></div>
+    <div class="cov-legend"><span><i style="background:var(--ok-soft)"></i>มีข้อมูล</span><span><i style="background:#fdf1f1"></i>ยังไม่วาง</span><span><i style="background:#f6f8f9"></i>ไม่มีข้อมูลทั้งวัน</span></div></div>
+</section>
+
+<!-- ===== DATA QUALITY ===== -->
+<section data-page="quality" class="page hidden">
   <div class="card"><h2><span class="dot"></span>ตรวจคุณภาพข้อมูล</h2><p class="desc">รายการที่ควรตรวจหรือแก้ที่ต้นทาง</p><div class="tbl" id="dqTbl"></div></div>
+  <div class="card"><h2><span class="dot"></span>Code ที่ไม่พบใน Master</h2><p class="desc">Material ในข้อมูลเข้า–ออก/สต็อก ที่ยังไม่มีคู่ใน Group Sale / Group Product / Product Type — ระบบจัดเป็นหมวด Other</p>
+    <div class="row" style="margin:4px 0 12px"><button class="btn ghost sm" id="umCsv"><svg class="i" style="width:15px;height:15px"><use href="#i-down"/></svg>CSV</button><span class="muted" id="umInfo"></span></div>
+    <div class="tbl" id="umTbl"></div></div>
   <div class="card"><h2><span class="dot"></span>ผลตัดสินเงื่อนไข ZMMR0004</h2>
     <div class="row" style="margin:4px 0 12px"><label class="row muted" style="gap:6px"><input type="checkbox" id="onlyExcluded"> เฉพาะที่ถูกตัดออก</label></div>
     <div class="tbl" id="ruleTbl"></div></div>
@@ -354,21 +584,6 @@
     <div class="tbl" id="zeroTbl"></div></div>
 </section>
 
-<!-- ===== STOCK ===== -->
-<section data-page="stock" class="page hidden">
-  <div class="card"><h2><span class="dot"></span>Stock คงเหลือ</h2><p class="desc">ตั้งต้น + เข้า − ออก (เฉพาะรายการที่ผ่านเงื่อนไข)</p>
-    <div class="row" style="margin-bottom:14px">
-      <input id="stkSearch" placeholder="ค้นหา Material / Batch" style="min-width:220px">
-      <select id="stkCat"><option value="">ทุกหมวด</option><option>Flat</option><option>Trading</option><option>Long</option><option>Other</option></select>
-      <select id="stkSloc"><option value="">ทุก Sloc</option></select>
-      <label class="row muted" style="gap:6px"><input type="checkbox" id="stkNeg"> เฉพาะติดลบ</label>
-      <button class="btn sm" id="stkGo">ค้นหา</button>
-      <button class="btn ghost sm" id="stkCsv"><svg class="i" style="width:15px;height:15px"><use href="#i-down"/></svg>CSV</button>
-      <span class="muted" id="stkInfo"></span>
-    </div>
-    <div class="tbl" id="stkTbl" style="max-height:640px"></div>
-  </div>
-</section>
 
 <!-- ===== SETTINGS ===== -->
 <section data-page="settings" class="page hidden">
@@ -409,7 +624,7 @@ const SLOC_TYPES = ['WH','PD','TEMP','OTH','REW','UNKNOWN'];
 const CATS = ['Flat','Trading','Long','Other'];
 const ROLES = ['Admin','Uploader','Viewer'];
 const IMPORT_ORDER = ['Area','Mov.Type','Master','ZSDR0013','ZSDR0010','ZMMR0004'];
-const TITLES = { trends:'แนวโน้มเข้า–ออก รายวัน', import:'นำเข้าข้อมูล', summary:'สรุปผล', stock:'Stock คงเหลือ', settings:'ตั้งค่า', history:'ประวัตินำเข้า' };
+const TITLES = { summary:'สรุปผล', trends:'แนวโน้มเข้า–ออก รายวัน', analysis:'วิเคราะห์สต็อก', stock:'Stock คงเหลือ', lookup:'ค้นหา Material', import:'นำเข้าข้อมูล', quality:'ตรวจคุณภาพข้อมูล', settings:'ตั้งค่า', history:'ประวัตินำเข้า' };
 
 // ---------- นิยามชีท: คอลัมน์ในระบบ ← ชื่อหัวคอลัมน์ใน Excel ----------
 const SHEETS = {
@@ -603,12 +818,10 @@ function enterApp(){
   $('#login').classList.add('hidden'); $('#app').classList.remove('hidden');
   $('#meName').textContent = USER.full_name; $('#meRole').textContent = `${USER.emp_code} · ${USER.role}`; $('#meAv').textContent = initials(USER.full_name);
   $('#viewerNote').classList.toggle('hidden', canImport());
-  $('#importBtn').disabled = !canImport();
   $('#settingsRO').classList.toggle('hidden', isAdmin());
   $('#empCard').classList.toggle('hidden', !isAdmin());
-  $('#today').textContent = new Date().toLocaleDateString('th-TH',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
   refreshBadge();
-  go(canImport() ? 'import' : 'trends');
+  go('summary');   // หน้าหลัก = สรุปผล
 }
 $('#logoutBtn').onclick = async () => { try{ await sb.rpc('app_logout', { p_token: USER?.token }); }catch(e){} endSession(); toast('ออกจากระบบแล้ว'); };
 
@@ -636,19 +849,48 @@ $('#chgPinBtn').onclick = () => {
   };
 };
 
-// ---------- เมนู ----------
-const loaders = { trends: loadTrends, summary: loadSummary, stock: loadStock, settings: loadSettings, history: loadHistory };
+
+// ---------- ตาราง / query / CSV ----------
+function table(cols, rows, empty='ไม่มีข้อมูล'){
+  if (!rows || !rows.length) return `<div class="muted" style="padding:16px;text-align:center">${empty}</div>`;
+  return `<table><thead><tr>${cols.map(c=>`<th class="${c.num?'num':''}">${esc(c.l)}</th>`).join('')}</tr></thead><tbody>${
+    rows.map(r=>`<tr>${cols.map(c=>`<td class="${c.num?'num':''}">${c.f?c.f(r[c.k],r):esc(r[c.k])}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+}
+async function q(view, build){ let x = sb.from(view).select('*'); if (build) x = build(x); const { data, error } = await x; if (error){ toast(`${view}: ${errMsg(error)}`, true); return []; } return data; }
+const loading = el => { const e = typeof el === 'string' ? $(el) : el; if (e) e.innerHTML = `<div class="muted" style="padding:16px;text-align:center"><span style="display:inline-block;width:16px;height:16px;border:2px solid #dde5e8;border-top-color:var(--orange);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle"></span> กำลังโหลด...</div>`; };
+function downloadCsv(name, rows){
+  if (!rows || !rows.length) return toast('ไม่มีข้อมูล', true);
+  const cols = Object.keys(rows[0]);
+  const csv = '﻿' + [cols.join(','), ...rows.map(r=>cols.map(c=>{ const v=r[c]??''; return /[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g,'""')}"` : v; }).join(','))].join('\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})); a.download = name; a.click();
+}
+
+
+// ---------- เมนู + หน้า ----------
+let CUR = 'summary';
+const loaders = { summary: loadSummaryPage, trends: loadTrendsPage, analysis: loadAnalysisPage, stock: loadStockPage, lookup: loadLookupPage,
+  import: loadImportPage, quality: loadQualityPage, settings: loadSettings, history: loadHistory };
+const RENDER = { summary: () => renderSummary(), trends: () => renderTrends(), analysis: () => renderAnalysis(), stock: () => renderStock() };
 function go(tab){
+  CUR = tab;
   document.querySelectorAll('#menu .mi').forEach(x => x.classList.toggle('active', x.dataset.tab===tab));
   document.querySelectorAll('[data-page]').forEach(p => p.classList.toggle('hidden', p.dataset.page !== tab));
   const pg = document.querySelector(`[data-page=${tab}]`); pg.style.animation='none'; pg.offsetHeight; pg.style.animation='';
   [...pg.children].forEach(c => { c.style.animation='none'; c.offsetHeight; c.style.animation=''; });
   $('#pageTitle').textContent = TITLES[tab];
+  $('#filterbar').classList.toggle('hidden', !FILTER_PAGES.includes(tab));
+  document.body.classList.remove('nav-open');
+  const g = document.querySelector(`#menu .mi[data-tab=${tab}]`)?.closest('.grp'); if (g) g.classList.remove('closed');
   if (loaders[tab]) loaders[tab]();
 }
 document.querySelectorAll('#menu .mi').forEach(b => b.onclick = () => go(b.dataset.tab));
 $('#meBtn').onclick = e => { e.stopPropagation(); $('#meMenu').classList.toggle('hidden'); };
 document.addEventListener('click', () => $('#meMenu').classList.add('hidden'));
+$('#collapseBtn').onclick = () => { document.body.classList.toggle('mini'); try{ localStorage.setItem('grgi_mini', document.body.classList.contains('mini') ? '1' : ''); }catch(e){} };
+try{ if (localStorage.getItem('grgi_mini')) document.body.classList.add('mini'); }catch(e){}
+document.querySelectorAll('.grp-h').forEach(h => h.onclick = () => { if (document.body.classList.contains('mini')) return; h.parentElement.classList.toggle('closed'); });
+$('#hamb').onclick = () => document.body.classList.add('nav-open');
+$('#overlay').onclick = () => document.body.classList.remove('nav-open');
 
 // =====================================================================
 // แปลงค่า + อ่านชีท
@@ -724,119 +966,693 @@ function parseSheet(kind, ws, fileName, sheetName){
   return { kind, fileName, sheetName, rows, msgs, st, ok: !msgs.some(m=>m[0]==='bad'), selected: !msgs.some(m=>m[0]==='bad') };
 }
 
-// =====================================================================
-// IMPORT
-// =====================================================================
-let PARSED = [];
-const drop = $('#drop'), fileIn = $('#fileIn');
-drop.onclick = () => fileIn.click();
-drop.ondragover = e => { e.preventDefault(); drop.classList.add('over'); };
-drop.ondragleave = () => drop.classList.remove('over');
-drop.ondrop = e => { e.preventDefault(); drop.classList.remove('over'); handleFiles(e.dataTransfer.files); };
-fileIn.onchange = () => { handleFiles(fileIn.files); fileIn.value=''; };
+const C_IN = '#4f8fc2', C_OUT = '#ff6a05', C_NET = '#0c3843';
+const CAT_COLOR = { Flat:'#0c3843', Trading:'#ff6a05', Long:'#4f8fc2', Other:'#a3b1b6' };
 
-async function handleFiles(files){
-  for (const f of files){
-    try{
-      const wb = XLSX.read(await f.arrayBuffer(), { type:'array', cellDates:false });
-      for (const sn of wb.SheetNames){
-        const ws = wb.Sheets[sn];
-        const head = (XLSX.utils.sheet_to_json(ws,{header:1,range:0,defval:null})[0]||[]).map(String);
-        const kind = detectSheet(sn, head);
-        if (!kind){ if (norm(sn)!=='condition') toast(`ข้ามชีท "${sn}" (ไม่รู้จัก)`); continue; }
-        PARSED = PARSED.filter(p => p.kind !== kind);
-        PARSED.push(parseSheet(kind, ws, f.name, sn));
-      }
-    }catch(e){ toast(`อ่านไฟล์ ${f.name} ไม่ได้: ${errMsg(e)}`, true); }
-  }
-  PARSED.sort((a,b)=>IMPORT_ORDER.indexOf(a.kind)-IMPORT_ORDER.indexOf(b.kind));
-  const z4 = PARSED.find(p=>p.kind==='ZMMR0004');
-  if (!$('#asOf').value) $('#asOf').value = (z4 && z4.st.from) || ymd(new Date());
-  renderPreview();
+function niceScale(max, min=0, ticks=5){
+  if (max === min) max = min + 1;
+  const raw = (max - min) / ticks, mag = Math.pow(10, Math.floor(Math.log10(raw))), n = raw / mag;
+  const step = (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * mag;
+  return { min: Math.floor(min / step) * step, max: Math.ceil(max / step) * step, step };
 }
-function renderPreview(){
-  $('#previewCard').classList.toggle('hidden', !PARSED.length);
-  $('#sheets').innerHTML = PARSED.map((p,i) => {
-    const s = p.st, parts = [`${fmt0(s.rows)} แถว`];
-    if (s.mats!==undefined) parts.push(`${fmt0(s.mats)} Material`);
-    if (s.qty!==undefined) parts.push(`จำนวน ${fmt0(s.qty)}`);
-    if (s.kg!==undefined) parts.push(`${fmt(s.kg/1000,3)} ตัน`);
-    if (s.from) parts.push(`${s.from}${s.to!==s.from?' – '+s.to:''}`);
-    if (s.cap!==undefined) parts.push(`ความจุจริงรวม ${fmt(s.cap)} ตัน`);
-    return `<div class="sheet" style="animation-delay:${i*0.06}s"><div class="sheet-head">
-      <input type="checkbox" data-i="${i}" ${p.selected?'checked':''} ${p.ok?'':'disabled'}>
-      <b>${esc(p.kind)}</b><span class="pill ${p.ok?'ok':'bad'}">${p.ok?'พร้อมนำเข้า':'มีข้อผิดพลาด'}</span>
-      <span class="muted">${parts.join(' · ')}</span><span class="muted" style="margin-left:auto">${esc(p.fileName)} › ${esc(p.sheetName)}</span></div>
-      ${p.msgs.length?`<ul class="msgs">${p.msgs.map(m=>`<li class="${m[0]}">${esc(m[1])}</li>`).join('')}</ul>`:''}</div>`;
+const dShort = k => { const [y,m,d] = k.split('-'); return `${+d}/${+m}`; };
+const dLong = k => new Date(k+'T00:00:00').toLocaleDateString('th-TH',{weekday:'short',day:'numeric',month:'short',year:'2-digit'});
+
+function flowChart(rows){
+  if (!rows.length) return '<div class="empty">ยังไม่มีข้อมูลเข้า–ออกในช่วงที่เลือก</div>';
+  const W = 900, H = 300, L = 58, R = 18, T = 16, B = 40, iw = W-L-R, ih = H-T-B;
+  const mx = Math.max(...rows.map(r => Math.max(r.in, r.out)), 0.001);
+  const sc = niceScale(mx, -mx, 4), y = v => T + ih - ih*(v-sc.min)/(sc.max-sc.min);
+  const slot = iw/rows.length, bw = Math.max(3, Math.min(26, slot*0.34)), step = Math.max(1, Math.ceil(rows.length/12));
+  let g = '';
+  for (let v = sc.min; v <= sc.max+1e-9; v += sc.step){ const z = Math.abs(v) < 1e-9;
+    g += `<line x1="${L}" y1="${y(v)}" x2="${W-R}" y2="${y(v)}" stroke="${z?'#adb5bd':'#edf1f3'}" stroke-width="${z?1.2:1}"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="#6b7c83">${fmt0(Math.abs(v))}</text>`; }
+  let bars = '', pts = [], lab = '';
+  rows.forEach((r,i) => { const cx = L + slot*(i+.5), d = Math.min(i*0.025, 0.6);
+    bars += `<rect class="bar-in" style="animation-delay:${d}s" x="${cx-bw/2}" y="${y(r.in)}" width="${bw}" height="${Math.max(0.5,y(0)-y(r.in))}" rx="3" fill="${C_IN}"><title>${dLong(r.date)} · รับเข้า ${fmt(r.in,3)} ตัน</title></rect>`
+          + `<rect class="bar-out" style="animation-delay:${d}s" x="${cx-bw/2}" y="${y(0)}" width="${bw}" height="${Math.max(0.5,y(-r.out)-y(0))}" rx="3" fill="${C_OUT}"><title>${dLong(r.date)} · จ่ายออก ${fmt(r.out,3)} ตัน</title></rect>`;
+    pts.push([cx, y(r.in - r.out), r]);
+    if (i % step === 0 || i === rows.length-1) lab += `<text x="${cx}" y="${H-14}" text-anchor="middle" font-size="11" fill="#6b7c83">${dShort(r.date)}</text>`; });
+  const net = rows.length > 1 ? `<polyline class="ln dash" points="${pts.map(p=>p[0]+','+p[1]).join(' ')}" fill="none" stroke="${C_NET}" stroke-width="2"/>` : '';
+  const dots = pts.map(([x,yy,r]) => `<circle cx="${x}" cy="${yy}" r="3.8" fill="${C_NET}" stroke="#fff" stroke-width="1.5"><title>${dLong(r.date)} · สุทธิ ${r.in-r.out>=0?'+':'−'}${fmt(Math.abs(r.in-r.out),3)} ตัน</title></circle>`).join('');
+  return `<div class="chart"><svg viewBox="0 0 ${W} ${H}">${g}${lab}${bars}${net}${dots}</svg></div>
+    <div class="legend"><span><i style="background:${C_IN}"></i>รับเข้า</span><span><i style="background:${C_OUT}"></i>จ่ายออก</span><span><i style="background:${C_NET}"></i>สุทธิ</span></div>`;
+}
+function lineChart(series, opt = {}){
+  const all = series.flatMap(s => s.pts.map(p => p.v)).filter(v => v !== null);
+  if (!all.length) return '<div class="empty">ยังไม่มีข้อมูลในช่วงที่เลือก</div>';
+  const keys = [...new Set(series.flatMap(s => s.pts.map(p => p.k)))].sort();
+  const W = 900, H = opt.h || 280, L = 64, R = 18, T = 16, B = 38, iw = W-L-R, ih = H-T-B;
+  const lo = opt.zero === false ? Math.min(...all) - (Math.max(...all)-Math.min(...all)||Math.abs(Math.min(...all))*0.1||1)*0.6 : Math.min(0, ...all);
+  const sc = niceScale(Math.max(...all, opt.ref && opt.zero !== false ? opt.ref.v : -Infinity), lo, 5), y = v => T + ih - ih*(v-sc.min)/(sc.max-sc.min);
+  const x = k => keys.length === 1 ? L + iw/2 : L + iw*keys.indexOf(k)/(keys.length-1), step = Math.max(1, Math.ceil(keys.length/10));
+  let g = '';
+  for (let v = sc.min; v <= sc.max+1e-9; v += sc.step) g += `<line x1="${L}" y1="${y(v)}" x2="${W-R}" y2="${y(v)}" stroke="${Math.abs(v)<1e-9?'#adb5bd':'#edf1f3'}"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="#6b7c83">${fmt0(v)}</text>`;
+  const lab = keys.map((k,i) => (i % step === 0 || i === keys.length-1) ? `<text x="${x(k)}" y="${H-12}" text-anchor="middle" font-size="11" fill="#6b7c83">${dShort(k)}</text>` : '').join('');
+  const ref = opt.ref && opt.ref.v <= sc.max ? `<line x1="${L}" y1="${y(opt.ref.v)}" x2="${W-R}" y2="${y(opt.ref.v)}" stroke="#ff6a05" stroke-width="1.4" stroke-dasharray="6 4"/><text x="${L+6}" y="${y(opt.ref.v)-6}" font-size="11" fill="#c24e00">${esc(opt.ref.label)}</text>` : '';
+  const body = series.map(s => {
+    const p = s.pts.filter(q => q.v !== null);
+    const area = opt.area && p.length > 1 ? `<path d="M${x(p[0].k)},${y(sc.min)} ${p.map(q=>`L${x(q.k)},${y(q.v)}`).join(' ')} L${x(p[p.length-1].k)},${y(sc.min)}Z" fill="${s.color}" fill-opacity=".08"/>` : '';
+    const ln = p.length > 1 ? `<polyline class="ln" points="${p.map(q=>x(q.k)+','+y(q.v)).join(' ')}" fill="none" stroke="${s.color}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>` : '';
+    return area + ln + p.map(q => `<circle cx="${x(q.k)}" cy="${y(q.v)}" r="3.6" fill="${s.color}" stroke="#fff" stroke-width="1.5"><title>${dLong(q.k)} · ${esc(s.label)}: ${fmt(q.v,3)} ตัน</title></circle>`).join('');
   }).join('');
-  $('#sheets').querySelectorAll('input[type=checkbox]').forEach(c => c.onchange = () => PARSED[c.dataset.i].selected = c.checked);
+  const legend = series.length > 1 ? `<div class="legend">${series.map(s => `<span><i style="background:${s.color}"></i>${esc(s.label)}</span>`).join('')}</div>` : '';
+  return `<div class="chart"><svg viewBox="0 0 ${W} ${H}">${g}${lab}${ref}${body}</svg></div>${legend}`;
 }
-$('#clearBtn').onclick = () => { PARSED=[]; $('#asOf').value=''; $('#importLog').classList.add('hidden'); $('#prog').classList.add('hidden'); renderPreview(); };
 
-$('#importBtn').onclick = async () => {
-  if (!canImport()) return toast('ไม่มีสิทธิ์นำเข้า', true);
-  const todo = PARSED.filter(p => p.selected && p.ok);
-  if (!todo.length) return toast('ยังไม่ได้เลือกชีท', true);
-  const asOf = $('#asOf').value || null;
-  if (todo.some(p=>p.kind==='ZSDR0013') && !asOf) return toast('ระบุวันที่ Stock ตั้งต้นก่อน', true);
-  const log = $('#importLog'); log.classList.remove('hidden'); log.textContent='';
-  const prog = $('#prog'); prog.classList.remove('hidden'); prog.firstElementChild.style.width = '0';
-  const say = s => { log.textContent += s + '\n'; log.scrollTop = 1e9; };
-  const btn = $('#importBtn'); busy(btn, true, 'กำลังนำเข้า...');
-  let ok = 0, n = 0;
-  for (const p of todo){
-    say(`⏳ ${p.kind}: ส่ง ${fmt0(p.rows.length)} แถว...`);
-    try{
-      const d = await call('grgi_import_sheet', { p_sheet: p.kind, p_file_name: p.fileName,
-        p_as_of: p.kind==='ZSDR0013' ? asOf : (p.st.from || null), p_rows: p.rows });
-      ok++; say(`✅ ${p.kind}: นำเข้า ${fmt0(d.inserted)} แถว · แทนที่ของเดิม ${fmt0(d.superseded)} แถว · batch #${d.batch_id}`);
-    }catch(e){ say(`❌ ${p.kind}: ${errMsg(e)} (ชีทนี้ไม่ถูกนำเข้าเลย)`); if (!USER) break; }
-    prog.firstElementChild.style.width = (++n/todo.length*100)+'%';
+
+// =====================================================================
+// DATA LAYER — โหลดครั้งเดียว แล้วกรอง/สรุปฝั่งเว็บ (ตัวกรองเปลี่ยน = คำนวณใหม่ทันที ไม่ต้องดึงซ้ำ)
+// =====================================================================
+const D = { bal:[], flow:[], area:[], slocs:[], kpi:null, dates:[], loaded:false, loading:null, matFlow:{}, attr:{} };
+const NOFAC = 'ไม่ระบุโรง', NOVAL = 'ไม่ระบุ';
+const kFac = r => r.factory || NOFAC, kGp = r => r.group_product || NOVAL, kGs = r => r.group_sale || NOVAL, kCat = r => r.category || 'Other', kPt = r => r.product_type || NOVAL;
+const sum = (rows, f) => rows.reduce((a, r) => a + (Number(typeof f === 'function' ? f(r) : r[f]) || 0), 0);
+const posKg = r => Math.max(0, Number(r.closing_kg) || 0);
+
+// ดึงทุกแถว (PostgREST จำกัด 1,000 แถวต่อครั้ง → ดึงเป็นหน้า)
+async function fetchAll(view, order = [], rpcArgs){
+  const out = [];
+  for (let from = 0; ; from += 1000){
+    let x = rpcArgs ? sb.rpc(view, rpcArgs) : sb.from(view).select('*');
+    order.forEach(o => x = x.order(o));
+    const { data, error } = await x.range(from, from + 999);
+    if (error){ toast(`${view}: ${errMsg(error)}`, true); break; }
+    out.push(...data); if (data.length < 1000) break;
   }
-  busy(btn, false); btn.disabled = !canImport();
-  say(`เสร็จ ${ok}/${todo.length} ชีท`);
-  toast(`นำเข้าเสร็จ ${ok}/${todo.length} ชีท`, ok!==todo.length);
-  refreshBadge();
+  return out;
+}
+async function loadData(force = false){
+  if (D.loaded && !force) return;
+  if (D.loading && !force) return D.loading;
+  D.loading = (async () => {
+    const [bal, flow, area, slocs, kpi] = await Promise.all([
+      fetchAll('v_stock_balance', ['material','batch','sloc']),
+      fetchAll('v_daily_flow_detail', ['posting_date','factory','sloc','category','group_product','group_sale']),
+      q('factory_area', x => x.order('factory')), q('v_sloc_effective', x => x.order('sloc')), q('v_kpi_summary') ]);
+    Object.assign(D, { bal, flow, area, slocs, kpi: kpi[0] || null, matFlow: {}, loaded: true });
+    D.dates = [...new Set(flow.map(r => r.posting_date))].sort();
+    D.attr = {}; bal.forEach(r => { if (!D.attr[r.material]) D.attr[r.material] = { description:r.description, category:kCat(r), group_product:kGp(r), group_sale:kGs(r), product_type:kPt(r) }; });
+    buildFilterUI();
+    $('#dataAsOf').textContent = D.dates.length ? `ข้อมูลถึง ${dLong(D.dates[D.dates.length-1])}` : 'ยังไม่มีข้อมูลเข้า–ออก';
+    D.loading = null;
+  })();
+  return D.loading;
+}
+$('#reloadBtn').onclick = async e => { const btn = e.currentTarget; busy(btn, true, 'กำลังโหลด...'); await loadData(true); busy(btn, false); refreshBadge(); go(CUR); toast('โหลดข้อมูลล่าสุดแล้ว'); };
+
+// =====================================================================
+// ตัวกรองทั้งระบบ
+// =====================================================================
+const FILTER_PAGES = ['summary','trends','analysis','stock'];
+const F = Object.assign({ preset:'30', from:'', to:'', cats:[], facs:[], gps:[], gss:[] }, load('grgi_filter') || {});
+function dateRange(){
+  const ds = D.dates; if (!ds.length) return [null, null];
+  const first = ds[0], last = ds[ds.length-1];
+  if (F.preset === 'custom') return [F.from || first, F.to || last];
+  if (F.preset === 'all') return [first, last];
+  const d = new Date(last + 'T00:00:00'); d.setDate(d.getDate() - Number(F.preset) + 1);
+  return [ymd(d) < first ? first : ymd(d), last];
+}
+const passDims = r => (!F.cats.length || F.cats.includes(kCat(r))) && (!F.facs.length || F.facs.includes(kFac(r)))
+  && (!F.gps.length || F.gps.includes(kGp(r))) && (!F.gss.length || F.gss.includes(kGs(r)));
+const passAttr = (mat, fac) => { const a = D.attr[mat] || { category:'Other', group_product:NOVAL, group_sale:NOVAL };
+  return passDims({ category:a.category, factory:fac, group_product:a.group_product, group_sale:a.group_sale }); };
+const inRange = d => { const [a, b] = dateRange(); return (!a || d >= a) && (!b || d <= b); };
+const balF = () => D.bal.filter(passDims);
+const flowF = (withDate = true) => D.flow.filter(r => passDims(r) && (!withDate || inRange(r.posting_date)));
+const activeCount = () => F.cats.length + F.facs.length + F.gps.length + F.gss.length + (F.preset === '30' ? 0 : 1);
+
+const MSEL = {};
+function msel(id, label, key, optsFn){
+  const el = $('#' + id);
+  const render = () => {
+    const sel = F[key];
+    el.innerHTML = `<button class="msel-btn ${sel.length?'on':''}">${esc(label)}: <b>${sel.length ? (sel.length === 1 ? esc(sel[0]) : sel.length + ' รายการ') : 'ทั้งหมด'}</b><svg class="i"><use href="#i-down2"/></svg></button>`;
+    el.querySelector('.msel-btn').onclick = e => { e.stopPropagation(); open(); };
+  };
+  const open = () => {
+    closeMsel(); const opts = optsFn(); let tmp = new Set(F[key]);
+    const pop = document.createElement('div'); pop.className = 'msel-pop'; pop.onclick = e => e.stopPropagation();
+    pop.innerHTML = `<input type="search" placeholder="ค้นหา..."><div class="acts"><button data-a="all">เลือกทั้งหมด</button><button data-a="none">ล้าง</button><button data-a="ok" style="margin-left:auto">ตกลง</button></div><div class="list"></div>`;
+    const list = pop.querySelector('.list');
+    const draw = (t = '') => { list.innerHTML = opts.filter(o => o.toLowerCase().includes(t.toLowerCase())).map(o =>
+      `<label><input type="checkbox" value="${esc(o)}" ${tmp.has(o)?'checked':''}>${esc(o)}</label>`).join('') || '<div class="muted" style="padding:8px">ไม่พบ</div>';
+      list.querySelectorAll('input').forEach(c => c.onchange = () => c.checked ? tmp.add(c.value) : tmp.delete(c.value)); };
+    draw(); pop.querySelector('input[type=search]').oninput = e => draw(e.target.value);
+    pop.querySelector('[data-a=all]').onclick = () => { opts.forEach(o => tmp.add(o)); draw(pop.querySelector('input[type=search]').value); };
+    pop.querySelector('[data-a=none]').onclick = () => { tmp = new Set(); draw(pop.querySelector('input[type=search]').value); };
+    pop.querySelector('[data-a=ok]').onclick = () => { F[key] = [...tmp].length === opts.length ? [] : [...tmp]; closeMsel(); render(); onFilter(); };
+    el.appendChild(pop); pop.querySelector('input[type=search]').focus();
+  };
+  MSEL[id] = render; render();
+}
+function closeMsel(){ document.querySelectorAll('.msel-pop').forEach(p => p.remove()); }
+document.addEventListener('click', closeMsel);
+
+function buildFilterUI(){
+  $('#fCats').innerHTML = CATS.map(c => `<button class="chip ${F.cats.includes(c)?'on':''}" data-c="${c}">${c}</button>`).join('');
+  $('#fCats').querySelectorAll('.chip').forEach(b => b.onclick = () => { const c = b.dataset.c;
+    F.cats = F.cats.includes(c) ? F.cats.filter(x => x !== c) : [...F.cats, c]; b.classList.toggle('on'); onFilter(); });
+  const uniq = (arr) => [...new Set(arr)].sort((a, b) => a.localeCompare(b, 'th'));
+  msel('fFac', 'โรง', 'facs', () => uniq([...D.area.map(a => a.factory), ...D.bal.map(kFac), ...D.flow.map(kFac)]));
+  msel('fGp', 'Group Product', 'gps', () => uniq([...D.bal.map(kGp), ...D.flow.map(kGp)]));
+  msel('fGs', 'Group Sale', 'gss', () => uniq([...D.bal.map(kGs), ...D.flow.map(kGs)]));
+  document.querySelectorAll('#fPreset button').forEach(b => b.classList.toggle('active', b.dataset.p === F.preset));
+  const [a, b] = dateRange(); $('#fFrom').value = a || ''; $('#fTo').value = b || '';
+  updateFilterCount();
+}
+document.querySelectorAll('#fPreset button').forEach(b => b.onclick = () => { F.preset = b.dataset.p;
+  document.querySelectorAll('#fPreset button').forEach(x => x.classList.toggle('active', x === b));
+  const [a, c] = dateRange(); $('#fFrom').value = a || ''; $('#fTo').value = c || ''; onFilter(); });
+['fFrom','fTo'].forEach(id => $('#' + id).onchange = () => { F.preset = 'custom'; F.from = $('#fFrom').value; F.to = $('#fTo').value;
+  document.querySelectorAll('#fPreset button').forEach(x => x.classList.remove('active')); onFilter(); });
+$('#fReset').onclick = () => { Object.assign(F, { preset:'30', from:'', to:'', cats:[], facs:[], gps:[], gss:[] }); buildFilterUI(); onFilter(); };
+function updateFilterCount(){ const n = activeCount(); $('#fCount').textContent = n; $('#fCount').classList.toggle('hidden', !n); }
+let filterTimer;
+function onFilter(){
+  store('grgi_filter', F); updateFilterCount();
+  clearTimeout(filterTimer); filterTimer = setTimeout(() => { if (RENDER[CUR]) RENDER[CUR](); }, 60);
+}
+
+// =====================================================================
+// ตัวช่วยกราฟ/ตาราง
+// =====================================================================
+const TIER = { normal:'#2f74a8', warn:'#e0a100', critical:'#ff6a05', none:'#adb5bd' };
+const tierOf = (pct, cap, used) => cap <= 0 ? (used > 0 ? 'critical' : 'none') : pct > 100 ? 'critical' : pct > 80 ? 'warn' : 'normal';
+const TIER_TXT = { normal:'ปกติ', warn:'ใกล้เต็ม', critical:'เกินพิกัด', none:'ไม่มีข้อมูล' };
+const GP_PAL = ['#0c3843','#ff6a05','#4f8fc2','#1d5a6a','#ff8a3d','#8bbade','#2f74a8','#fdc440','#6b7c83','#a3b1b6'];
+const sgn = v => v > 0 ? '+' : v < 0 ? '−' : '';
+function ring(pct, tier, size = 72, sw = 8){
+  const r = (size - sw) / 2, c = 2 * Math.PI * r, p = Math.min(Math.max(pct || 0, 0), 100);
+  return `<div class="ring" style="width:${size}px;height:${size}px"><svg width="${size}" height="${size}"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="#eef2f4" stroke-width="${sw}"/>
+    <circle class="arc" cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${TIER[tier]}" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c}" data-off="${c*(1-p/100)}"/></svg>
+    <b>${pct === null ? '—' : Math.round(pct) + '%'}</b></div>`;
+}
+const animateRings = root => requestAnimationFrame(() => root.querySelectorAll('.arc[data-off]').forEach(a => a.style.strokeDashoffset = a.dataset.off));
+const animateBars = root => requestAnimationFrame(() => root.querySelectorAll('[data-w]').forEach(i => i.style.width = i.dataset.w + '%'));
+function spark(vals, color = C_NET){
+  const v = vals.filter(x => x !== null && Number.isFinite(x)); if (v.length < 2) return '<span class="muted">—</span>';
+  const w = 110, h = 28, p = 3, mn = Math.min(...v), mx = Math.max(...v), sp = (mx - mn) || 1;
+  const xs = i => p + (w - 2*p) * i / (vals.length - 1), ys = x => h - p - (h - 2*p) * (x - mn) / sp;
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><polyline points="${vals.map((x,i)=>`${xs(i)},${ys(x)}`).join(' ')}" fill="none" stroke="${color}" stroke-width="1.8" stroke-linejoin="round"/><circle cx="${xs(vals.length-1)}" cy="${ys(vals[vals.length-1])}" r="2.6" fill="${color}"/></svg>`;
+}
+function hbars(rows, opt = {}){   // rows: [{name, v, v2?, color}]
+  if (!rows.length) return '<div class="empty">ไม่มีข้อมูล</div>';
+  const mx = Math.max(...rows.map(r => r.v + (r.v2 || 0)), 0.0001);
+  return rows.map(r => `<div class="hbar" ${r.click ? `data-click="${esc(r.click)}" style="cursor:pointer"` : ''}><span class="nm" title="${esc(r.name)}">${r.rank ? `<span class="rank">${r.rank}</span> ` : ''}${esc(r.name)}</span>
+    <span class="tr"><i style="background:${r.color || C_NET}" data-w="${100*r.v/mx}"></i>${r.v2 ? `<i style="background:${r.color2 || C_OUT}" data-w="${100*r.v2/mx}"></i>` : ''}</span>
+    <span class="v">${fmt(r.v + (r.v2 || 0), opt.d ?? 1)}</span></div>`).join('');
+}
+function paretoChart(items){   // items: [{sku_pct, cum_pct}]
+  if (items.length < 2) return '<div class="empty">ต้องมี SKU ที่จ่ายออกอย่างน้อย 2 รายการ</div>';
+  const W = 560, H = 240, L = 44, R = 14, T = 12, B = 32, iw = W-L-R, ih = H-T-B, x = v => L + iw*v/100, y = v => T + ih - ih*v/100;
+  let g = ''; [0,20,40,60,80,100].forEach(v => g += `<line x1="${L}" y1="${y(v)}" x2="${W-R}" y2="${y(v)}" stroke="#edf1f3"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end" font-size="10.5" fill="#6b7c83">${v}%</text><text x="${x(v)}" y="${H-12}" text-anchor="middle" font-size="10.5" fill="#6b7c83">${v}%</text>`);
+  const ref = [80,95].map(v => `<line x1="${L}" y1="${y(v)}" x2="${W-R}" y2="${y(v)}" stroke="#ff6a05" stroke-dasharray="5 4"/><text x="${W-R-4}" y="${y(v)-4}" text-anchor="end" font-size="10.5" fill="#c24e00">${v===80?'A ≤ 80%':'B ≤ 95%'}</text>`).join('');
+  const pts = [{s:0,c:0}, ...items.map(i => ({s:i.sku_pct, c:i.cum_pct}))];
+  return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" style="min-width:0">${g}${ref}<path d="M${x(0)},${y(0)} ${pts.map(p=>`L${x(p.s)},${y(p.c)}`).join(' ')} L${x(100)},${y(0)}Z" fill="#0c3843" fill-opacity=".07"/>
+    <polyline class="ln" points="${pts.map(p=>`${x(p.s)},${y(p.c)}`).join(' ')}" fill="none" stroke="#0c3843" stroke-width="2.2"/></svg></div>
+    <div class="legend"><span>แกนนอน = สัดส่วนจำนวน SKU · แกนตั้ง = สัดส่วนน้ำหนักจ่ายออกสะสม</span></div>`;
+}
+function modal(title, html, wide = true){
+  const bg = document.createElement('div'); bg.className = 'modal-bg';
+  bg.innerHTML = `<div class="modal ${wide?'wide':''}"><div class="row" style="margin-bottom:10px"><h3 style="margin:0">${title}</h3><button class="btn ghost sm" style="margin-left:auto" data-x>ปิด</button></div>${html}</div>`;
+  document.body.appendChild(bg); bg.querySelector('[data-x]').onclick = () => bg.remove(); bg.onclick = e => { if (e.target === bg) bg.remove(); };
+  animateBars(bg); return bg;
+}
+
+// ---------- คำนวณร่วม: ระดับ Stock รายวัน (ตั้งต้น + สุทธิสะสม) ----------
+function stockSeries(balRows, flowRows){
+  const open = sum(balRows, r => Number(r.open_kg) || 0) / 1000, snap = D.kpi?.snapshot_date;
+  const byD = {}; flowRows.forEach(r => { const o = byD[r.posting_date] ||= { in:0, out:0 }; o.in += +r.in_ton; o.out += +r.out_ton; });
+  let cum = open; const lv = {};
+  D.dates.forEach(d => { const o = byD[d] || { in:0, out:0 }; if (!snap || d >= snap) cum += o.in - o.out; lv[d] = cum; });
+  return { open, lv, byD };
+}
+function factoryStats(){
+  const bal = balF(), flowAll = flowF(false);
+  const last = D.dates[D.dates.length-1];
+  const facs = {};
+  const facList = F.facs.length ? F.facs : [...new Set([...D.area.map(a => a.factory), ...bal.map(kFac)])];
+  facList.forEach(f => { const a = D.area.find(x => x.factory === f); facs[f] = { fac:f, cap: a ? +a.capacity_ton_actual : 0, used:0, inL:0, outL:0, cont:{} }; });
+  bal.forEach(r => { const f = facs[kFac(r)]; if (!f) return; const t = posKg(r) / 1000; f.used += t;
+    const k = kCat(r) + ' · ' + kGp(r); f.cont[k] = (f.cont[k] || 0) + t; });
+  flowAll.filter(r => r.posting_date === last).forEach(r => { const f = facs[kFac(r)]; if (f){ f.inL += +r.in_ton; f.outL += +r.out_ton; } });
+  return Object.values(facs).map(f => { const pct = f.cap > 0 ? 100 * f.used / f.cap : null;
+    const top = Object.entries(f.cont).sort((a, b) => b[1] - a[1]);
+    return { ...f, pct, remain: f.cap - f.used, tier: tierOf(pct, f.cap, f.used), top, mainCat: top.length ? top[0][0].split(' · ')[0] : null };
+  }).filter(f => f.cap > 0 || f.used > 0.0005);
+}
+const tierRank = { critical:0, warn:1, normal:2, none:3 };
+const sortFacs = fs => fs.sort((a, b) => tierRank[a.tier] - tierRank[b.tier] || (b.pct ?? 1e9) - (a.pct ?? 1e9));
+
+// =====================================================================
+// สรุปผล (หน้าหลัก) — Executive brief แบบแดชบอร์ด WH2 เดิม ปรับเป็นข้อมูลเข้า–ออก
+// =====================================================================
+async function loadSummaryPage(){ await loadData(); renderSummary(); }
+async function renderSummary(){
+  const bal = balF(), flowAll = flowF(false), flowR = flowF(true);
+  const ds = D.dates, last = ds[ds.length-1], prev = ds[ds.length-2];
+  const stockT = sum(bal, posKg) / 1000;
+  const dayIO = d => { const rs = flowAll.filter(r => r.posting_date === d); return { in: sum(rs,'in_ton'), out: sum(rs,'out_ton') }; };
+  const L = last ? dayIO(last) : { in:0, out:0 }, netL = L.in - L.out, before = stockT - netL, diffPct = before > 0 ? 100 * netL / before : null;
+  const rDates = ds.filter(inRange), nd = rDates.length;
+  const tin = sum(flowR,'in_ton'), tout = sum(flowR,'out_ton'), avgOut = nd ? tout / nd : 0, avgNet = nd ? (tin - tout) / nd : 0;
+  const facs = sortFacs(factoryStats());
+  const cap = sum(facs, 'cap'), usedAll = sum(facs, 'used'), remain = cap - usedAll, pctAll = cap > 0 ? 100 * usedAll / cap : null;
+  const doh = avgOut > 0 ? stockT / avgOut : null, eta = avgNet > 0.05 && remain > 0 ? remain / avgNet : null;
+  const crit = facs.filter(f => f.tier === 'critical'), warn = facs.filter(f => f.tier === 'warn');
+  const roomy = facs.filter(f => f.tier === 'normal' && f.remain > 0).sort((a, b) => b.remain - a.remain);
+
+  // ----- หัวเรื่อง -----
+  $('#bEyebrow').textContent = `รายงานประจำวัน · ข้อมูลเข้า–ออกล่าสุด ${last ? dLong(last) : '—'}${prev ? ' เทียบ ' + dLong(prev) : ''}${activeCount() ? ' · ตามตัวกรอง' : ''}`;
+  let head = `Stock รวม ${fmt0(stockT)} ตัน`;
+  if (last) head += Math.abs(netL) < 0.05 ? ' ทรงตัว' : ` ${netL > 0 ? 'เพิ่มขึ้น' : 'ลดลง'} ${fmt0(Math.abs(netL))} ตัน${diffPct !== null ? ` (${Math.abs(diffPct).toFixed(1)}%)` : ''}`;
+  const alertTxt = crit.length === 1 ? `${crit[0].fac} ${crit[0].cap > 0 ? 'เกินพิกัดแล้ว' : 'ยังไม่มีข้อมูลความจุ'}`
+    : crit.length > 1 ? `${crit.length} โรงเกินพิกัด (${crit.map(f => f.fac).join(', ')})`
+    : warn.length ? `${warn[0].fac} ใกล้เต็ม ${warn[0].pct.toFixed(0)}%` : '';
+  $('#bHead').innerHTML = esc(head) + ' — ' + (alertTxt ? `<span class="alert">${esc(alertTxt)}</span>` : 'ทุกโรงอยู่ในเกณฑ์ปกติ');
+  const lede = [];
+  if (last) lede.push(`วันล่าสุดรับเข้า ${fmt0(L.in)} ตัน จ่ายออก ${fmt0(L.out)} ตัน`);
+  if (pctAll !== null) lede.push(`ใช้พื้นที่รวม ${pctAll.toFixed(1)}% ของความจุ ${fmt0(cap)} ตัน`);
+  if (remain <= 0 && cap > 0) lede.push('พื้นที่รวมเต็มแล้ว'); else if (eta !== null && eta <= 120) lede.push(`ถ้าอัตราสุทธิคงที่ พื้นที่จะเต็มในราว ${fmt0(eta)} วัน`);
+  if (crit.length + warn.length) lede.push(`โรงที่ต้องตัดสินใจ: ${[...crit, ...warn].slice(0, 3).map(f => f.fac).join(', ')}`);
+  $('#bLede').textContent = lede.join(' · ');
+
+  const bk = (accent, l, v, unit, s, sCls, n) => `<div class="bk" style="--accent:${accent}"><div class="l">${l}</div><div class="v">${v}${unit ? ` <small>${unit}</small>` : ''}</div><div class="s ${sCls||''}">${s}</div><div class="n">${n}</div></div>`;
+  $('#bKpis').innerHTML = [
+    bk('var(--orange)', 'Stock เปลี่ยนแปลง (วันล่าสุด)', last ? sgn(netL) + fmt0(Math.abs(netL)) : '—', last ? 'ตัน' : '',
+       diffPct === null ? 'ยังไม่มีข้อมูลให้เทียบ' : `${netL >= 0 ? '▲' : '▼'} ${Math.abs(diffPct).toFixed(1)}%`, netL > 0 ? 'up' : '', last ? `จาก ${fmt0(before)} ตัน` : '&nbsp;'),
+    bk('var(--navy)', 'รับเข้า / จ่ายออก (วันล่าสุด)', last ? `${fmt0(L.in)} <small>/ ${fmt0(L.out)}</small>` : '—', last ? 'ตัน' : '',
+       last ? `สุทธิ ${sgn(netL)}${fmt0(Math.abs(netL))} ตัน` : 'ยังไม่มีข้อมูล', '', last ? dLong(last) : '&nbsp;'),
+    bk('#fdc440', 'Days on Hand', doh !== null ? '≈ ' + fmt0(doh) : '—', doh !== null ? 'วัน' : '',
+       avgOut > 0 ? `จ่ายออกเฉลี่ย ${fmt0(avgOut)} ตัน/วัน` : 'ยังไม่มีข้อมูลจ่ายออก', '', nd ? `เฉลี่ยจาก ${nd} วันที่มีข้อมูลในช่วงที่เลือก` : '&nbsp;'),
+    bk('#8bbade', 'พื้นที่เต็มใน', cap <= 0 ? '—' : remain <= 0 ? 'เต็มแล้ว' : eta !== null && eta <= 365 ? '~' + fmt0(eta) : 'ยังไม่เร่ง', cap > 0 && remain > 0 && eta !== null && eta <= 365 ? 'วัน' : '',
+       cap > 0 ? (remain >= 0 ? `ว่าง ${fmt0(remain)} ตัน (${Math.max(0, 100 - pctAll).toFixed(1)}%)` : `เกินรวม ${fmt0(-remain)} ตัน`) : 'ไม่มีข้อมูลความจุ', '',
+       nd ? `สุทธิเฉลี่ย ${sgn(avgNet)}${fmt(Math.abs(avgNet),1)} ตัน/วัน` : '&nbsp;') ].join('');
+
+  // ----- ต้องดูวันนี้ -----
+  const contTxt = f => 'เก็บ: ' + (f.top.slice(0, 3).map(([k, t]) => `${k.split(' · ')[1]} ${fmt0(t)} ตัน`).join(', ') || '—');
+  const sameCat = f => { const s = roomy.filter(x => x.fac !== f.fac && x.top.some(([k, t]) => k.startsWith(f.mainCat + ' ·') && t >= 0.5)).slice(0, 2);
+    return s.length ? `โรงที่เก็บ ${f.mainCat} อยู่แล้วและยังรับได้: ` + s.map(x => `${x.fac} (${x.pct.toFixed(0)}%, ว่าง ${fmt0(x.remain)} ตัน)`).join(', ')
+                    : f.mainCat ? `ไม่มีโรงที่เก็บ ${f.mainCat} ที่ยังว่าง (ต่ำกว่า 80%) — ต้องเร่งจ่ายออกหรือจัดพื้นที่ใหม่` : ''; };
+  const cards = [];
+  crit.slice(0, 2).forEach(f => cards.push({ accent:TIER.critical, tag: f.cap > 0 ? 'เกินพิกัด' : 'ไม่มีข้อมูลความจุ', fac:f.fac,
+    title: f.cap > 0 ? `${f.fac} · ${f.pct.toFixed(0)}% เกิน ${fmt0(-f.remain)} ตัน` : `${f.fac} · มี Stock ${fmt0(f.used)} ตัน`,
+    body: f.cap > 0 ? [contTxt(f), sameCat(f)].filter(Boolean).join(' · ') : 'ยังไม่มีพื้นที่จัดเก็บของโรงนี้ในไฟล์ Area — นำเข้าชีท Area ให้ครบ' }));
+  warn.slice(0, Math.max(1, 3 - cards.length)).forEach(f => { const net = f.inL - f.outL, days = net > 0.05 && f.remain > 0 ? f.remain / net : null;
+    cards.push({ accent:TIER.warn, tag:'ใกล้เต็ม', fac:f.fac, title:`${f.fac} · ${f.pct.toFixed(0)}% (${sgn(net)}${fmt0(Math.abs(net))} ตัน วันล่าสุด)`,
+      body: `${contTxt(f)} · ว่างราว ${fmt0(Math.max(0, f.remain))} ตัน` + (days !== null ? ` · ด้วยอัตราวันล่าสุดจะเต็มใน ~${fmt0(days)} วัน` : '') }); });
+  if (!crit.length && !warn.length) cards.push({ accent:TIER.normal, tag:'ปกติ', title:'ทุกโรงใช้พื้นที่ไม่เกิน 80%',
+    body: roomy.length ? 'โรงที่ว่างมากสุด: ' + roomy.slice(0, 2).map(f => `${f.fac} (${f.pct.toFixed(0)}%, ว่าง ${fmt0(f.remain)} ตัน)`).join(', ') : 'ไม่มีโรงที่ต้องดูเป็นพิเศษ' });
+  // ข้อมูลที่ต้องแก้ / ยังไม่วาง (ไม่ขึ้นกับตัวกรอง)
+  const [dq, cov] = await Promise.all([q('v_data_quality'), last ? q('v_import_coverage', x => x.eq('sheet','ZMMR0004').eq('data_date', last)) : []]);
+  const dqv = n => (dq.find(d => d.check_name.startsWith(n)) || {}).row_count || 0;
+  const issues = [['ZMMR0004 แถวถูกตัดออก', 'แถวถูกตัดออก'], ['ZMMR0004 น้ำหนัก 0 ที่ยังแก้ไม่ได้', 'น้ำหนัก 0 ที่ยังเติมไม่ได้'], ['Sloc ยังไม่ระบุประเภท', 'Sloc ยังไม่ระบุประเภท'], ['Stock คงเหลือติดลบ', 'บรรทัด Stock ติดลบ']]
+    .map(([k, t]) => [t, dqv(k)]).filter(x => x[1] > 0);
+  if (issues.length) cards.push({ accent:'#e0a100', tag:'คุณภาพข้อมูล', go:'quality', title:`มี ${issues.length} เรื่องที่ควรตรวจ`, body: issues.map(([t, n]) => `${t} ${fmt0(n)}`).join(' · ') });
+  const whSlocs = D.slocs.filter(s => s.effective_type === 'WH').map(s => s.sloc), have = new Set(cov.map(c => c.grp));
+  const missing = whSlocs.filter(s => !have.has(s));
+  if (last && missing.length && have.size) cards.push({ accent:'#4f8fc2', tag:'ยังไม่วางข้อมูล', go:'import', title:`ZMMR0004 วันที่ ${dShort(last)}: ยังไม่มี ${missing.length} Sloc`, body: missing.slice(0, 12).join(', ') + (missing.length > 12 ? ' …' : '') });
+  $('#bActs').innerHTML = cards.slice(0, 6).map((c, i) => (c.fac || c.go)
+    ? `<button class="act" style="--accent:${c.accent};animation-delay:${i*.05}s" ${c.fac ? `data-fac="${esc(c.fac)}"` : `data-go="${c.go}"`}><span class="tag">${esc(c.tag)}</span><span class="tt">${esc(c.title)}</span><span class="bd">${esc(c.body)}</span><span class="more">${c.fac ? 'คลิกเพื่อดูว่ามีอะไรจัดเก็บบ้าง' : 'คลิกเพื่อไปที่หน้านี้'}</span></button>`
+    : `<div class="act" style="--accent:${c.accent};animation-delay:${i*.05}s"><span class="tag">${esc(c.tag)}</span><span class="tt">${esc(c.title)}</span><span class="bd">${esc(c.body)}</span></div>`).join('');
+  $('#bActs').querySelectorAll('[data-fac]').forEach(b => b.onclick = () => facModal(b.dataset.fac));
+  $('#bActs').querySelectorAll('[data-go]').forEach(b => b.onclick = () => go(b.dataset.go));
+  $('#bFoot').textContent = 'การคาดการณ์เป็นเส้นตรงจากข้อมูลที่นำเข้า ไม่รวมแผนรับเข้า · นับเฉพาะรายการที่ผ่านเงื่อนไขชีท Condition';
+
+  // ----- พื้นที่คลัง -----
+  const gt = pctAll === null ? 'none' : tierOf(pctAll, cap, usedAll), R = 70, C = 2 * Math.PI * R;
+  $('#gauge').innerHTML = `<svg width="170" height="170" viewBox="0 0 170 170"><circle cx="85" cy="85" r="${R}" fill="none" stroke="#eef2f4" stroke-width="16"/>
+    <circle class="arc" cx="85" cy="85" r="${R}" fill="none" stroke="${TIER[gt]}" stroke-width="16" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C}" data-off="${C*(1-Math.min(pctAll||0,100)/100)}"/></svg>
+    <div class="c"><div><b>${pctAll === null ? '—' : pctAll.toFixed(1) + '%'}</b><span>ใช้พื้นที่รวม</span></div></div>`;
+  const cnt = t => facs.filter(f => f.tier === t).length;
+  $('#capCards').innerHTML = `<div class="cap-card"><div class="l">พื้นที่ทั้งหมด (ตัน)</div><div class="v">${fmt0(cap)}</div><div class="s">${facs.filter(f=>f.cap>0).length} โรง/พื้นที่</div></div>
+    <div class="cap-card"><div class="l">ใช้งานปัจจุบัน (ตัน)</div><div class="v">${fmt0(usedAll)}</div><div class="s">${pctAll === null ? '' : pctAll.toFixed(1) + '% ของพื้นที่'}</div></div>
+    <div class="cap-card"><div class="l">คงเหลือ (ตัน)</div><div class="v" style="color:${remain < 0 ? '#c24e00' : 'var(--navy)'}">${fmt0(remain)}</div><div class="s">${remain < 0 ? 'เกินพิกัดรวม' : 'รับเพิ่มได้'}</div></div>
+    <div class="cap-card"><div class="l">สถานะโรงงาน</div><div class="row" style="gap:6px;margin-top:8px"><span class="tier normal">ปกติ ${cnt('normal')}</span><span class="tier warn">ใกล้เต็ม ${cnt('warn')}</span><span class="tier critical">เกิน ${cnt('critical')}</span></div></div>`;
+  $('#capDesc').textContent = F.cats.length || F.gps.length || F.gss.length
+    ? 'หมายเหตุ: กรองหมวด/กลุ่มสินค้าอยู่ — ตัวเลข "ใช้งาน" นับเฉพาะสินค้าที่กรอง แต่ความจุคิดทั้งโรง' : 'พื้นที่ทั้งหมด / ใช้งานปัจจุบัน / คงเหลือ ตามความจุจริงจากชีท Area';
+
+  // ----- การ์ดหมวดสินค้า -----
+  const cats = (F.cats.length ? F.cats : CATS).filter(c => bal.some(r => kCat(r) === c) || flowR.some(r => kCat(r) === c));
+  $('#famCards').innerHTML = cats.map((c, i) => {
+    const rs = bal.filter(r => kCat(r) === c), t = sum(rs, posKg) / 1000, fr = flowR.filter(r => kCat(r) === c);
+    const gps = {}; rs.forEach(r => gps[kGp(r)] = (gps[kGp(r)] || 0) + posKg(r) / 1000);
+    const list = Object.entries(gps).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]);
+    return `<div class="fam" style="--fc:${CAT_COLOR[c]};animation-delay:${i*.05}s"><div class="hd"><b>${c}</b><span class="muted">${list.length} Group Product</span><span class="pct">${stockT > 0 ? (100*t/stockT).toFixed(1) : '0.0'}%</span></div>
+      <div class="ton">${fmt(t, 2)} ตัน</div>
+      <div class="io"><span style="color:${C_IN}">${icon('in',15)} รับ ${fmt(sum(fr,'in_ton'),1)}</span><span style="color:${C_OUT}">${icon('out',15)} จ่าย ${fmt(sum(fr,'out_ton'),1)}</span><span class="muted">ตันในช่วงที่เลือก</span></div>
+      <div class="stack">${list.slice(0, 10).map(([g, v], j) => `<i style="background:${GP_PAL[j % GP_PAL.length]}" data-w="${t > 0 ? 100*v/t : 0}"></i>`).join('')}</div>
+      <ul>${list.slice(0, 5).map(([g, v], j) => `<li><span class="dot" style="background:${GP_PAL[j % GP_PAL.length]}"></span><span class="nm">${esc(g)}</span><span class="p">${t > 0 ? (100*v/t).toFixed(1) : 0}%</span><span class="t">${fmt(v,2)}</span></li>`).join('')}
+      ${list.length > 5 ? `<li class="muted"><span class="nm">อื่นๆ ${list.length - 5} กลุ่ม</span><span class="t">${fmt(sum(list.slice(5), x => x[1]),2)}</span></li>` : ''}</ul></div>`;
+  }).join('') || '<div class="empty">ไม่มีข้อมูลตามตัวกรอง</div>';
+  $('#famCards').querySelectorAll('.stack i').forEach(i => { i.style.width = '0'; }); animateBars($('#famCards'));
+
+  // ----- การ์ดรายโรง -----
+  $('#facCards').innerHTML = facs.map((f, i) => `<button class="fac ${f.tier}" data-fac="${esc(f.fac)}" style="animation-delay:${Math.min(i*.04,.5)}s">${ring(f.pct, f.tier)}
+    <div class="info"><b>${esc(f.fac)} <span class="tier ${f.tier}">${TIER_TXT[f.tier]}</span></b>
+      <div class="s">${fmt(f.used,1)} / ${f.cap > 0 ? fmt0(f.cap) : '—'} ตัน · ${f.remain >= 0 ? 'ว่าง ' + fmt0(f.remain) : 'เกิน ' + fmt0(-f.remain)}</div>
+      <div class="s"><span style="color:${C_IN}">+${fmt(f.inL,1)}</span> / <span style="color:${C_OUT}">−${fmt(f.outL,1)}</span> ตัน วันล่าสุด</div>
+      <div class="c">${esc(f.top.slice(0, 2).map(([k]) => k.split(' · ')[1]).join(', ') || 'ไม่มี Stock')}</div></div></button>`).join('') || '<div class="empty">ไม่มีข้อมูล</div>';
+  $('#facCards').querySelectorAll('[data-fac]').forEach(b => b.onclick = () => facModal(b.dataset.fac));
+  animateRings(document.querySelector('[data-page=summary]'));
+}
+function facModal(fac){
+  const rs = balF().filter(r => kFac(r) === fac && posKg(r) > 0), t = sum(rs, posKg) / 1000;
+  const f = factoryStats().find(x => x.fac === fac) || { cap:0, pct:null, tier:'none' };
+  const byGp = {}; rs.forEach(r => { const k = kCat(r) + ' · ' + kGp(r); byGp[k] = (byGp[k] || 0) + posKg(r) / 1000; });
+  const byMat = {}; rs.forEach(r => { const o = byMat[r.material] ||= { material:r.material, description:r.description, ton:0, qty:0 }; o.ton += posKg(r)/1000; o.qty += +r.closing_qty; });
+  const slocs = [...new Set(rs.map(r => r.sloc))].join(', ');
+  modal(`${esc(fac)} — เก็บอะไรบ้าง`, `<div class="row" style="gap:16px;margin-bottom:12px">${ring(f.pct, f.tier, 84, 9)}<div><div class="muted">Stock ${fmt(t,2)} ตัน · ความจุ ${f.cap > 0 ? fmt0(f.cap) : '—'} ตัน</div><div class="muted">Sloc: ${esc(slocs || '—')}</div><span class="tier ${f.tier}">${TIER_TXT[f.tier]}</span></div></div>
+    <h3 style="font-size:15px;color:var(--navy)">ตามหมวด · Group Product</h3>${hbars(Object.entries(byGp).sort((a,b)=>b[1]-a[1]).map(([k,v],i) => ({ name:k, v, color:GP_PAL[i % GP_PAL.length] })), { d:2 })}
+    <h3 style="font-size:15px;color:var(--navy);margin-top:16px">Top 15 Material</h3>
+    ${table([{k:'material',l:'Material',f:v=>`<b>${esc(v)}</b>`},{k:'description',l:'Description'},{k:'qty',l:'จำนวน',num:1,f:fmt0},{k:'ton',l:'ตัน',num:1,f:v=>fmt(v,3)}], Object.values(byMat).sort((a,b)=>b.ton-a.ton).slice(0,15))}`);
+  setTimeout(() => animateRings(document.querySelector('.modal')), 30);
+}
+// ---------- แคปรูป (html2canvas) ----------
+document.querySelectorAll('[data-cap]').forEach(b => b.onclick = async () => {
+  if (!window.html2canvas) return toast('โหลดตัวแคปรูปไม่สำเร็จ', true);
+  const target = b.dataset.cap === 'brief' ? $('#brief') : document.querySelector('[data-page=summary]');
+  busy(b, true, 'กำลังแคป...');
+  try{
+    const cv = await html2canvas(target, { scale: 2, backgroundColor: '#f5f7f9', ignoreElements: el => el.hasAttribute && el.hasAttribute('data-cap') });
+    const a = document.createElement('a'); a.download = `GRGI_สรุปผล_${D.dates[D.dates.length-1] || ymd(new Date())}.jpg`; a.href = cv.toDataURL('image/jpeg', 0.92); a.click();
+    toast('บันทึกรูปแล้ว');
+  }catch(e){ toast('แคปรูปไม่สำเร็จ: ' + errMsg(e), true); }
+  busy(b, false);
+});
+
+// =====================================================================
+// แนวโน้มเข้า–ออก
+// =====================================================================
+let TRV = { dim:'in', by:'category', table:[] };
+async function loadTrendsPage(){ await loadData(); renderTrends(); }
+function renderTrends(){
+  const bal = balF(), flowAll = flowF(false), flowR = flowF(true);
+  const dates = D.dates.filter(inRange);
+  const { lv } = stockSeries(bal, flowAll);
+  const day = d => { const rs = flowR.filter(r => r.posting_date === d); return { date:d, in:sum(rs,'in_ton'), out:sum(rs,'out_ton'), inQty:sum(rs,'in_qty'), outQty:sum(rs,'out_qty'), valid:sum(rs,'valid_rows'), excl:sum(rs,'excluded_rows') }; };
+  const rows = dates.map(day), nd = rows.length, tin = sum(rows,'in'), tout = sum(rows,'out');
+  const busiest = rows.reduce((m, r) => (r.in + r.out) > (m ? m.in + m.out : -1) ? r : m, null);
+  const cards = [['รับเข้ารวม (ตัน)', tin, 2, 'g', 'in'], ['จ่ายออกรวม (ตัน)', tout, 2, 'o', 'out'], ['สุทธิ (ตัน)', tin - tout, 2, tin - tout >= 0 ? '' : 'a', 'scale'],
+    ['เฉลี่ยรับเข้า/วัน', nd ? tin/nd : null, 2, '', 'in'], ['เฉลี่ยจ่ายออก/วัน', nd ? tout/nd : null, 2, '', 'out'], ['Stock ล่าสุด (ตัน)', nd ? lv[rows[nd-1].date] : sum(bal, posKg)/1000, 2, '', 'box']];
+  $('#trKpis').innerHTML = cards.map((c,i)=>`<div class="kpi ${c[3]}" style="animation-delay:${i*0.04}s"><div class="ic">${icon(c[4])}</div><div><div class="l">${c[0]}</div><div class="v" data-v="${c[1]??''}" data-d="${c[2]}">0</div></div></div>`).join('')
+    + (busiest ? `<div class="kpi" style="animation-delay:.24s"><div class="ic">${icon('trend')}</div><div><div class="l">วันที่เคลื่อนไหวมากสุด</div><div class="v" style="font-size:18px">${dShort(busiest.date)}</div><div class="muted">${fmt(busiest.in+busiest.out,1)} ตัน</div></div></div>` : '');
+  $('#trKpis').querySelectorAll('.v[data-v]').forEach(v => v.dataset.v==='' ? v.textContent='-' : countUp(v, v.dataset.v, Number(v.dataset.d)));
+  $('#trFlow').innerHTML = flowChart(rows);
+  $('#trLevel').innerHTML = lineChart([{ label:'Stock สะสม', color:C_NET, pts: rows.map(r => ({ k:r.date, v:lv[r.date] })) }], { area:true, zero:false });
+  const facs = factoryStats(), capSel = sum(facs, 'cap');
+  $('#trCapNote').textContent = capSel > 0 && nd ? `ใช้พื้นที่ ${fmt(100*lv[rows[nd-1].date]/capSel,1)}% ของความจุจริง ${fmt0(capSel)} ตัน${F.cats.length||F.gps.length||F.gss.length?' (ความจุคิดทั้งโรง)':''}` : '';
+  // ---- รายพื้นที่ + sparkline ----
+  const facRows = sortFacs(facs).map(f => {
+    const fb = bal.filter(r => kFac(r) === f.fac), ff = flowAll.filter(r => kFac(r) === f.fac), s = stockSeries(fb, ff);
+    const fr = ff.filter(r => inRange(r.posting_date));
+    return { ...f, in: sum(fr,'in_ton'), out: sum(fr,'out_ton'), sp: dates.map(d => s.lv[d]) };
+  });
+  $('#trFacTbl').innerHTML = table([{k:'fac',l:'โรง',f:(v,r)=>`<b>${esc(v)}</b> <span class="tier ${r.tier}">${TIER_TXT[r.tier]}</span>`},{k:'cap',l:'ความจุ (ตัน)',num:1,f:v=>v>0?fmt0(v):'—'},
+    {k:'used',l:'Stock (ตัน)',num:1,f:v=>fmt(v,2)},{k:'pct',l:'% ใช้',num:1,f:v=>v===null?'—':fmt(v,1)+'%'},{k:'in',l:'รับเข้า',num:1,f:v=>`<span style="color:${C_IN}">${fmt(v,1)}</span>`},
+    {k:'out',l:'จ่ายออก',num:1,f:v=>`<span style="color:${C_OUT}">${fmt(v,1)}</span>`},{k:'in',l:'สุทธิ',num:1,f:(v,r)=>{const n=r.in-r.out;return `<b style="color:${n>=0?C_NET:C_OUT}">${sgn(n)}${fmt(Math.abs(n),1)}</b>`;}},
+    {k:'sp',l:'ระดับ Stock ในช่วง',f:(v,r)=>spark(v, TIER[r.tier])}], facRows);
+  $('#trFacTbl').querySelectorAll('tbody tr').forEach((tr, i) => { tr.style.cursor = 'pointer'; tr.title = 'คลิกเพื่อกรองเฉพาะโรงนี้';
+    tr.onclick = () => { F.facs = [facRows[i].fac]; MSEL.fFac(); onFilter(); toast(`กรองเฉพาะ ${facRows[i].fac}`); }; });
+  // ---- แยกตามมิติ ----
+  const kf = { category:kCat, factory:kFac, group_product:kGp, group_sale:kGs }[TRV.by];
+  const tot = {}; flowR.forEach(r => tot[kf(r)] = (tot[kf(r)] || 0) + (+r.in_ton) + (+r.out_ton));
+  let keys = Object.keys(tot).sort((a, b) => tot[b] - tot[a]); const top = keys.slice(0, 6);
+  const val = r => TRV.dim === 'in' ? +r.in_ton : TRV.dim === 'out' ? +r.out_ton : (+r.in_ton) - (+r.out_ton);
+  const series = top.map((k, i) => ({ label:k, color: TRV.by === 'category' ? CAT_COLOR[k] : GP_PAL[i % GP_PAL.length],
+    pts: dates.map(d => ({ k:d, v: sum(flowR.filter(r => r.posting_date === d && kf(r) === k), val) })) }));
+  if (keys.length > 6) series.push({ label:`อื่นๆ (${keys.length-6})`, color:'#c5cfd3', pts: dates.map(d => ({ k:d, v: sum(flowR.filter(r => r.posting_date === d && !top.includes(kf(r))), val) })) });
+  $('#trCatChart').innerHTML = lineChart(series, { h:260 });
+  TRV.table = rows.map(r => ({ วันที่:r.date, รับเข้า_ตัน:+r.in.toFixed(3), จ่ายออก_ตัน:+r.out.toFixed(3), สุทธิ_ตัน:+(r.in-r.out).toFixed(3), Stock_สะสม_ตัน:+(lv[r.date]||0).toFixed(3), รับเข้า_ชิ้น:r.inQty, จ่ายออก_ชิ้น:r.outQty, แถวผ่าน:r.valid, แถวถูกตัด:r.excl }));
+  $('#trTbl').innerHTML = table([{k:'date',l:'วันที่',f:v=>dLong(v)},{k:'in',l:'รับเข้า (ตัน)',num:1,f:v=>`<span style="color:${C_IN}">${fmt(v,3)}</span>`},
+    {k:'out',l:'จ่ายออก (ตัน)',num:1,f:v=>`<span style="color:${C_OUT}">${fmt(v,3)}</span>`},
+    {k:'in',l:'สุทธิ (ตัน)',num:1,f:(v,r)=>{ const n=r.in-r.out; return `<b style="color:${n>=0?C_NET:C_OUT}">${sgn(n)}${fmt(Math.abs(n),3)}</b>`; }},
+    {k:'date',l:'Stock สะสม (ตัน)',num:1,f:v=>fmt(lv[v],3)},{k:'inQty',l:'รับเข้า (ชิ้น)',num:1,f:fmt0},{k:'outQty',l:'จ่ายออก (ชิ้น)',num:1,f:fmt0},
+    {k:'valid',l:'แถวผ่าน',num:1,f:fmt0},{k:'excl',l:'แถวถูกตัด',num:1,f:v=>v?`<span class="pill warn">${fmt0(v)}</span>`:'0'}], [...rows].reverse());
+}
+function segBind(id, obj, key, attr, cb){ document.querySelectorAll(`#${id} button`).forEach(b => b.onclick = () => {
+  document.querySelectorAll(`#${id} button`).forEach(x => x.classList.toggle('active', x === b)); obj[key] = b.dataset[attr]; cb(); }); }
+segBind('trDim', TRV, 'dim', 'm', renderTrends); segBind('trDimBy', TRV, 'by', 'v', renderTrends);
+$('#trCsv').onclick = () => downloadCsv('daily_flow.csv', TRV.table || []);
+
+// =====================================================================
+// วิเคราะห์สต็อก (มิติ / Top 5 / ABC / Dead stock)
+// =====================================================================
+let ANV = { dim:'factory', dead:[] };
+async function getMatFlow(){
+  const [a, b] = dateRange(), key = `${a}|${b}`;
+  if (!D.matFlow[key]) D.matFlow[key] = await fetchAll('grgi_material_flow', ['material','factory'], { p_from:a, p_to:b });
+  return D.matFlow[key];
+}
+async function loadAnalysisPage(){ await loadData(); ['#anBars','#anTbl','#topOut','#topIn','#topStock','#abcChart','#deadTbl'].forEach(loading); renderAnalysis(); }
+async function renderAnalysis(){
+  const bal = balF(), mf = (await getMatFlow()).filter(r => passAttr(r.material, r.factory));
+  const A = m => D.attr[m] || { category:'Other', group_product:NOVAL, group_sale:NOVAL, product_type:NOVAL, description:'' };
+  // ต่อ Material
+  const mat = {};
+  bal.forEach(r => { const o = mat[r.material] ||= { material:r.material, description:r.description, category:kCat(r), stock:0, qty:0, in:0, out:0 }; o.stock += posKg(r)/1000; o.qty += +r.closing_qty; });
+  mf.forEach(r => { const o = mat[r.material] ||= { material:r.material, description:A(r.material).description, category:A(r.material).category, stock:0, qty:0, in:0, out:0 }; o.in += +r.in_ton; o.out += +r.out_ton; });
+  const mats = Object.values(mat), stockT = sum(mats,'stock'), outT = sum(mats,'out'), inT = sum(mats,'in');
+  const nd = D.dates.filter(inRange).length, avgOut = nd ? outT / nd : 0;
+  const skuStock = mats.filter(m => m.stock > 0).length, moved = mats.filter(m => m.in > 0 || m.out > 0).length;
+  const dead = mats.filter(m => m.stock > 0 && m.out <= 0).sort((a, b) => b.stock - a.stock);
+  const cards = [['SKU มี Stock', skuStock, 0, '', 'box'], ['Stock (ตัน)', stockT, 2, '', 'layers'], ['รับเข้า (ตัน)', inT, 2, 'g', 'in'], ['จ่ายออก (ตัน)', outT, 2, 'o', 'out'],
+    ['Days on Hand', avgOut > 0 ? stockT / avgOut : null, 0, '', 'clock'], ['SKU เคลื่อนไหว', moved, 0, 'g', 'trend'], ['SKU ไม่จ่ายออกเลย', dead.length, 0, dead.length ? 'a' : 'g', 'alert']];
+  $('#anKpis').innerHTML = cards.map((c,i)=>`<div class="kpi ${c[3]}" style="animation-delay:${i*0.04}s"><div class="ic">${icon(c[4])}</div><div><div class="l">${c[0]}</div><div class="v" data-v="${c[1]??''}" data-d="${c[2]}">0</div></div></div>`).join('');
+  $('#anKpis').querySelectorAll('.v[data-v]').forEach(v => v.dataset.v==='' ? v.textContent='-' : countUp(v, v.dataset.v, Number(v.dataset.d)));
+  // ---- มิติ ----
+  const kfB = { factory:kFac, group_sale:kGs, product_type:kPt, group_product:kGp }[ANV.dim];
+  const kfM = r => ANV.dim === 'factory' ? r.factory : (A(r.material)[ANV.dim] || NOVAL);
+  const dm = {};
+  bal.forEach(r => { const o = dm[kfB(r)] ||= { key:kfB(r), stock:0, in:0, out:0, sku:new Set() }; o.stock += posKg(r)/1000; if (+r.closing_qty > 0) o.sku.add(r.material); });
+  mf.forEach(r => { const k = kfM(r), o = dm[k] ||= { key:k, stock:0, in:0, out:0, sku:new Set() }; o.in += +r.in_ton; o.out += +r.out_ton; });
+  const dl = Object.values(dm).map(o => ({ ...o, sku:o.sku.size })).sort((a, b) => b.stock - a.stock);
+  $('#anBars').innerHTML = `<div class="legend" style="margin:0 0 6px"><span><i style="background:${C_NET}"></i>Stock (ตัน)</span></div>` + hbars(dl.slice(0, 15).map(o => ({ name:o.key, v:o.stock, color:C_NET })), { d:1 });
+  $('#anTbl').innerHTML = table([{k:'key',l:{factory:'โรง',group_sale:'Group Sale',product_type:'Product Type',group_product:'Group Product'}[ANV.dim],f:v=>`<b>${esc(v)}</b>`},
+    {k:'stock',l:'Stock',num:1,f:v=>fmt(v,2)},{k:'stock',l:'%',num:1,f:v=>stockT>0?fmt(100*v/stockT,1)+'%':'—'},{k:'in',l:'รับเข้า',num:1,f:v=>`<span style="color:${C_IN}">${fmt(v,1)}</span>`},
+    {k:'out',l:'จ่ายออก',num:1,f:v=>`<span style="color:${C_OUT}">${fmt(v,1)}</span>`},{k:'sku',l:'SKU',num:1,f:fmt0}], dl);
+  animateBars($('#anBars'));
+  // ---- Top 5 ----
+  const top = (k, color) => hbars(mats.filter(m => m[k] > 0).sort((a, b) => b[k] - a[k]).slice(0, 5).map((m, i) => ({ rank:i+1, name:`${m.material} · ${m.description||''}`, v:m[k], color })), { d:2 });
+  $('#topOut').innerHTML = top('out', C_OUT); $('#topIn').innerHTML = top('in', C_IN); $('#topStock').innerHTML = top('stock', C_NET);
+  ['#topOut','#topIn','#topStock'].forEach(s => animateBars($(s)));
+  // ---- ABC ----
+  const ab = mats.filter(m => m.out > 0).sort((a, b) => b.out - a.out); let cum = 0;
+  const items = ab.map((m, i) => { const prevCum = cum; cum += m.out; return { ...m, cls: prevCum < 0.8*outT ? 'A' : prevCum < 0.95*outT ? 'B' : 'C', cum_pct: 100*cum/outT, sku_pct: 100*(i+1)/ab.length }; });
+  const AC = { A:'#ff6a05', B:'#0c3843', C:'#8bbade' };
+  $('#abcCards').innerHTML = ['A','B','C'].map(c => { const g = items.filter(x => x.cls === c), t = sum(g,'out');
+    return `<div class="abc" style="--ac:${AC[c]}"><b>${c}</b> <span class="muted">${fmt0(g.length)} SKU (${ab.length ? (100*g.length/ab.length).toFixed(0) : 0}%)</span><div class="s">${fmt(t,1)} ตัน · ${outT > 0 ? (100*t/outT).toFixed(1) : 0}% ของจ่ายออก</div></div>`; }).join('');
+  $('#abcChart').innerHTML = paretoChart(items);
+  // ---- Dead stock ----
+  ANV.dead = dead.map(m => ({ Material:m.material, Description:m.description, หมวด:m.category, จำนวน:m.qty, ตัน:+m.stock.toFixed(3) }));
+  $('#deadInfo').textContent = `${fmt0(dead.length)} SKU · ${fmt(sum(dead,'stock'),2)} ตัน (${stockT > 0 ? (100*sum(dead,'stock')/stockT).toFixed(1) : 0}% ของ Stock)`;
+  $('#deadTbl').innerHTML = table([{k:'material',l:'Material',f:v=>`<b>${esc(v)}</b>`},{k:'description',l:'Description'},{k:'category',l:'หมวด',f:v=>`<span class="pill info">${esc(v)}</span>`},
+    {k:'qty',l:'จำนวน',num:1,f:fmt0},{k:'stock',l:'Stock (ตัน)',num:1,f:v=>fmt(v,3)},{k:'in',l:'รับเข้าในช่วง',num:1,f:v=>fmt(v,2)}], dead.slice(0, 300), 'ทุก SKU ที่มี Stock มีการจ่ายออกในช่วงนี้');
+}
+segBind('anDim', ANV, 'dim', 'v', renderAnalysis);
+$('#deadCsv').onclick = () => downloadCsv('dead_stock.csv', ANV.dead);
+
+// =====================================================================
+// Stock คงเหลือ
+// =====================================================================
+let STV = { by:'row', rows:[] };
+async function loadStockPage(){ await loadData(); renderStock(); }
+function renderStock(){
+  const t = $('#stkSearch').value.trim().toLowerCase();
+  let rows = balF().filter(r => !t || [r.material, r.batch, r.description].some(x => String(x||'').toLowerCase().includes(t)));
+  if (STV.by === 'mat'){ const m = {}; rows.forEach(r => { const o = m[r.material] ||= { material:r.material, description:r.description, category:kCat(r), group_product:kGp(r), batch:'', sloc:new Set(), factory:new Set(), open_qty:0, in_qty:0, out_qty:0, closing_qty:0, closing_kg:0 };
+      o.sloc.add(r.sloc); o.factory.add(kFac(r)); ['open_qty','in_qty','out_qty','closing_qty','closing_kg'].forEach(k => o[k] += +r[k]); });
+    rows = Object.values(m).map(o => ({ ...o, sloc:[...o.sloc].join(', '), factory:[...o.factory].join(', '), batch:'(รวม)', is_negative:o.closing_qty < 0 })); }
+  if ($('#stkNeg').checked) rows = rows.filter(r => r.is_negative);
+  rows.sort((a, b) => (+b.closing_kg) - (+a.closing_kg));
+  STV.rows = rows;
+  $('#stkInfo').textContent = `${fmt0(rows.length)} บรรทัด · ${fmt(sum(rows, posKg)/1000, 2)} ตัน${rows.length > 1000 ? ' (แสดง 1,000 แรก — CSV ได้ครบ)' : ''}`;
+  $('#stkTbl').innerHTML = table([{k:'material',l:'Material',f:v=>`<b>${esc(v)}</b>`},{k:'description',l:'Description'},{k:'category',l:'หมวด',f:v=>`<span class="pill info">${esc(v||'Other')}</span>`},{k:'batch',l:'Batch'},
+    {k:'sloc',l:'Sloc'},{k:'factory',l:'โรง'},{k:'open_qty',l:'ตั้งต้น',num:1,f:fmt0},{k:'in_qty',l:'เข้า',num:1,f:fmt0},{k:'out_qty',l:'ออก',num:1,f:fmt0},
+    {k:'closing_qty',l:'คงเหลือ',num:1,f:(v,r)=>`<b style="color:${r.is_negative?'var(--bad)':'var(--navy)'}">${fmt0(v)}</b>`},
+    {k:'closing_kg',l:'คงเหลือ (กก.)',num:1,f:v=>fmt(v,2)}], rows.slice(0, 1000));
+}
+let stkTimer; $('#stkSearch').addEventListener('input', () => { clearTimeout(stkTimer); stkTimer = setTimeout(renderStock, 250); });
+$('#stkNeg').onchange = renderStock; segBind('stkBy', STV, 'by', 'v', renderStock);
+$('#stkCsv').onclick = () => downloadCsv('stock_balance.csv', STV.rows.map(r => ({ Material:r.material, Description:r.description, หมวด:r.category, Batch:r.batch, Sloc:r.sloc, โรง:r.factory, ตั้งต้น:r.open_qty, เข้า:r.in_qty, ออก:r.out_qty, คงเหลือ:r.closing_qty, คงเหลือ_กก:r.closing_kg })));
+
+// =====================================================================
+// ค้นหา Material
+// =====================================================================
+async function loadLookupPage(){ await loadData(); $('#lkIn').focus(); }
+$('#lkClear').onclick = () => { $('#lkIn').value = ''; $('#lkOut').innerHTML = ''; $('#lkInfo').textContent = ''; };
+$('#lkGo').onclick = async e => {
+  const btn = e.currentTarget;
+  const codes = [...new Set($('#lkIn').value.split(/[\s,;]+/).map(s => s.trim().toUpperCase()).filter(Boolean))].slice(0, 200);
+  if (!codes.length) return toast('วางรหัส Material ก่อน', true);
+  busy(btn, true, 'กำลังค้นหา...');
+  const [master, mv] = await Promise.all([ q('v_material_lookup', x => x.in('mat_code', codes)),
+    q('v_movement_classified', x => x.select('posting_date,material,mat_doc,batch,mov_type,sloc,qty,weight_final_kg,weight_source,is_valid,rule_label,invalid_reason').in('material', codes).order('posting_date', { ascending:false }).limit(2000)) ]);
+  busy(btn, false);
+  const found = codes.filter(c => master.some(m => m.mat_code === c) || D.bal.some(r => r.material === c) || mv.some(r => r.material === c));
+  const nf = codes.filter(c => !found.includes(c));
+  $('#lkInfo').textContent = `พบ ${found.length}/${codes.length} รายการ`;
+  $('#lkOut').innerHTML = (nf.length ? `<div class="note">ไม่พบ ${nf.length} รายการ: ${esc(nf.join(', '))}</div>` : '') + found.map((c, i) => {
+    const m = master.find(x => x.mat_code === c) || {}, bs = D.bal.filter(r => r.material === c), ms = mv.filter(r => r.material === c);
+    const st = sum(bs, posKg)/1000, cq = sum(bs, 'closing_qty');
+    return `<div class="card" style="animation-delay:${Math.min(i*.05,.4)}s"><h2><span class="dot"></span>${esc(c)} <span class="muted" style="font-weight:300">${esc(m.description || bs[0]?.description || '')}</span></h2>
+      <div class="row" style="gap:8px;margin:6px 0 12px">${m.mat_code ? '' : '<span class="pill bad">ไม่พบใน Master</span>'}
+        <span class="pill info">หมวด ${esc(D.attr[c]?.category || 'Other')}</span><span class="pill info">GP ${esc(m.group_product || '—')}</span><span class="pill info">GS ${esc(m.group_sale || '—')}</span>
+        <span class="pill info">${esc(m.product_type || '—')}</span><span class="pill info">Weight Spec ${m.weight_spec ?? '—'} กก.</span>
+        <span class="pill or">คงเหลือ ${fmt0(cq)} ชิ้น · ${fmt(st,3)} ตัน</span></div>
+      <h3>Stock ราย Batch / Sloc</h3>${table([{k:'batch',l:'Batch'},{k:'sloc',l:'Sloc'},{k:'factory',l:'โรง'},{k:'open_qty',l:'ตั้งต้น',num:1,f:fmt0},{k:'in_qty',l:'เข้า',num:1,f:fmt0},{k:'out_qty',l:'ออก',num:1,f:fmt0},{k:'closing_qty',l:'คงเหลือ',num:1,f:(v,r)=>`<b style="color:${r.is_negative?'var(--bad)':'var(--navy)'}">${fmt0(v)}</b>`},{k:'closing_kg',l:'กก.',num:1,f:v=>fmt(v,2)}], bs, 'ไม่มี Stock')}
+      <h3>ความเคลื่อนไหวล่าสุด (${fmt0(ms.length)} แถว)</h3>${table([{k:'posting_date',l:'วันที่'},{k:'mat_doc',l:'Mat.Doc'},{k:'batch',l:'Batch'},{k:'mov_type',l:'Mov'},{k:'sloc',l:'Sloc'},{k:'qty',l:'จำนวน',num:1,f:fmt0},{k:'weight_final_kg',l:'กก.',num:1,f:v=>fmt(v,2)},
+        {k:'is_valid',l:'ผล',f:(v,r)=>v?`<span class="pill ok" title="${esc(r.rule_label)}">ผ่าน</span>`:`<span class="pill bad" title="${esc(r.invalid_reason)}">ตัดออก</span>`},{k:'weight_source',l:'ที่มาน้ำหนัก'}], ms.slice(0, 50), 'ไม่มีความเคลื่อนไหว')}</div>`;
+  }).join('');
 };
 
 // =====================================================================
-// SUMMARY
+// นำเข้าข้อมูล — แยกตามชีท + ตรวจซ้ำ + Sloc ที่วางแล้ว
 // =====================================================================
-function table(cols, rows, empty='ไม่มีข้อมูล'){
-  if (!rows || !rows.length) return `<div class="muted" style="padding:16px;text-align:center">${empty}</div>`;
-  return `<table><thead><tr>${cols.map(c=>`<th class="${c.num?'num':''}">${esc(c.l)}</th>`).join('')}</tr></thead><tbody>${
-    rows.map(r=>`<tr>${cols.map(c=>`<td class="${c.num?'num':''}">${c.f?c.f(r[c.k],r):esc(r[c.k])}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+const SHEET_INFO = {
+  'ZMMR0004': { title:'เคลื่อนไหวเข้า–ออก', tcode:'ZMMR0004 (Main) · Ex+In', owner:'HS & Plate & Scrap: พี่หนู+พี่หร่อง · Flat Bar: พี่ดา+พี่ณัฐ · Section: พี่เก๋+พี่ปอ · Long & Pre-Process: Q1 Fac.O / Q2 Fac.01 / Q3 Fac.02 / Q4 Fac.03',
+    rule:'แทนที่เฉพาะ <b>Posting Date × Sloc</b> ที่อยู่ในไฟล์ — Sloc อื่น/วันอื่นไม่กระทบ · ระบบตัดสินเงื่อนไขชีท Condition ให้อัตโนมัติ · แนะนำให้มีคอลัมน์ Sloc ต้นทาง/ปลายทาง', check:true },
+  'ZSDR0013': { title:'Stock ตั้งต้น', tcode:'Stock By Bundle (ZSDR0013)', owner:'แต่ละส่วนงาน',
+    rule:'1 แถว = 1 มัด · ระบบรวม Mat+Batch ภายใต้ Sloc ให้เอง · แทนที่เฉพาะ <b>วันที่ Stock ตั้งต้น × Sloc</b> ที่อยู่ในไฟล์', check:true, asOf:true },
+  'ZSDR0010': { title:'ขาออก (Sub)', tcode:'ZSDR0010', owner:'—',
+    rule:'ใช้เติมน้ำหนัก 0 ของขาออกตาม SO + Item เดียวกัน · แทนที่ตาม <b>GI date × Delivery no.</b>', check:true },
+  'Master': { title:'Group Product', tcode:'Google Sheet Master Data', owner:'พี่ปุ้ย (Long) · พี่ดา (Flat) · พี่เก๋ (Trading)',
+    rule:'ชุดเต็ม — นำเข้าแล้ว<b>แทนที่ Master เดิมทั้งหมด</b> (ของเดิมเก็บในประวัติ)' },
+  'Area': { title:'พื้นที่จัดเก็บ', tcode:'Config Area Excel', owner:'นาย (Eng.)', rule:'อัปเดตตามชื่อโรง (กว้าง × ยาว, % รับน้ำหนักต่อพื้นที่ → ความจุจริงตัน)' },
+  'Mov.Type': { title:'Movement Type', tcode:'คำอธิบาย Movement Type', owner:'—', rule:'อัปเดตตามรหัส Mov' },
+};
+const SHEET_ORDER = ['ZMMR0004','ZSDR0013','ZSDR0010','Master','Area','Mov.Type'];
+let IMP = { sheet:'ZMMR0004', parsed:null, check:null, last:{}, cov:[], covSheet:'ZMMR0004', covDays:'14' };
+async function loadImportPage(){
+  const li = await q('v_last_import'); IMP.last = Object.fromEntries(li.map(r => [r.sheet_name, r]));
+  renderSheetCards(); renderSheetPanel(); loadCoverage();
 }
-async function q(view, build){ let x = sb.from(view).select('*'); if (build) x = build(x); const { data, error } = await x; if (error){ toast(`${view}: ${errMsg(error)}`, true); return []; } return data; }
-const loading = el => { $(el).innerHTML = `<div class="muted" style="padding:16px;text-align:center"><span class="spin" style="display:inline-block;width:16px;height:16px;border:2px solid #dde5e8;border-top-color:var(--orange);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle"></span> กำลังโหลด...</div>`; };
+function renderSheetCards(){
+  $('#sheetCards').innerHTML = SHEET_ORDER.map((k, i) => { const s = SHEET_INFO[k], l = IMP.last[k];
+    return `<button class="sc ${IMP.sheet === k ? 'on' : ''}" data-s="${k}" style="animation-delay:${i*.04}s"><span class="ok ${l ? '' : 'none'}"></span>
+      <div class="nm">${icon('upload',17)}${esc(k)}</div><div class="tc">${esc(s.title)} · ${esc(s.tcode)}</div>
+      <div class="last">${l ? `ล่าสุด ${new Date(l.imported_at).toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'})}<br>${fmt0(l.row_count)} แถว${l.as_of_date ? ' · ข้อมูล ' + dShort(l.as_of_date) : ''} · ${esc((l.imported_by||'').split(' ').slice(1).join(' ') || l.imported_by || '')}` : '<span class="muted">ยังไม่เคยนำเข้า</span>'}</div></button>`; }).join('');
+  $('#sheetCards').querySelectorAll('[data-s]').forEach(b => b.onclick = () => { IMP.sheet = b.dataset.s; IMP.parsed = null; IMP.check = null; IMP.log = ''; renderSheetCards(); renderSheetPanel();
+    if (['ZMMR0004','ZSDR0013','ZSDR0010'].includes(IMP.sheet)){ IMP.covSheet = IMP.sheet; document.querySelectorAll('#covSheet button').forEach(x => x.classList.toggle('active', x.dataset.v === IMP.sheet)); renderCoverage(); } });
+}
+function renderSheetPanel(){
+  const k = IMP.sheet, s = SHEET_INFO[k], p = IMP.parsed;
+  $('#sheetPanel').innerHTML = `<h2><span class="dot"></span>${esc(k)} — ${esc(s.title)}</h2><p class="desc">${esc(s.tcode)} · ผู้รับผิดชอบ: ${esc(s.owner)}</p>
+    <div class="rule-box">${s.rule}</div>
+    ${s.asOf ? `<div class="row" style="margin-bottom:12px"><label class="muted">วันที่ Stock ตั้งต้น</label><input type="date" id="impAsOf" value="${IMP.asOf || ymd(new Date())}"></div>` : ''}
+    <div class="drop" id="impDrop"><div class="ic">${icon('upload',26)}</div><b>ลากไฟล์ ${esc(k)} (.xlsx) มาวางที่นี่</b><div class="muted">หรือคลิกเพื่อเลือกไฟล์ · ไฟล์ที่มีหลายชีท ระบบเลือกชีท ${esc(k)} ให้เอง</div><input type="file" id="impFile" accept=".xlsx,.xls" hidden></div>
+    <div id="impBody"></div>`;
+  const drop = $('#impDrop'), fi = $('#impFile');
+  drop.onclick = () => fi.click(); drop.ondragover = e => { e.preventDefault(); drop.classList.add('over'); }; drop.ondragleave = () => drop.classList.remove('over');
+  drop.ondrop = e => { e.preventDefault(); drop.classList.remove('over'); if (e.dataTransfer.files[0]) readSheetFile(e.dataTransfer.files[0]); };
+  fi.onchange = () => { if (fi.files[0]) readSheetFile(fi.files[0]); fi.value = ''; };
+  if ($('#impAsOf')) $('#impAsOf').onchange = () => { IMP.asOf = $('#impAsOf').value; if (IMP.parsed) runPrecheck(); };
+  if (p) renderImpBody();
+}
+async function readSheetFile(f){
+  const k = IMP.sheet;
+  try{
+    const wb = XLSX.read(await f.arrayBuffer(), { type:'array', cellDates:false });
+    let sn = wb.SheetNames.find(n => detectSheet(n, (XLSX.utils.sheet_to_json(wb.Sheets[n], { header:1, defval:null })[0] || []).map(String)) === k);
+    if (!sn && wb.SheetNames.length === 1) sn = wb.SheetNames[0];
+    if (!sn) return toast(`ไม่พบชีท ${k} ในไฟล์ ${f.name} (มี: ${wb.SheetNames.join(', ')})`, true);
+    IMP.parsed = parseSheet(k, wb.Sheets[sn], f.name, sn);
+    // แถวซ้ำกันเองในไฟล์ (เหมือนกันทุกช่อง) — แจ้งให้ทราบ (เก็บทุกแถวตามที่ตกลง)
+    const seen = new Map(); IMP.parsed.rows.forEach(r => { const s = JSON.stringify({ ...r, row_no:0 }); seen.set(s, (seen.get(s) || 0) + 1); });
+    IMP.parsed.dupInFile = [...seen.values()].filter(n => n > 1).reduce((a, n) => a + n - 1, 0);
+    IMP.check = null; IMP.log = ''; renderImpBody();
+    if (SHEET_INFO[k].check && IMP.parsed.ok) runPrecheck();
+  }catch(e){ toast(`อ่านไฟล์ไม่ได้: ${errMsg(e)}`, true); }
+}
+function impAsOf(){ return SHEET_INFO[IMP.sheet].asOf ? ($('#impAsOf')?.value || null) : (IMP.parsed?.st.from || null); }
+async function runPrecheck(){
+  const p = IMP.parsed; $('#impCheck').innerHTML = '<div class="muted" style="padding:10px">กำลังตรวจกับข้อมูลในระบบ...</div>';
+  const { data, error } = await sb.rpc('grgi_precheck', { p_sheet: IMP.sheet, p_as_of: impAsOf(), p_rows: p.rows });
+  if (error){ $('#impCheck').innerHTML = `<div class="note">ตรวจซ้ำไม่สำเร็จ: ${esc(errMsg(error))}</div>`; return; }
+  IMP.check = data.map(g => ({ ...g, use: g.status !== 'SAME' })); renderImpBody();
+}
+function renderImpBody(){
+  const p = IMP.parsed, k = IMP.sheet, s = p.st, parts = [`${fmt0(s.rows)} แถว`];
+  if (s.mats !== undefined) parts.push(`${fmt0(s.mats)} Material`); if (s.qty !== undefined) parts.push(`จำนวน ${fmt0(s.qty)}`);
+  if (s.kg !== undefined) parts.push(`${fmt(s.kg/1000,3)} ตัน`); if (s.from) parts.push(`${s.from}${s.to !== s.from ? ' – ' + s.to : ''}`);
+  if (s.cap !== undefined) parts.push(`ความจุจริงรวม ${fmt(s.cap)} ตัน`);
+  const slocs = [...new Set(p.rows.map(r => r.sloc).filter(Boolean))];
+  const ck = IMP.check, isGroupable = k !== 'ZSDR0010';
+  const cnt = st => ck ? ck.filter(g => g.status === st).length : 0;
+  $('#impBody').innerHTML = `<div class="sheet" style="margin-top:14px"><div class="sheet-head"><b>${esc(p.fileName)} › ${esc(p.sheetName)}</b><span class="pill ${p.ok?'ok':'bad'}">${p.ok?'ข้อมูลถูกรูปแบบ':'มีข้อผิดพลาด'}</span><span class="muted">${parts.join(' · ')}</span></div>
+      ${slocs.length ? `<div class="muted" style="margin-top:6px">Sloc ในไฟล์ (${slocs.length}): ${esc(slocs.join(', '))}</div>` : ''}
+      <ul class="msgs">${p.msgs.map(m => `<li class="${m[0]}">${esc(m[1])}</li>`).join('')}${p.dupInFile ? `<li class="info">แถวที่เหมือนกันทุกช่องในไฟล์ ${fmt0(p.dupInFile)} แถว — เก็บทุกแถว (ถือว่าเป็นคนละมัด/คนละ Item)</li>` : ''}</ul></div>
+    ${SHEET_INFO[k].check ? `<h3 style="color:var(--navy);font-size:15px;margin:16px 0 8px">ตรวจซ้ำกับข้อมูลในระบบ ${ck ? `<span class="st NEW">ใหม่ ${cnt('NEW')}</span> <span class="st CHANGED">เปลี่ยน ${cnt('CHANGED')}</span> <span class="st SAME">ซ้ำ ${cnt('SAME')}</span>` : ''}</h3>
+      <div id="impCheck">${ck ? `<div class="tbl" style="max-height:340px"><table><thead><tr>${isGroupable ? '<th>นำเข้า</th>' : ''}<th>วันที่</th><th>${k === 'ZSDR0010' ? 'Delivery' : 'Sloc'}</th><th class="num">แถวในไฟล์</th><th class="num">แถวในระบบ</th><th>สถานะ</th><th>วางล่าสุดโดย</th></tr></thead><tbody>${
+        ck.map((g, i) => `<tr>${isGroupable ? `<td><input type="checkbox" data-g="${i}" ${g.use ? 'checked' : ''}></td>` : ''}<td>${g.data_date ? dLong(g.data_date) : '—'}</td><td><b>${esc(g.grp)}</b></td><td class="num">${fmt0(g.file_rows)}</td><td class="num">${fmt0(g.db_rows)}</td>
+          <td><span class="st ${g.status}">${{ NEW:'ใหม่', SAME:'ซ้ำ (เหมือนเดิมทุกแถว)', CHANGED:'มีอยู่แล้ว · ต่างจากเดิม → แทนที่' }[g.status]}</span></td>
+          <td class="muted">${g.db_imported_at ? esc(g.db_imported_by || '') + ' · ' + new Date(g.db_imported_at).toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'}) : '—'}</td></tr>`).join('')}</tbody></table></div>
+        <div class="muted" style="margin-top:6px">${isGroupable ? 'ค่าเริ่มต้น: ข้ามกลุ่มที่ "ซ้ำ" (ไม่ต้องนำเข้าซ้ำ) · ติ๊กเพื่อเลือกกลุ่มที่จะนำเข้า' : 'ZSDR0010 นำเข้าทั้งไฟล์ — Delivery ที่ซ้ำจะถูกแทนที่ด้วยข้อมูลชุดเดียวกัน'}</div>` : '<div class="muted">—</div>'}</div>` : ''}
+    <div class="row" style="margin-top:14px"><button class="btn orange" id="impGo" ${canImport() && p.ok ? '' : 'disabled'}>${icon('upload',17)}นำเข้า ${esc(k)}</button><button class="btn ghost" id="impClear">ล้าง</button><span class="muted" id="impSel"></span></div>
+    <div id="impLog" class="log ${IMP.log ? '' : 'hidden'}">${esc(IMP.log || '')}</div>`;
+  const selInfo = () => { if (!ck || !isGroupable) return; const n = ck.filter(g => g.use).reduce((a, g) => a + g.file_rows, 0); $('#impSel').textContent = `จะนำเข้า ${fmt0(n)} แถว จาก ${ck.filter(g=>g.use).length} กลุ่ม`; };
+  $('#impBody').querySelectorAll('[data-g]').forEach(c => c.onchange = () => { ck[c.dataset.g].use = c.checked; selInfo(); }); selInfo();
+  $('#impClear').onclick = () => { IMP.parsed = null; IMP.check = null; $('#impBody').innerHTML = ''; };
+  $('#impGo').onclick = doSheetImport;
+}
+async function doSheetImport(){
+  const k = IMP.sheet, p = IMP.parsed, ck = IMP.check;
+  let rows = p.rows;
+  if (SHEET_INFO[k].check && !ck) return toast('รอตรวจซ้ำให้เสร็จก่อน', true);
+  if (ck && k !== 'ZSDR0010'){ const use = new Set(ck.filter(g => g.use).map(g => `${g.data_date}|${g.grp}`));
+    rows = rows.filter(r => use.has(`${k === 'ZSDR0013' ? impAsOf() : r.posting_date}|${r.sloc}`)); }
+  if (!rows.length) return toast('ไม่มีกลุ่มที่เลือกให้นำเข้า (ทุกกลุ่มซ้ำกับในระบบ)', true);
+  if (k === 'ZSDR0013' && !impAsOf()) return toast('ระบุวันที่ Stock ตั้งต้นก่อน', true);
+  const log = $('#impLog'); log.classList.remove('hidden'); IMP.log = `⏳ ${k}: ส่ง ${fmt0(rows.length)} แถว...\n`; log.textContent = IMP.log;
+  const b = $('#impGo'); busy(b, true, 'กำลังนำเข้า...');
+  try{
+    const d = await call('grgi_import_sheet', { p_sheet:k, p_file_name:p.fileName, p_as_of:impAsOf(), p_rows:rows });
+    IMP.log += `✅ นำเข้า ${fmt0(d.inserted)} แถว · แทนที่ของเดิม ${fmt0(d.superseded)} แถว · batch #${d.batch_id}\nตรวจซ้ำใหม่อีกครั้ง → กลุ่มที่เพิ่งนำเข้าควรเป็น "ซ้ำ"`; log.textContent = IMP.log;
+    toast(`นำเข้า ${k} เรียบร้อย`); D.loaded = false; refreshBadge();
+    const li = await q('v_last_import'); IMP.last = Object.fromEntries(li.map(r => [r.sheet_name, r])); renderSheetCards(); loadCoverage();
+    if (SHEET_INFO[k].check) runPrecheck();
+  }catch(e){ IMP.log += `❌ ${errMsg(e)} (ไม่ถูกนำเข้าเลย)`; log.textContent = IMP.log; }
+  busy(b, false); b.disabled = !canImport();
+}
+async function loadCoverage(){ loading('#covTbl'); IMP.cov = await fetchAll('v_import_coverage', ['sheet','data_date','grp']); if (!D.slocs.length) D.slocs = await q('v_sloc_effective', x => x.order('sloc')); renderCoverage(); }
+function renderCoverage(){
+  const rows = IMP.cov.filter(r => r.sheet === IMP.covSheet);
+  let dates = [...new Set(rows.map(r => r.data_date))].sort();
+  if (IMP.covDays !== 'all') dates = dates.slice(-Number(IMP.covDays));
+  if (!dates.length) return $('#covTbl').innerHTML = '<div class="empty">ยังไม่มีข้อมูลชีทนี้ในระบบ</div>';
+  const map = {}; rows.forEach(r => map[`${r.data_date}|${r.grp}`] = r);
+  let groups;
+  if (IMP.covSheet === 'ZSDR0010') groups = ['Delivery'];
+  else { const wh = D.slocs.filter(s => s.effective_type === 'WH').map(s => s.sloc); groups = [...new Set([...wh, ...rows.map(r => r.grp)])].sort(); }
+  const cell = (d, g) => {
+    if (IMP.covSheet === 'ZSDR0010'){ const r = rows.find(x => x.data_date === d); return r ? `<td class="y" title="${esc(r.grp)} · ${fmt(r.ton,2)} ตัน · ${esc(r.imported_by||'')}">${fmt0(r.row_count)}</td>` : '<td class="x">·</td>'; }
+    const r = map[`${d}|${g}`], dayHas = rows.some(x => x.data_date === d);
+    return r ? `<td class="y" title="${esc(g)} · ${dLong(d)}\n${fmt0(r.row_count)} แถว · ${fmt(r.ton,2)} ตัน\nวางโดย ${esc(r.imported_by||'')} · ${new Date(r.imported_at).toLocaleString('th-TH')}">${fmt0(r.row_count)}</td>`
+             : dayHas ? `<td class="n" title="${esc(g)} ยังไม่วางข้อมูลวันที่ ${dLong(d)}">✕</td>` : '<td class="x">·</td>';
+  };
+  const fac = g => (D.slocs.find(s => s.sloc === g) || {}).factory || '';
+  $('#covTbl').innerHTML = `<table class="cov"><thead><tr><th style="text-align:left">${IMP.covSheet === 'ZSDR0010' ? '' : 'Sloc'}</th>${dates.map(d => `<th>${dShort(d)}</th>`).join('')}</tr></thead><tbody>${
+    groups.map(g => `<tr><td class="s">${esc(g)} <span class="muted" style="font-weight:300">${esc(fac(g))}</span></td>${dates.map(d => cell(d, g)).join('')}</tr>`).join('')}</tbody></table>`;
+}
+segBind('covSheet', IMP, 'covSheet', 'v', renderCoverage); segBind('covDays', IMP, 'covDays', 'v', renderCoverage);
 
+// =====================================================================
+// ตรวจคุณภาพข้อมูล
+// =====================================================================
+let ZERO = [], UM = [];
 async function refreshBadge(){
-  const dq = await q('v_data_quality'); const n = dq.filter(d=>d.row_count>0).length;
-  const b = $('#dqBadge'); b.textContent = n; b.classList.toggle('hidden', !n);
+  const dq = await q('v_data_quality'); const n = dq.filter(d => d.row_count > 0).length;
+  const b = $('#dqBadge'); b.textContent = n; b.classList.toggle('hidden', !n); b.closest('.mi').classList.toggle('dq', !!n);
 }
-let ZERO = [];
-async function loadSummary(){
-  ['#facTbl','#dqTbl','#ruleTbl','#zeroTbl'].forEach(loading);
-  const [k] = await q('v_kpi_summary');
-  if (k){
-    $('#sumAsOf').textContent = `Stock ตั้งต้น ณ ${k.snapshot_date||'-'} · เคลื่อนไหวล่าสุด ${k.last_posting_date||'-'}`;
-    const util = k.capacity_ton_actual ? 100*k.closing_ton/k.capacity_ton_actual : null;
-    const cards = [
-      ['ตั้งต้น (ตัน)', k.opening_ton, 3, '', 'layers'], ['รับเข้า (ตัน)', k.in_ton, 3, 'g', 'in'], ['จ่ายออก (ตัน)', Math.abs(k.out_ton||0), 3, 'o', 'out'],
-      ['คงเหลือ (ตัน)', k.closing_ton, 3, '', 'box'], ['ใช้พื้นที่รวม (%)', util, 1, util>90?'r':util>75?'a':'g', 'chart'],
-      ['ผ่านเงื่อนไข (แถว)', k.valid_rows, 0, 'g', 'check'], ['ถูกตัดออก (แถว)', k.excluded_rows, 0, k.excluded_rows?'a':'g', 'alert'],
-      ['น้ำหนัก 0 ยังแก้ไม่ได้', k.zero_weight_unfixed, 0, k.zero_weight_unfixed?'r':'g', 'scale'], ['Stock ติดลบ (บรรทัด)', k.negative_lines, 0, k.negative_lines?'r':'g', 'alert'] ];
-    $('#kpis').innerHTML = cards.map((c,i)=>`<div class="kpi ${c[3]}" style="animation-delay:${i*0.04}s"><div class="ic">${icon(c[4])}</div><div><div class="l">${c[0]}</div><div class="v" data-v="${c[1]??''}" data-d="${c[2]}">0</div></div></div>`).join('');
-    $('#kpis').querySelectorAll('.v').forEach(v => v.dataset.v==='' ? v.textContent='-' : countUp(v, v.dataset.v, Number(v.dataset.d)));
-  }
-  const fac = await q('v_stock_by_factory', x=>x.order('factory'));
-  $('#facTbl').innerHTML = table([
-    {k:'factory',l:'โรง',f:v=>`<b>${esc(v)}</b>`}, {k:'capacity_ton_actual',l:'ความจุจริง (ตัน)',num:1,f:v=>fmt(v)}, {k:'stock_ton',l:'Stock (ตัน)',num:1,f:v=>fmt(v,3)},
-    {k:'utilization_pct',l:'% ใช้พื้นที่',num:1,f:v=>v===null?'-':fmt(v,1)+'%'},
-    {k:'utilization_pct',l:'',f:v=>`<div class="bar"><i class="${v>100?'over':v>85?'hi':''}" data-w="${Math.min(v||0,100)}"></i></div>`} ], fac);
-  requestAnimationFrame(()=>$('#facTbl').querySelectorAll('.bar i').forEach(i=>i.style.width=i.dataset.w+'%'));
+async function loadQualityPage(){
+  ['#dqTbl','#umTbl','#ruleTbl','#zeroTbl'].forEach(loading);
   const dq = await q('v_data_quality');
   $('#dqTbl').innerHTML = table([{k:'check_name',l:'รายการตรวจ'},{k:'row_count',l:'จำนวน',num:1,f:v=>`<span class="pill ${v>0?'warn':'ok'}">${fmt0(v)}</span>`}], dq);
+  UM = await fetchAll('v_unmatched_materials', ['material']); UM.sort((a, b) => b.ton - a.ton);
+  $('#umInfo').textContent = `${fmt0(UM.length)} Code · ${fmt(sum(UM,'ton'),2)} ตัน`;
+  $('#umTbl').innerHTML = table([{k:'material',l:'Material',f:v=>`<b>${esc(v)}</b>`},{k:'material_desc',l:'Description'},{k:'sources',l:'พบใน'},{k:'row_count',l:'แถว',num:1,f:fmt0},{k:'ton',l:'ตัน',num:1,f:v=>fmt(v,3)},{k:'last_date',l:'ล่าสุด'}], UM, 'ทุก Code มีใน Master แล้ว');
   await loadRules();
   ZERO = await q('v_zero_weight_report', x=>x.order('posting_date',{ascending:false}).limit(1000));
   $('#zeroTbl').innerHTML = table([{k:'posting_date',l:'วันที่'},{k:'material',l:'Material'},{k:'mov_type',l:'Mov'},{k:'qty',l:'จำนวน',num:1,f:fmt0},
@@ -851,42 +1667,8 @@ async function loadRules(){
     {k:'rows',l:'แถว',num:1,f:fmt0},{k:'qty',l:'จำนวน',num:1,f:fmt0},{k:'ton',l:'ตัน',num:1,f:v=>fmt(v,3)}], rs);
 }
 $('#onlyExcluded').onchange = loadRules;
-$('#refreshSummary').onclick = loadSummary;
 $('#zeroCsv').onclick = () => downloadCsv('zero_weight.csv', ZERO);
-function downloadCsv(name, rows){
-  if (!rows.length) return toast('ไม่มีข้อมูล', true);
-  const cols = Object.keys(rows[0]);
-  const csv = '﻿' + [cols.join(','), ...rows.map(r=>cols.map(c=>{ const v=r[c]??''; return /[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g,'""')}"` : v; }).join(','))].join('\n');
-  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})); a.download = name; a.click();
-}
-
-// =====================================================================
-// STOCK
-// =====================================================================
-let STK = [];
-async function loadStock(){
-  const sl = $('#stkSloc'); if (sl.options.length <= 1){
-    const ss = await q('sloc_master', x=>x.order('sloc'));
-    ss.forEach(s => sl.add(new Option(`${s.sloc}${s.factory?' ('+s.factory+')':''}`, s.sloc)));
-  }
-  loading('#stkTbl');
-  const term = $('#stkSearch').value.trim().replace(/[,()%*]/g,'');
-  STK = await q('v_stock_balance', x => {
-    if (term) x = x.or(`material.ilike.%${term}%,batch.ilike.%${term}%`);
-    if ($('#stkCat').value) x = x.eq('category', $('#stkCat').value);
-    if ($('#stkSloc').value) x = x.eq('sloc', $('#stkSloc').value);
-    if ($('#stkNeg').checked) x = x.eq('is_negative', true);
-    return x.order('material').order('batch').limit(1000);
-  });
-  $('#stkInfo').textContent = `${fmt0(STK.length)} บรรทัด${STK.length===1000?' (แสดงสูงสุด 1,000 — กรองเพิ่ม)':''}`;
-  $('#stkTbl').innerHTML = table([{k:'material',l:'Material',f:v=>`<b>${esc(v)}</b>`},{k:'description',l:'Description'},{k:'category',l:'หมวด',f:v=>`<span class="pill info">${esc(v)}</span>`},{k:'batch',l:'Batch'},
-    {k:'sloc',l:'Sloc'},{k:'factory',l:'โรง'},{k:'open_qty',l:'ตั้งต้น',num:1,f:fmt0},{k:'in_qty',l:'เข้า',num:1,f:fmt0},{k:'out_qty',l:'ออก',num:1,f:fmt0},
-    {k:'closing_qty',l:'คงเหลือ',num:1,f:(v,r)=>`<b style="color:${r.is_negative?'var(--bad)':'var(--navy)'}">${fmt0(v)}</b>`},
-    {k:'closing_kg',l:'คงเหลือ (กก.)',num:1,f:v=>fmt(v,2)}], STK);
-}
-$('#stkGo').onclick = loadStock;
-$('#stkSearch').addEventListener('keydown', e => { if (e.key==='Enter') loadStock(); });
-$('#stkCsv').onclick = () => downloadCsv('stock_balance.csv', STK);
+$('#umCsv').onclick = () => downloadCsv('unmatched_codes.csv', UM);
 
 // =====================================================================
 // SETTINGS (Admin แก้ได้ / คนอื่นดู)
@@ -976,115 +1758,6 @@ async function loadSettings(){
     });
   }
 }
-
-// =====================================================================
-// TRENDS — เข้า-ออก รายวัน (SVG วาดเอง แบบเดียวกับแดชบอร์ด WH2 เดิม)
-// =====================================================================
-const C_IN = '#4f8fc2', C_OUT = '#ff6a05', C_NET = '#0c3843';
-const CAT_COLOR = { Flat:'#0c3843', Trading:'#ff6a05', Long:'#4f8fc2', Other:'#a3b1b6' };
-let TR = { range:'30', cat:'', dim:'in', flow:[], open:[], cap:null };
-function niceScale(max, min=0, ticks=5){
-  if (max === min) max = min + 1;
-  const raw = (max - min) / ticks, mag = Math.pow(10, Math.floor(Math.log10(raw))), n = raw / mag;
-  const step = (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * mag;
-  return { min: Math.floor(min / step) * step, max: Math.ceil(max / step) * step, step };
-}
-const dShort = k => { const [y,m,d] = k.split('-'); return `${+d}/${+m}`; };
-const dLong = k => new Date(k+'T00:00:00').toLocaleDateString('th-TH',{weekday:'short',day:'numeric',month:'short',year:'2-digit'});
-
-function flowChart(rows){
-  if (!rows.length) return '<div class="empty">ยังไม่มีข้อมูลเข้า–ออกในช่วงที่เลือก</div>';
-  const W = 900, H = 300, L = 58, R = 18, T = 16, B = 40, iw = W-L-R, ih = H-T-B;
-  const mx = Math.max(...rows.map(r => Math.max(r.in, r.out)), 0.001);
-  const sc = niceScale(mx, -mx, 4), y = v => T + ih - ih*(v-sc.min)/(sc.max-sc.min);
-  const slot = iw/rows.length, bw = Math.max(3, Math.min(26, slot*0.34)), step = Math.max(1, Math.ceil(rows.length/12));
-  let g = '';
-  for (let v = sc.min; v <= sc.max+1e-9; v += sc.step){ const z = Math.abs(v) < 1e-9;
-    g += `<line x1="${L}" y1="${y(v)}" x2="${W-R}" y2="${y(v)}" stroke="${z?'#adb5bd':'#edf1f3'}" stroke-width="${z?1.2:1}"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="#6b7c83">${fmt0(Math.abs(v))}</text>`; }
-  let bars = '', pts = [], lab = '';
-  rows.forEach((r,i) => { const cx = L + slot*(i+.5), d = Math.min(i*0.025, 0.6);
-    bars += `<rect class="bar-in" style="animation-delay:${d}s" x="${cx-bw/2}" y="${y(r.in)}" width="${bw}" height="${Math.max(0.5,y(0)-y(r.in))}" rx="3" fill="${C_IN}"><title>${dLong(r.date)} · รับเข้า ${fmt(r.in,3)} ตัน</title></rect>`
-          + `<rect class="bar-out" style="animation-delay:${d}s" x="${cx-bw/2}" y="${y(0)}" width="${bw}" height="${Math.max(0.5,y(-r.out)-y(0))}" rx="3" fill="${C_OUT}"><title>${dLong(r.date)} · จ่ายออก ${fmt(r.out,3)} ตัน</title></rect>`;
-    pts.push([cx, y(r.in - r.out), r]);
-    if (i % step === 0 || i === rows.length-1) lab += `<text x="${cx}" y="${H-14}" text-anchor="middle" font-size="11" fill="#6b7c83">${dShort(r.date)}</text>`; });
-  const net = rows.length > 1 ? `<polyline class="ln dash" points="${pts.map(p=>p[0]+','+p[1]).join(' ')}" fill="none" stroke="${C_NET}" stroke-width="2"/>` : '';
-  const dots = pts.map(([x,yy,r]) => `<circle cx="${x}" cy="${yy}" r="3.8" fill="${C_NET}" stroke="#fff" stroke-width="1.5"><title>${dLong(r.date)} · สุทธิ ${r.in-r.out>=0?'+':'−'}${fmt(Math.abs(r.in-r.out),3)} ตัน</title></circle>`).join('');
-  return `<div class="chart"><svg viewBox="0 0 ${W} ${H}">${g}${lab}${bars}${net}${dots}</svg></div>
-    <div class="legend"><span><i style="background:${C_IN}"></i>รับเข้า</span><span><i style="background:${C_OUT}"></i>จ่ายออก</span><span><i style="background:${C_NET}"></i>สุทธิ</span></div>`;
-}
-function lineChart(series, opt = {}){
-  const all = series.flatMap(s => s.pts.map(p => p.v)).filter(v => v !== null);
-  if (!all.length) return '<div class="empty">ยังไม่มีข้อมูลในช่วงที่เลือก</div>';
-  const keys = [...new Set(series.flatMap(s => s.pts.map(p => p.k)))].sort();
-  const W = 900, H = opt.h || 280, L = 64, R = 18, T = 16, B = 38, iw = W-L-R, ih = H-T-B;
-  const lo = opt.zero === false ? Math.min(...all) - (Math.max(...all)-Math.min(...all)||Math.abs(Math.min(...all))*0.1||1)*0.6 : Math.min(0, ...all);
-  const sc = niceScale(Math.max(...all, opt.ref && opt.zero !== false ? opt.ref.v : -Infinity), lo, 5), y = v => T + ih - ih*(v-sc.min)/(sc.max-sc.min);
-  const x = k => keys.length === 1 ? L + iw/2 : L + iw*keys.indexOf(k)/(keys.length-1), step = Math.max(1, Math.ceil(keys.length/10));
-  let g = '';
-  for (let v = sc.min; v <= sc.max+1e-9; v += sc.step) g += `<line x1="${L}" y1="${y(v)}" x2="${W-R}" y2="${y(v)}" stroke="${Math.abs(v)<1e-9?'#adb5bd':'#edf1f3'}"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="#6b7c83">${fmt0(v)}</text>`;
-  const lab = keys.map((k,i) => (i % step === 0 || i === keys.length-1) ? `<text x="${x(k)}" y="${H-12}" text-anchor="middle" font-size="11" fill="#6b7c83">${dShort(k)}</text>` : '').join('');
-  const ref = opt.ref && opt.ref.v <= sc.max ? `<line x1="${L}" y1="${y(opt.ref.v)}" x2="${W-R}" y2="${y(opt.ref.v)}" stroke="#ff6a05" stroke-width="1.4" stroke-dasharray="6 4"/><text x="${L+6}" y="${y(opt.ref.v)-6}" font-size="11" fill="#c24e00">${esc(opt.ref.label)}</text>` : '';
-  const body = series.map(s => {
-    const p = s.pts.filter(q => q.v !== null);
-    const area = opt.area && p.length > 1 ? `<path d="M${x(p[0].k)},${y(sc.min)} ${p.map(q=>`L${x(q.k)},${y(q.v)}`).join(' ')} L${x(p[p.length-1].k)},${y(sc.min)}Z" fill="${s.color}" fill-opacity=".08"/>` : '';
-    const ln = p.length > 1 ? `<polyline class="ln" points="${p.map(q=>x(q.k)+','+y(q.v)).join(' ')}" fill="none" stroke="${s.color}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>` : '';
-    return area + ln + p.map(q => `<circle cx="${x(q.k)}" cy="${y(q.v)}" r="3.6" fill="${s.color}" stroke="#fff" stroke-width="1.5"><title>${dLong(q.k)} · ${esc(s.label)}: ${fmt(q.v,3)} ตัน</title></circle>`).join('');
-  }).join('');
-  const legend = series.length > 1 ? `<div class="legend">${series.map(s => `<span><i style="background:${s.color}"></i>${esc(s.label)}</span>`).join('')}</div>` : '';
-  return `<div class="chart"><svg viewBox="0 0 ${W} ${H}">${g}${lab}${ref}${body}</svg></div>${legend}`;
-}
-
-async function loadTrends(){
-  ['#trFlow','#trLevel','#trCatChart','#trTbl'].forEach(loading);
-  const [flow, open, [k]] = await Promise.all([ q('v_daily_flow', x => x.order('posting_date')), q('v_opening_by_category'), q('v_kpi_summary') ]);
-  TR.flow = flow; TR.open = open; TR.cap = k ? k.capacity_ton_actual : null; TR.snap = k ? k.snapshot_date : null;
-  renderTrends();
-}
-function renderTrends(){
-  const cats = TR.cat ? [TR.cat] : CATS;
-  const f = TR.flow.filter(r => cats.includes(r.category));
-  const allDates = [...new Set(TR.flow.map(r => r.posting_date))].sort();
-  let dates = allDates;
-  if (TR.range !== 'all' && allDates.length){
-    const last = new Date(allDates[allDates.length-1]+'T00:00:00'); last.setDate(last.getDate() - Number(TR.range) + 1);
-    dates = allDates.filter(d => d >= ymd(last));
-  }
-  // รวมรายวัน
-  const byDay = d => { const rs = f.filter(r => r.posting_date === d); const s = k => rs.reduce((a,r)=>a+Number(r[k]||0),0);
-    return { date:d, in:s('in_ton'), out:s('out_ton'), inQty:s('in_qty'), outQty:s('out_qty'), valid:s('valid_rows'), excl:s('excluded_rows'), exclT:s('excluded_ton') }; };
-  const allRows = allDates.map(byDay), rows = allRows.filter(r => dates.includes(r.date));
-  // ระดับ Stock สะสม: ตั้งต้น + สุทธิสะสมตั้งแต่วัน snapshot (นับทุกวัน ไม่ใช่เฉพาะช่วงที่เลือก)
-  const open0 = TR.open.filter(o => cats.includes(o.category)).reduce((a,o)=>a+Number(o.opening_ton||0),0);
-  let cum = open0; const level = {};
-  allRows.forEach(r => { if (!TR.snap || r.date >= TR.snap) cum += r.in - r.out; level[r.date] = cum; });
-  const tot = k => rows.reduce((a,r)=>a+r[k],0), tin = tot('in'), tout = tot('out'), nd = rows.length;
-  const busiest = rows.reduce((m,r)=> (r.in+r.out) > (m ? m.in+m.out : -1) ? r : m, null);
-  $('#trInfo').textContent = nd ? `${dLong(rows[0].date)} – ${dLong(rows[nd-1].date)} · ${nd} วันที่มีข้อมูล` : '';
-  const cards = [
-    ['รับเข้ารวม (ตัน)', tin, 2, 'g', 'in'], ['จ่ายออกรวม (ตัน)', tout, 2, 'o', 'out'], ['สุทธิ (ตัน)', tin - tout, 2, tin-tout>=0?'':'a', 'scale'],
-    ['เฉลี่ยรับเข้า/วัน', nd ? tin/nd : null, 2, '', 'in'], ['เฉลี่ยจ่ายออก/วัน', nd ? tout/nd : null, 2, '', 'out'],
-    ['Stock ล่าสุด (ตัน)', nd ? level[rows[nd-1].date] : open0, 2, '', 'box'] ];
-  $('#trKpis').innerHTML = cards.map((c,i)=>`<div class="kpi ${c[3]}" style="animation-delay:${i*0.04}s"><div class="ic">${icon(c[4])}</div><div><div class="l">${c[0]}</div><div class="v" data-v="${c[1]??''}" data-d="${c[2]}">0</div></div></div>`).join('')
-    + (busiest ? `<div class="kpi" style="animation-delay:.24s"><div class="ic">${icon('trend')}</div><div><div class="l">วันที่เคลื่อนไหวมากสุด</div><div class="v" style="font-size:18px">${dShort(busiest.date)}</div><div class="muted">${fmt(busiest.in+busiest.out,1)} ตัน</div></div></div>` : '');
-  $('#trKpis').querySelectorAll('.v[data-v]').forEach(v => v.dataset.v==='' ? v.textContent='-' : countUp(v, v.dataset.v, Number(v.dataset.d)));
-  $('#trFlow').innerHTML = flowChart(rows);
-  $('#trLevel').innerHTML = lineChart([{ label:'Stock สะสม', color:C_NET, pts: rows.map(r => ({k:r.date, v:level[r.date]})) }],
-    { area:true, zero:false });
-  $('#trCapNote').textContent = !TR.cat && TR.cap && nd ? `ใช้พื้นที่ ${fmt(100*level[rows[nd-1].date]/TR.cap,1)}% ของความจุจริงรวม ${fmt0(TR.cap)} ตัน` : '';
-  const val = r => TR.dim==='in' ? Number(r.in_ton) : TR.dim==='out' ? Number(r.out_ton) : Number(r.in_ton)-Number(r.out_ton);
-  $('#trCatChart').innerHTML = lineChart(cats.map(c => ({ label:c, color:CAT_COLOR[c],
-    pts: dates.map(d => { const r = TR.flow.find(x => x.posting_date===d && x.category===c); return {k:d, v: r ? val(r) : 0}; }) })), { h:260 });
-  TR.table = rows.map(r => ({ วันที่:r.date, รับเข้า_ตัน:+r.in.toFixed(3), จ่ายออก_ตัน:+r.out.toFixed(3), สุทธิ_ตัน:+(r.in-r.out).toFixed(3), Stock_สะสม_ตัน:+level[r.date].toFixed(3), รับเข้า_ชิ้น:r.inQty, จ่ายออก_ชิ้น:r.outQty, แถวผ่าน:r.valid, แถวถูกตัด:r.excl }));
-  $('#trTbl').innerHTML = table([{k:'date',l:'วันที่',f:v=>dLong(v)},{k:'in',l:'รับเข้า (ตัน)',num:1,f:v=>`<span style="color:${C_IN}">${fmt(v,3)}</span>`},
-    {k:'out',l:'จ่ายออก (ตัน)',num:1,f:v=>`<span style="color:${C_OUT}">${fmt(v,3)}</span>`},
-    {k:'in',l:'สุทธิ (ตัน)',num:1,f:(v,r)=>{ const n=r.in-r.out; return `<b style="color:${n>=0?C_NET:C_OUT}">${n>=0?'+':'−'}${fmt(Math.abs(n),3)}</b>`; }},
-    {k:'date',l:'Stock สะสม (ตัน)',num:1,f:v=>fmt(level[v],3)},{k:'inQty',l:'รับเข้า (ชิ้น)',num:1,f:fmt0},{k:'outQty',l:'จ่ายออก (ชิ้น)',num:1,f:fmt0},
-    {k:'valid',l:'แถวผ่าน',num:1,f:fmt0},{k:'excl',l:'แถวถูกตัด',num:1,f:(v,r)=>v?`<span class="pill warn" title="${fmt(r.exclT,3)} ตัน">${fmt0(v)}</span>`:'0'}], [...rows].reverse());
-}
-function segBind(id, key, attr){ document.querySelectorAll(`#${id} button`).forEach(b => b.onclick = () => {
-  document.querySelectorAll(`#${id} button`).forEach(x => x.classList.toggle('active', x===b)); TR[key] = b.dataset[attr]; renderTrends(); }); }
-segBind('trRange','range','r'); segBind('trCat','cat','c'); segBind('trDim','dim','m');
-$('#trCsv').onclick = () => downloadCsv('daily_flow.csv', TR.table || []);
 
 // =====================================================================
 // HISTORY
