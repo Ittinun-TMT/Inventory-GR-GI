@@ -1610,23 +1610,41 @@ function renderImpBody(){
 }
 async function doSheetImport(){
   const k = IMP.sheet, p = IMP.parsed, ck = IMP.check;
-  let rows = p.rows;
   if (SHEET_INFO[k].check && !ck) return toast('รอตรวจซ้ำให้เสร็จก่อน', true);
-  if (ck){   // นำเข้าเฉพาะกลุ่มที่ติ๊ก (ZSDR0010 = รายวัน, อื่น = วันที่ × Sloc)
-    const use = new Set(ck.filter(g => g.use).map(g => k === 'ZSDR0010' ? g.data_date : `${g.data_date}|${g.grp}`));
-    rows = rows.filter(r => use.has(k === 'ZSDR0010' ? r.gi_date : `${k === 'ZSDR0013' ? impAsOf() : r.posting_date}|${r.sloc}`)); }
-  if (!rows.length) return toast('ไม่มีกลุ่มที่เลือกให้นำเข้า (ทุกกลุ่มซ้ำกับในระบบ)', true);
   if (k === 'ZSDR0013' && !impAsOf()) return toast('ระบุวันที่ Stock ตั้งต้นก่อน', true);
-  const log = $('#impLog'); log.classList.remove('hidden'); IMP.log = `⏳ ${k}: ส่ง ${fmt0(rows.length)} แถว...\n`; log.textContent = IMP.log;
+  // แบ่งส่งทีละกลุ่ม (ZSDR0010 = รายวัน, อื่น = วันที่ × Sloc) — แต่ละกลุ่มเข้าทั้งก้อนหรือไม่เข้าเลย และไฟล์ใหญ่ไม่ติด timeout
+  const gk = r => k === 'ZSDR0010' ? r.gi_date : `${k === 'ZSDR0013' ? impAsOf() : r.posting_date}|${r.sloc}`;
+  let groups;
+  if (ck){ const use = ck.filter(g => g.use).map(g => k === 'ZSDR0010' ? g.data_date : `${g.data_date}|${g.grp}`);
+    const by = {}; p.rows.forEach(r => (by[gk(r)] ||= []).push(r));
+    groups = [...new Set(use)].filter(u => by[u]).map(u => ({ key:u, rows:by[u] })); }
+  else groups = [{ key:'ทั้งไฟล์', rows:p.rows }];
+  const total = groups.reduce((a, g) => a + g.rows.length, 0);
+  if (!total) return toast('ไม่มีกลุ่มที่เลือกให้นำเข้า (ทุกกลุ่มซ้ำกับในระบบ)', true);
+  const log = $('#impLog'); log.classList.remove('hidden');
+  const say = t => { IMP.log += t + '\n'; log.textContent = IMP.log; log.scrollTop = 1e9; };
+  IMP.log = ''; say(`⏳ ${k}: ${fmt0(total)} แถว · ${groups.length} กลุ่ม`);
   const b = $('#impGo'); busy(b, true, 'กำลังนำเข้า...');
-  try{
-    const d = await call('grgi_import_sheet', { p_sheet:k, p_file_name:p.fileName, p_as_of:impAsOf(), p_rows:rows });
-    IMP.log += `✅ นำเข้า ${fmt0(d.inserted)} แถว · แทนที่ของเดิม ${fmt0(d.superseded)} แถว · batch #${d.batch_id}\nตรวจซ้ำใหม่อีกครั้ง → กลุ่มที่เพิ่งนำเข้าควรเป็น "ซ้ำ"`; log.textContent = IMP.log;
-    toast(`นำเข้า ${k} เรียบร้อย`); D.loaded = false; refreshBadge();
-    const li = await q('v_last_import'); IMP.last = Object.fromEntries(li.map(r => [r.sheet_name, r])); renderSheetCards(); loadCoverage();
-    if (SHEET_INFO[k].check) runPrecheck();
-  }catch(e){ IMP.log += `❌ ${errMsg(e)} (ไม่ถูกนำเข้าเลย)`; log.textContent = IMP.log; }
+  let ok = 0, ins = 0, sup = 0;
+  for (const [i, g] of groups.entries()){
+    const label = g.key.replace('|', ' · Sloc ');
+    b.innerHTML = `<span class="spin"></span>กำลังนำเข้า ${i + 1}/${groups.length}...`;
+    try{
+      const d = await call('grgi_import_sheet', { p_sheet:k, p_file_name:p.fileName, p_as_of:impAsOf(), p_rows:g.rows });
+      ok++; ins += d.inserted; sup += d.superseded;
+      say(`✅ ${label}: ${fmt0(d.inserted)} แถว · แทนที่ของเดิม ${fmt0(d.superseded)} · batch #${d.batch_id}`);
+    }catch(e){
+      const m = errMsg(e);
+      say(`❌ ${label}: ${/timeout/i.test(m) ? 'ฐานข้อมูลใช้เวลานานเกินกำหนด — ลองกดนำเข้าใหม่อีกครั้ง (กลุ่มที่สำเร็จแล้วจะขึ้นว่า "ซ้ำ")' : m} (กลุ่มนี้ไม่ถูกนำเข้า)`);
+      if (!USER) break;
+    }
+  }
+  say(`สรุป: สำเร็จ ${ok}/${groups.length} กลุ่ม · นำเข้า ${fmt0(ins)} แถว · แทนที่ของเดิม ${fmt0(sup)} แถว`);
+  toast(ok === groups.length ? `นำเข้า ${k} เรียบร้อย` : `นำเข้า ${k} สำเร็จ ${ok}/${groups.length} กลุ่ม`, ok !== groups.length);
   busy(b, false); b.disabled = !canImport();
+  if (ok){ D.loaded = false; refreshBadge();
+    const li = await q('v_last_import'); IMP.last = Object.fromEntries(li.map(r => [r.sheet_name, r])); renderSheetCards(); loadCoverage();
+    if (SHEET_INFO[k].check) runPrecheck(); }
 }
 
 // ---------- ลบข้อมูลรายวัน (× Sloc) — ลบแบบเก็บประวัติ ----------
@@ -1817,7 +1835,7 @@ async function loadSettings(){
 // =====================================================================
 async function loadHistory(){
   loading('#histTbl');
-  const h = await q('import_batches', x=>x.order('id',{ascending:false}).limit(100));
+  const h = (await q('import_batches', x=>x.order('id',{ascending:false}).limit(120))).filter(r => !String(r.sheet_name).startsWith('_')).slice(0, 100);
   $('#histTbl').innerHTML = table([{k:'id',l:'#'},{k:'imported_at',l:'เวลา',f:v=>new Date(v).toLocaleString('th-TH')},{k:'sheet_name',l:'ชีท',f:v=>`<span class="pill info">${esc(v)}</span>`},
     {k:'action',l:'รายการ',f:v=>v==='REMOVE'?'<span class="pill bad">ลบข้อมูล</span>':'<span class="pill ok">นำเข้า</span>'},
     {k:'file_name',l:'ไฟล์ / รายละเอียด',f:(v,r)=>esc(r.action==='REMOVE' ? (r.note_detail||v) : v)},{k:'as_of_date',l:'วันที่ข้อมูล'},{k:'row_count',l:'แถวนำเข้า',num:1,f:fmt0},
