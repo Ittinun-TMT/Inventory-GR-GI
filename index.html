@@ -352,6 +352,13 @@
   .cov td.y{background:var(--ok-soft);color:var(--ok);border-radius:6px;min-width:44px}
   .cov td.n{background:#fdf1f1;color:#e0a0a0;border-radius:6px} .cov td.x{background:#f6f8f9;border-radius:6px;color:#c5cfd3}
   .cov-legend{display:flex;gap:14px;font-size:12.5px;color:var(--muted);margin-top:8px} .cov-legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+  .btn.danger{background:var(--bad)} .btn.danger:hover:not(:disabled){background:#c93a3a;box-shadow:0 6px 16px rgba(224,72,72,.3)}
+  details.rm{margin-top:16px;border:1px solid #f3d3d3;border-radius:12px;padding:12px 14px;background:#fffafa}
+  details.rm summary{cursor:pointer;color:var(--bad);font-weight:500;display:flex;align-items:center;gap:8px;list-style:none}
+  details.rm summary::-webkit-details-marker{display:none}
+  .rm-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px}
+  .rm-list label{display:flex;gap:8px;align-items:center;border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 10px;font-size:13.5px;cursor:pointer}
+  .rm-list label:hover{border-color:var(--bad)}
   .modal.wide{width:min(860px,94vw);max-height:88vh;overflow:auto}
   @media (max-width:1100px){ .bk-grid,.cap-cards{grid-template-columns:repeat(2,1fr)} .grid2{grid-template-columns:1fr} .cap-row{grid-template-columns:1fr} }
   @media (max-width:900px){ .filterbar{margin:-6px -16px 14px;padding:8px 16px;position:static} .abc-cards{grid-template-columns:1fr} }
@@ -383,6 +390,7 @@
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
   <symbol id="i-filter" viewBox="0 0 24 24"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></symbol>
   <symbol id="i-camera" viewBox="0 0 24 24"><path d="M3 8a2 2 0 012-2h2l2-2h6l2 2h2a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><circle cx="12" cy="13" r="4"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
   <symbol id="i-down2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
   <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v12m0 0l-4-4m4 4l4-4M5 20h14"/></symbol>
 </svg>
@@ -394,7 +402,7 @@
     <div style="position:relative">
       <h1>Data Inventory<br><span>GRGI</span></h1>
       <p>ระบบรับ–จ่ายและสต็อกคลังสินค้า · นำเข้าข้อมูล SAP · ตรวจเงื่อนไขอัตโนมัติ</p>
-      <div class="chips"><span>ZSDR0013</span><span>ZMMR0004</span><span>ZSDR0010</span><span>Master</span><span>Area</span></div>
+      <div class="chips"><span>ZSDR0013</span><span>ZMMR004</span><span>ZSDR0010</span><span>Master</span><span>Area</span></div>
     </div>
   </div>
   <div class="lg-panel">
@@ -564,7 +572,7 @@
   <div class="sheet-grid" id="sheetCards"></div>
   <div class="card" id="sheetPanel"></div>
   <div class="card"><h2><span class="dot"></span>Sloc ไหนวางข้อมูลแล้ว</h2><p class="desc">ภาพรวมข้อมูลที่อยู่ในระบบ แยกวันที่ × Sloc · ช่องเขียว = มีข้อมูล (จำนวนแถว) · ช่องแดง = Sloc คลังที่ยังไม่มีข้อมูลในวันที่มีคนอื่นวางแล้ว</p>
-    <div class="row" style="margin-bottom:12px"><div class="seg" id="covSheet"><button data-v="ZMMR0004" class="active">ZMMR0004</button><button data-v="ZSDR0013">ZSDR0013</button><button data-v="ZSDR0010">ZSDR0010</button></div>
+    <div class="row" style="margin-bottom:12px"><div class="seg" id="covSheet"><button data-v="ZMMR004" class="active">ZMMR004</button><button data-v="ZSDR0013">ZSDR0013</button><button data-v="ZSDR0010">ZSDR0010</button></div>
       <div class="seg" id="covDays"><button data-v="14" class="active">14 วันล่าสุด</button><button data-v="31">31 วัน</button><button data-v="all">ทั้งหมด</button></div></div>
     <div class="tbl" id="covTbl" style="max-height:520px"></div>
     <div class="cov-legend"><span><i style="background:var(--ok-soft)"></i>มีข้อมูล</span><span><i style="background:#fdf1f1"></i>ยังไม่วาง</span><span><i style="background:#f6f8f9"></i>ไม่มีข้อมูลทั้งวัน</span></div></div>
@@ -576,7 +584,7 @@
   <div class="card"><h2><span class="dot"></span>Code ที่ไม่พบใน Master</h2><p class="desc">Material ในข้อมูลเข้า–ออก/สต็อก ที่ยังไม่มีคู่ใน Group Sale / Group Product / Product Type — ระบบจัดเป็นหมวด Other</p>
     <div class="row" style="margin:4px 0 12px"><button class="btn ghost sm" id="umCsv"><svg class="i" style="width:15px;height:15px"><use href="#i-down"/></svg>CSV</button><span class="muted" id="umInfo"></span></div>
     <div class="tbl" id="umTbl"></div></div>
-  <div class="card"><h2><span class="dot"></span>ผลตัดสินเงื่อนไข ZMMR0004</h2>
+  <div class="card"><h2><span class="dot"></span>ผลตัดสินเงื่อนไข ZMMR004</h2>
     <div class="row" style="margin:4px 0 12px"><label class="row muted" style="gap:6px"><input type="checkbox" id="onlyExcluded"> เฉพาะที่ถูกตัดออก</label></div>
     <div class="tbl" id="ruleTbl"></div></div>
   <div class="card"><h2><span class="dot"></span>รายการน้ำหนัก 0 และวิธีเติม</h2>
@@ -623,7 +631,7 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { auth: { pe
 const SLOC_TYPES = ['WH','PD','TEMP','OTH','REW','UNKNOWN'];
 const CATS = ['Flat','Trading','Long','Other'];
 const ROLES = ['Admin','Uploader','Viewer'];
-const IMPORT_ORDER = ['Area','Mov.Type','Master','ZSDR0013','ZSDR0010','ZMMR0004'];
+const IMPORT_ORDER = ['Area','Mov.Type','Master','ZSDR0013','ZSDR0010','ZMMR004'];
 const TITLES = { summary:'สรุปผล', trends:'แนวโน้มเข้า–ออก รายวัน', analysis:'วิเคราะห์สต็อก', stock:'Stock คงเหลือ', lookup:'ค้นหา Material', import:'นำเข้าข้อมูล', quality:'ตรวจคุณภาพข้อมูล', settings:'ตั้งค่า', history:'ประวัตินำเข้า' };
 
 // ---------- นิยามชีท: คอลัมน์ในระบบ ← ชื่อหัวคอลัมน์ใน Excel ----------
@@ -651,7 +659,7 @@ const SHEETS = {
     sloc:{h:['Storage Location','Sloc'],t:'code',req:1},
     qty:{h:['Quantity'],t:'num',req:1},
     weight_kg:{h:['น้ำหนัก spec','Weight'],t:'num',req:1} } },
-  'ZMMR0004': { cols: {
+  'ZMMR004': { cols: {
     posting_date:{h:['Posting Date'],t:'date',req:1},
     material:{h:['Material'],t:'code',req:1},
     material_desc:{h:['Material Description'],t:'text'},
@@ -918,9 +926,10 @@ function conv(v, t){
 }
 function detectSheet(name, headers){
   const n = norm(name);
+  if (n === 'zmmr0004') return 'ZMMR004';   // ชื่อชีทพิมพ์ 0 เกินมา 1 ตัว ก็รับได้
   for (const k of Object.keys(SHEETS)) if (norm(k) === n) return k;
   const hs = new Set(headers.map(norm));
-  for (const k of ['ZMMR0004','ZSDR0010','ZSDR0013','Master','Area','Mov.Type']){
+  for (const k of ['ZMMR004','ZSDR0010','ZSDR0013','Master','Area','Mov.Type']){
     const req = Object.values(SHEETS[k].cols).filter(c=>c.req);
     if (req.every(c => c.h.some(h => hs.has(norm(h))))) return k;
   }
@@ -953,7 +962,7 @@ function parseSheet(kind, ws, fileName, sheetName){
   const st = { rows: rows.length };
   const sum = k => rows.reduce((s,o)=>s+(Number(o[k])||0),0);
   if (kind==='ZSDR0013'){ st.qty=sum('qty'); st.kg=sum('weight_kg'); st.mats=new Set(rows.map(o=>o.material)).size; }
-  if (kind==='ZMMR0004'){
+  if (kind==='ZMMR004'){
     st.qty=sum('qty'); st.kg=sum('weight_kg'); const ds=rows.map(o=>o.posting_date).filter(Boolean).sort(); st.from=ds[0]; st.to=ds[ds.length-1];
     const z = rows.filter(o=>!o.weight_kg).length; if (z) msgs.push(['warn', `น้ำหนัก 0 จำนวน ${z} แถว — ระบบเติมจาก ZSDR0010 (SO+Item) หรือ Weight Spec ใน Master (ดูได้ที่ สรุปผล)`]);
     if (map.from_sloc===undefined && map.to_sloc===undefined) msgs.push(['warn','ไม่มีคอลัมน์ Sloc ต้นทาง/ปลายทาง — Mov 311 ตรวจเงื่อนไขต้นทางไม่ได้ (จะถูกตัดออก)']);
@@ -1266,14 +1275,14 @@ async function renderSummary(){
   if (!crit.length && !warn.length) cards.push({ accent:TIER.normal, tag:'ปกติ', title:'ทุกโรงใช้พื้นที่ไม่เกิน 80%',
     body: roomy.length ? 'โรงที่ว่างมากสุด: ' + roomy.slice(0, 2).map(f => `${f.fac} (${f.pct.toFixed(0)}%, ว่าง ${fmt0(f.remain)} ตัน)`).join(', ') : 'ไม่มีโรงที่ต้องดูเป็นพิเศษ' });
   // ข้อมูลที่ต้องแก้ / ยังไม่วาง (ไม่ขึ้นกับตัวกรอง)
-  const [dq, cov] = await Promise.all([q('v_data_quality'), last ? q('v_import_coverage', x => x.eq('sheet','ZMMR0004').eq('data_date', last)) : []]);
+  const [dq, cov] = await Promise.all([q('v_data_quality'), last ? q('v_import_coverage', x => x.eq('sheet','ZMMR004').eq('data_date', last)) : []]);
   const dqv = n => (dq.find(d => d.check_name.startsWith(n)) || {}).row_count || 0;
-  const issues = [['ZMMR0004 แถวถูกตัดออก', 'แถวถูกตัดออก'], ['ZMMR0004 น้ำหนัก 0 ที่ยังแก้ไม่ได้', 'น้ำหนัก 0 ที่ยังเติมไม่ได้'], ['Sloc ยังไม่ระบุประเภท', 'Sloc ยังไม่ระบุประเภท'], ['Stock คงเหลือติดลบ', 'บรรทัด Stock ติดลบ']]
+  const issues = [['ZMMR004 แถวถูกตัดออก', 'แถวถูกตัดออก'], ['ZMMR004 น้ำหนัก 0 ที่ยังแก้ไม่ได้', 'น้ำหนัก 0 ที่ยังเติมไม่ได้'], ['Sloc ยังไม่ระบุประเภท', 'Sloc ยังไม่ระบุประเภท'], ['Stock คงเหลือติดลบ', 'บรรทัด Stock ติดลบ']]
     .map(([k, t]) => [t, dqv(k)]).filter(x => x[1] > 0);
   if (issues.length) cards.push({ accent:'#e0a100', tag:'คุณภาพข้อมูล', go:'quality', title:`มี ${issues.length} เรื่องที่ควรตรวจ`, body: issues.map(([t, n]) => `${t} ${fmt0(n)}`).join(' · ') });
   const whSlocs = D.slocs.filter(s => s.effective_type === 'WH').map(s => s.sloc), have = new Set(cov.map(c => c.grp));
   const missing = whSlocs.filter(s => !have.has(s));
-  if (last && missing.length && have.size) cards.push({ accent:'#4f8fc2', tag:'ยังไม่วางข้อมูล', go:'import', title:`ZMMR0004 วันที่ ${dShort(last)}: ยังไม่มี ${missing.length} Sloc`, body: missing.slice(0, 12).join(', ') + (missing.length > 12 ? ' …' : '') });
+  if (last && missing.length && have.size) cards.push({ accent:'#4f8fc2', tag:'ยังไม่วางข้อมูล', go:'import', title:`ZMMR004 วันที่ ${dShort(last)}: ยังไม่มี ${missing.length} Sloc`, body: missing.slice(0, 12).join(', ') + (missing.length > 12 ? ' …' : '') });
   $('#bActs').innerHTML = cards.slice(0, 6).map((c, i) => (c.fac || c.go)
     ? `<button class="act" style="--accent:${c.accent};animation-delay:${i*.05}s" ${c.fac ? `data-fac="${esc(c.fac)}"` : `data-go="${c.go}"`}><span class="tag">${esc(c.tag)}</span><span class="tt">${esc(c.title)}</span><span class="bd">${esc(c.body)}</span><span class="more">${c.fac ? 'คลิกเพื่อดูว่ามีอะไรจัดเก็บบ้าง' : 'คลิกเพื่อไปที่หน้านี้'}</span></button>`
     : `<div class="act" style="--accent:${c.accent};animation-delay:${i*.05}s"><span class="tag">${esc(c.tag)}</span><span class="tt">${esc(c.title)}</span><span class="bd">${esc(c.body)}</span></div>`).join('');
@@ -1512,19 +1521,19 @@ $('#lkGo').onclick = async e => {
 // นำเข้าข้อมูล — แยกตามชีท + ตรวจซ้ำ + Sloc ที่วางแล้ว
 // =====================================================================
 const SHEET_INFO = {
-  'ZMMR0004': { title:'เคลื่อนไหวเข้า–ออก', tcode:'ZMMR0004 (Main) · Ex+In', owner:'HS & Plate & Scrap: พี่หนู+พี่หร่อง · Flat Bar: พี่ดา+พี่ณัฐ · Section: พี่เก๋+พี่ปอ · Long & Pre-Process: Q1 Fac.O / Q2 Fac.01 / Q3 Fac.02 / Q4 Fac.03',
+  'ZMMR004': { title:'เคลื่อนไหวเข้า–ออก', tcode:'ZMMR004 (Main) · Ex+In', owner:'HS & Plate & Scrap: พี่หนู+พี่หร่อง · Flat Bar: พี่ดา+พี่ณัฐ · Section: พี่เก๋+พี่ปอ · Long & Pre-Process: Q1 Fac.O / Q2 Fac.01 / Q3 Fac.02 / Q4 Fac.03',
     rule:'แทนที่เฉพาะ <b>Posting Date × Sloc</b> ที่อยู่ในไฟล์ — Sloc อื่น/วันอื่นไม่กระทบ · ระบบตัดสินเงื่อนไขชีท Condition ให้อัตโนมัติ · แนะนำให้มีคอลัมน์ Sloc ต้นทาง/ปลายทาง', check:true },
   'ZSDR0013': { title:'Stock ตั้งต้น', tcode:'Stock By Bundle (ZSDR0013)', owner:'แต่ละส่วนงาน',
     rule:'1 แถว = 1 มัด · ระบบรวม Mat+Batch ภายใต้ Sloc ให้เอง · แทนที่เฉพาะ <b>วันที่ Stock ตั้งต้น × Sloc</b> ที่อยู่ในไฟล์', check:true, asOf:true },
   'ZSDR0010': { title:'ขาออก (Sub)', tcode:'ZSDR0010', owner:'—',
-    rule:'ใช้เติมน้ำหนัก 0 ของขาออกตาม SO + Item เดียวกัน · แทนที่ตาม <b>GI date × Delivery no.</b>', check:true },
+    rule:'ใช้เติมน้ำหนัก 0 ของขาออกตาม SO + Item เดียวกัน · ตรวจซ้ำและแทนที่<b>เป็นรายวัน (Actual GI date)</b> — วันไหนอยู่ในไฟล์ ข้อมูลวันนั้นทั้งวันถูกแทนที่', check:true },
   'Master': { title:'Group Product', tcode:'Google Sheet Master Data', owner:'พี่ปุ้ย (Long) · พี่ดา (Flat) · พี่เก๋ (Trading)',
     rule:'ชุดเต็ม — นำเข้าแล้ว<b>แทนที่ Master เดิมทั้งหมด</b> (ของเดิมเก็บในประวัติ)' },
   'Area': { title:'พื้นที่จัดเก็บ', tcode:'Config Area Excel', owner:'นาย (Eng.)', rule:'อัปเดตตามชื่อโรง (กว้าง × ยาว, % รับน้ำหนักต่อพื้นที่ → ความจุจริงตัน)' },
   'Mov.Type': { title:'Movement Type', tcode:'คำอธิบาย Movement Type', owner:'—', rule:'อัปเดตตามรหัส Mov' },
 };
-const SHEET_ORDER = ['ZMMR0004','ZSDR0013','ZSDR0010','Master','Area','Mov.Type'];
-let IMP = { sheet:'ZMMR0004', parsed:null, check:null, last:{}, cov:[], covSheet:'ZMMR0004', covDays:'14' };
+const SHEET_ORDER = ['ZMMR004','ZSDR0013','ZSDR0010','Master','Area','Mov.Type'];
+let IMP = { sheet:'ZMMR004', parsed:null, check:null, last:{}, cov:[], covSheet:'ZMMR004', covDays:'14' };
 async function loadImportPage(){
   const li = await q('v_last_import'); IMP.last = Object.fromEntries(li.map(r => [r.sheet_name, r]));
   renderSheetCards(); renderSheetPanel(); loadCoverage();
@@ -1535,7 +1544,7 @@ function renderSheetCards(){
       <div class="nm">${icon('upload',17)}${esc(k)}</div><div class="tc">${esc(s.title)} · ${esc(s.tcode)}</div>
       <div class="last">${l ? `ล่าสุด ${new Date(l.imported_at).toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'})}<br>${fmt0(l.row_count)} แถว${l.as_of_date ? ' · ข้อมูล ' + dShort(l.as_of_date) : ''} · ${esc((l.imported_by||'').split(' ').slice(1).join(' ') || l.imported_by || '')}` : '<span class="muted">ยังไม่เคยนำเข้า</span>'}</div></button>`; }).join('');
   $('#sheetCards').querySelectorAll('[data-s]').forEach(b => b.onclick = () => { IMP.sheet = b.dataset.s; IMP.parsed = null; IMP.check = null; IMP.log = ''; renderSheetCards(); renderSheetPanel();
-    if (['ZMMR0004','ZSDR0013','ZSDR0010'].includes(IMP.sheet)){ IMP.covSheet = IMP.sheet; document.querySelectorAll('#covSheet button').forEach(x => x.classList.toggle('active', x.dataset.v === IMP.sheet)); renderCoverage(); } });
+    if (['ZMMR004','ZSDR0013','ZSDR0010'].includes(IMP.sheet)){ IMP.covSheet = IMP.sheet; document.querySelectorAll('#covSheet button').forEach(x => x.classList.toggle('active', x.dataset.v === IMP.sheet)); renderCoverage(); } });
 }
 function renderSheetPanel(){
   const k = IMP.sheet, s = SHEET_INFO[k], p = IMP.parsed;
@@ -1543,7 +1552,9 @@ function renderSheetPanel(){
     <div class="rule-box">${s.rule}</div>
     ${s.asOf ? `<div class="row" style="margin-bottom:12px"><label class="muted">วันที่ Stock ตั้งต้น</label><input type="date" id="impAsOf" value="${IMP.asOf || ymd(new Date())}"></div>` : ''}
     <div class="drop" id="impDrop"><div class="ic">${icon('upload',26)}</div><b>ลากไฟล์ ${esc(k)} (.xlsx) มาวางที่นี่</b><div class="muted">หรือคลิกเพื่อเลือกไฟล์ · ไฟล์ที่มีหลายชีท ระบบเลือกชีท ${esc(k)} ให้เอง</div><input type="file" id="impFile" accept=".xlsx,.xls" hidden></div>
-    <div id="impBody"></div>`;
+    <div id="impBody"></div>
+    <div id="rmBox"></div>`;
+  renderRemoveBox();
   const drop = $('#impDrop'), fi = $('#impFile');
   drop.onclick = () => fi.click(); drop.ondragover = e => { e.preventDefault(); drop.classList.add('over'); }; drop.ondragleave = () => drop.classList.remove('over');
   drop.ondrop = e => { e.preventDefault(); drop.classList.remove('over'); if (e.dataTransfer.files[0]) readSheetFile(e.dataTransfer.files[0]); };
@@ -1579,13 +1590,13 @@ function renderImpBody(){
   if (s.kg !== undefined) parts.push(`${fmt(s.kg/1000,3)} ตัน`); if (s.from) parts.push(`${s.from}${s.to !== s.from ? ' – ' + s.to : ''}`);
   if (s.cap !== undefined) parts.push(`ความจุจริงรวม ${fmt(s.cap)} ตัน`);
   const slocs = [...new Set(p.rows.map(r => r.sloc).filter(Boolean))];
-  const ck = IMP.check, isGroupable = k !== 'ZSDR0010';
+  const ck = IMP.check, isGroupable = true;
   const cnt = st => ck ? ck.filter(g => g.status === st).length : 0;
   $('#impBody').innerHTML = `<div class="sheet" style="margin-top:14px"><div class="sheet-head"><b>${esc(p.fileName)} › ${esc(p.sheetName)}</b><span class="pill ${p.ok?'ok':'bad'}">${p.ok?'ข้อมูลถูกรูปแบบ':'มีข้อผิดพลาด'}</span><span class="muted">${parts.join(' · ')}</span></div>
       ${slocs.length ? `<div class="muted" style="margin-top:6px">Sloc ในไฟล์ (${slocs.length}): ${esc(slocs.join(', '))}</div>` : ''}
       <ul class="msgs">${p.msgs.map(m => `<li class="${m[0]}">${esc(m[1])}</li>`).join('')}${p.dupInFile ? `<li class="info">แถวที่เหมือนกันทุกช่องในไฟล์ ${fmt0(p.dupInFile)} แถว — เก็บทุกแถว (ถือว่าเป็นคนละมัด/คนละ Item)</li>` : ''}</ul></div>
     ${SHEET_INFO[k].check ? `<h3 style="color:var(--navy);font-size:15px;margin:16px 0 8px">ตรวจซ้ำกับข้อมูลในระบบ ${ck ? `<span class="st NEW">ใหม่ ${cnt('NEW')}</span> <span class="st CHANGED">เปลี่ยน ${cnt('CHANGED')}</span> <span class="st SAME">ซ้ำ ${cnt('SAME')}</span>` : ''}</h3>
-      <div id="impCheck">${ck ? `<div class="tbl" style="max-height:340px"><table><thead><tr>${isGroupable ? '<th>นำเข้า</th>' : ''}<th>วันที่</th><th>${k === 'ZSDR0010' ? 'Delivery' : 'Sloc'}</th><th class="num">แถวในไฟล์</th><th class="num">แถวในระบบ</th><th>สถานะ</th><th>วางล่าสุดโดย</th></tr></thead><tbody>${
+      <div id="impCheck">${ck ? `<div class="tbl" style="max-height:340px"><table><thead><tr>${isGroupable ? '<th>นำเข้า</th>' : ''}<th>วันที่</th><th>${k === 'ZSDR0010' ? 'กลุ่ม' : 'Sloc'}</th><th class="num">แถวในไฟล์</th><th class="num">แถวในระบบ</th><th>สถานะ</th><th>วางล่าสุดโดย</th></tr></thead><tbody>${
         ck.map((g, i) => `<tr>${isGroupable ? `<td><input type="checkbox" data-g="${i}" ${g.use ? 'checked' : ''}></td>` : ''}<td>${g.data_date ? dLong(g.data_date) : '—'}</td><td><b>${esc(g.grp)}</b></td><td class="num">${fmt0(g.file_rows)}</td><td class="num">${fmt0(g.db_rows)}</td>
           <td><span class="st ${g.status}">${{ NEW:'ใหม่', SAME:'ซ้ำ (เหมือนเดิมทุกแถว)', CHANGED:'มีอยู่แล้ว · ต่างจากเดิม → แทนที่' }[g.status]}</span></td>
           <td class="muted">${g.db_imported_at ? esc(g.db_imported_by || '') + ' · ' + new Date(g.db_imported_at).toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'}) : '—'}</td></tr>`).join('')}</tbody></table></div>
@@ -1601,8 +1612,9 @@ async function doSheetImport(){
   const k = IMP.sheet, p = IMP.parsed, ck = IMP.check;
   let rows = p.rows;
   if (SHEET_INFO[k].check && !ck) return toast('รอตรวจซ้ำให้เสร็จก่อน', true);
-  if (ck && k !== 'ZSDR0010'){ const use = new Set(ck.filter(g => g.use).map(g => `${g.data_date}|${g.grp}`));
-    rows = rows.filter(r => use.has(`${k === 'ZSDR0013' ? impAsOf() : r.posting_date}|${r.sloc}`)); }
+  if (ck){   // นำเข้าเฉพาะกลุ่มที่ติ๊ก (ZSDR0010 = รายวัน, อื่น = วันที่ × Sloc)
+    const use = new Set(ck.filter(g => g.use).map(g => k === 'ZSDR0010' ? g.data_date : `${g.data_date}|${g.grp}`));
+    rows = rows.filter(r => use.has(k === 'ZSDR0010' ? r.gi_date : `${k === 'ZSDR0013' ? impAsOf() : r.posting_date}|${r.sloc}`)); }
   if (!rows.length) return toast('ไม่มีกลุ่มที่เลือกให้นำเข้า (ทุกกลุ่มซ้ำกับในระบบ)', true);
   if (k === 'ZSDR0013' && !impAsOf()) return toast('ระบุวันที่ Stock ตั้งต้นก่อน', true);
   const log = $('#impLog'); log.classList.remove('hidden'); IMP.log = `⏳ ${k}: ส่ง ${fmt0(rows.length)} แถว...\n`; log.textContent = IMP.log;
@@ -1616,6 +1628,44 @@ async function doSheetImport(){
   }catch(e){ IMP.log += `❌ ${errMsg(e)} (ไม่ถูกนำเข้าเลย)`; log.textContent = IMP.log; }
   busy(b, false); b.disabled = !canImport();
 }
+
+// ---------- ลบข้อมูลรายวัน (× Sloc) — ลบแบบเก็บประวัติ ----------
+async function removeData(k, date, slocs){
+  const what = `${k} วันที่ ${dLong(date)}${k === 'ZSDR0010' ? ' (ทั้งวัน)' : ' · Sloc ' + slocs.join(', ')}`;
+  if (!confirm(`ยืนยันลบข้อมูล ${what}?\n\nข้อมูลจะไม่ถูกนับในระบบอีก (ยังเก็บประวัติไว้ตรวจย้อนหลังได้) · นำเข้าใหม่ได้ภายหลัง`)) return false;
+  try{
+    const d = await call('grgi_remove_data', { p_sheet:k, p_date:date, p_slocs: k === 'ZSDR0010' ? null : slocs });
+    toast(`ลบแล้ว ${fmt0(d.removed)} แถว — ${what}`); D.loaded = false; refreshBadge();
+    await loadCoverage(); if (IMP.parsed && SHEET_INFO[IMP.sheet].check) runPrecheck();
+    return true;
+  }catch(e){ toast(errMsg(e), true); return false; }
+}
+function renderRemoveBox(){
+  const box = $('#rmBox'), k = IMP.sheet; if (!box) return;
+  if (!['ZMMR004','ZSDR0013','ZSDR0010'].includes(k)){ box.innerHTML = ''; return; }
+  const rows = IMP.cov.filter(r => r.sheet === k), dates = [...new Set(rows.map(r => r.data_date))].sort().reverse();
+  if (!IMP.rmDate || !dates.includes(IMP.rmDate)) IMP.rmDate = dates[0];
+  const day = rows.filter(r => r.data_date === IMP.rmDate).sort((a, b) => a.grp.localeCompare(b.grp));
+  box.innerHTML = `<details class="rm" ${IMP.rmOpen ? 'open' : ''}><summary>${icon('trash',17)} ลบข้อมูล ${esc(k)} รายวัน${k !== 'ZSDR0010' ? ' ตาม Sloc' : ''}</summary>
+    <div class="muted" style="margin:6px 0 10px">ใช้เมื่อวางไฟล์ผิดวัน/ผิด Sloc · ลบแบบเก็บประวัติ (ดูได้ในหน้า ประวัตินำเข้า) แล้วนำเข้าใหม่ได้ · หรือคลิกช่องเขียวในตาราง "Sloc ไหนวางข้อมูลแล้ว"</div>
+    ${!dates.length ? '<div class="muted">ยังไม่มีข้อมูลในระบบ</div>' : `
+    <div class="row" style="margin-bottom:10px"><label class="muted">วันที่</label><select id="rmDate">${dates.map(d => `<option value="${d}" ${d === IMP.rmDate ? 'selected' : ''}>${dLong(d)}</option>`).join('')}</select>
+      ${k !== 'ZSDR0010' ? `<label class="row muted" style="gap:6px"><input type="checkbox" id="rmAll"> เลือกทุก Sloc (${day.length})</label>` : ''}</div>
+    ${k !== 'ZSDR0010' ? `<div class="rm-list">${day.map(r => `<label><input type="checkbox" value="${esc(r.grp)}"><b>${esc(r.grp)}</b><span class="muted">${esc((D.slocs.find(x => x.sloc === r.grp) || {}).factory || '')} · ${fmt0(r.row_count)} แถว · ${fmt(r.ton,1)} ตัน</span></label>`).join('')}</div>`
+      : `<div class="muted">${esc(day[0]?.grp || '')} · ${fmt0(day[0]?.row_count)} แถว · ${fmt(day[0]?.ton,1)} ตัน</div>`}
+    <div class="row" style="margin-top:12px"><button class="btn danger" id="rmGo" ${canImport() ? '' : 'disabled'}>${icon('trash',16)}ลบข้อมูลที่เลือก</button><span class="muted" id="rmSel"></span></div>`}</details>`;
+  const det = box.querySelector('details'); det.ontoggle = () => IMP.rmOpen = det.open;
+  if (!dates.length) return;
+  $('#rmDate').onchange = e => { IMP.rmDate = e.target.value; renderRemoveBox(); };
+  const boxes = () => [...box.querySelectorAll('.rm-list input')];
+  const upd = () => { const n = boxes().filter(c => c.checked); $('#rmSel').textContent = k === 'ZSDR0010' ? '' : n.length ? `เลือก ${n.length} Sloc · ${fmt0(sum(day.filter(r => n.some(c => c.value === r.grp)), 'row_count'))} แถว` : ''; };
+  if ($('#rmAll')) $('#rmAll').onchange = e => { boxes().forEach(c => c.checked = e.target.checked); upd(); };
+  boxes().forEach(c => c.onchange = upd);
+  $('#rmGo').onclick = async () => { const sl = boxes().filter(c => c.checked).map(c => c.value);
+    if (k !== 'ZSDR0010' && !sl.length) return toast('เลือก Sloc ที่จะลบก่อน', true);
+    const b = $('#rmGo'); busy(b, true, 'กำลังลบ...'); const ok = await removeData(k, IMP.rmDate, sl); if (!ok) busy(b, false); };
+}
+
 async function loadCoverage(){ loading('#covTbl'); IMP.cov = await fetchAll('v_import_coverage', ['sheet','data_date','grp']); if (!D.slocs.length) D.slocs = await q('v_sloc_effective', x => x.order('sloc')); renderCoverage(); }
 function renderCoverage(){
   const rows = IMP.cov.filter(r => r.sheet === IMP.covSheet);
@@ -1627,14 +1677,17 @@ function renderCoverage(){
   if (IMP.covSheet === 'ZSDR0010') groups = ['Delivery'];
   else { const wh = D.slocs.filter(s => s.effective_type === 'WH').map(s => s.sloc); groups = [...new Set([...wh, ...rows.map(r => r.grp)])].sort(); }
   const cell = (d, g) => {
-    if (IMP.covSheet === 'ZSDR0010'){ const r = rows.find(x => x.data_date === d); return r ? `<td class="y" title="${esc(r.grp)} · ${fmt(r.ton,2)} ตัน · ${esc(r.imported_by||'')}">${fmt0(r.row_count)}</td>` : '<td class="x">·</td>'; }
+    if (IMP.covSheet === 'ZSDR0010'){ const r = rows.find(x => x.data_date === d); return r ? `<td class="y" data-d="${d}" data-g="" title="${esc(r.grp)} · ${fmt(r.ton,2)} ตัน · ${esc(r.imported_by||'')}${canImport() ? '\nคลิกเพื่อลบข้อมูลวันนี้' : ''}">${fmt0(r.row_count)}</td>` : '<td class="x">·</td>'; }
     const r = map[`${d}|${g}`], dayHas = rows.some(x => x.data_date === d);
-    return r ? `<td class="y" title="${esc(g)} · ${dLong(d)}\n${fmt0(r.row_count)} แถว · ${fmt(r.ton,2)} ตัน\nวางโดย ${esc(r.imported_by||'')} · ${new Date(r.imported_at).toLocaleString('th-TH')}">${fmt0(r.row_count)}</td>`
+    return r ? `<td class="y" data-d="${d}" data-g="${esc(g)}" title="${esc(g)} · ${dLong(d)}\n${fmt0(r.row_count)} แถว · ${fmt(r.ton,2)} ตัน\nวางโดย ${esc(r.imported_by||'')} · ${new Date(r.imported_at).toLocaleString('th-TH')}${canImport() ? '\nคลิกเพื่อลบข้อมูลช่องนี้' : ''}">${fmt0(r.row_count)}</td>`
              : dayHas ? `<td class="n" title="${esc(g)} ยังไม่วางข้อมูลวันที่ ${dLong(d)}">✕</td>` : '<td class="x">·</td>';
   };
   const fac = g => (D.slocs.find(s => s.sloc === g) || {}).factory || '';
   $('#covTbl').innerHTML = `<table class="cov"><thead><tr><th style="text-align:left">${IMP.covSheet === 'ZSDR0010' ? '' : 'Sloc'}</th>${dates.map(d => `<th>${dShort(d)}</th>`).join('')}</tr></thead><tbody>${
     groups.map(g => `<tr><td class="s">${esc(g)} <span class="muted" style="font-weight:300">${esc(fac(g))}</span></td>${dates.map(d => cell(d, g)).join('')}</tr>`).join('')}</tbody></table>`;
+  if (canImport()) $('#covTbl').querySelectorAll('td.y').forEach(td => { td.style.cursor = 'pointer';
+    td.onclick = () => removeData(IMP.covSheet, td.dataset.d, td.dataset.g ? [td.dataset.g] : []); });
+  renderRemoveBox();
 }
 segBind('covSheet', IMP, 'covSheet', 'v', renderCoverage); segBind('covDays', IMP, 'covDays', 'v', renderCoverage);
 
@@ -1766,7 +1819,9 @@ async function loadHistory(){
   loading('#histTbl');
   const h = await q('import_batches', x=>x.order('id',{ascending:false}).limit(100));
   $('#histTbl').innerHTML = table([{k:'id',l:'#'},{k:'imported_at',l:'เวลา',f:v=>new Date(v).toLocaleString('th-TH')},{k:'sheet_name',l:'ชีท',f:v=>`<span class="pill info">${esc(v)}</span>`},
-    {k:'file_name',l:'ไฟล์'},{k:'as_of_date',l:'วันที่ข้อมูล'},{k:'row_count',l:'แถว',num:1,f:fmt0},{k:'superseded_rows',l:'แทนที่ของเดิม',num:1,f:fmt0},{k:'imported_by',l:'ผู้นำเข้า'}], h);
+    {k:'action',l:'รายการ',f:v=>v==='REMOVE'?'<span class="pill bad">ลบข้อมูล</span>':'<span class="pill ok">นำเข้า</span>'},
+    {k:'file_name',l:'ไฟล์ / รายละเอียด',f:(v,r)=>esc(r.action==='REMOVE' ? (r.note_detail||v) : v)},{k:'as_of_date',l:'วันที่ข้อมูล'},{k:'row_count',l:'แถวนำเข้า',num:1,f:fmt0},
+    {k:'superseded_rows',l:'แทนที่/ลบ',num:1,f:fmt0},{k:'imported_by',l:'ผู้ทำรายการ'}], h);
 }
 
 // ---------- start: ตรวจ session ที่ค้างอยู่ ----------
