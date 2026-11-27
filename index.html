@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Data Inventory GRGI</title>
+<title>Data Inventory GR&amp;GI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -375,6 +375,69 @@
   @media (max-width:1100px){ .bk-grid,.cap-cards{grid-template-columns:repeat(2,1fr)} .grid2{grid-template-columns:1fr} .cap-row{grid-template-columns:1fr} }
   @media (max-width:900px){ .filterbar{margin:-6px -16px 14px;padding:8px 16px;position:static} .abc-cards{grid-template-columns:1fr} }
 
+  /* ================= สมดุลรับ–จ่าย ================= */
+  .bl-hero{display:grid;grid-template-columns:1.25fr 1fr;gap:24px;align-items:center;background:linear-gradient(160deg,#fff 0%,#fff 55%,var(--hero-tint,#f3f8fb) 140%);
+    border:1px solid var(--line);border-radius:18px;padding:22px 26px;margin-bottom:18px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .bl-hero.st-ok{--hero-tint:#e3f6ec;--stc:var(--ok)} .bl-hero.st-in{--hero-tint:#e4effa;--stc:#2f74a8} .bl-hero.st-out{--hero-tint:#ffe9dc;--stc:#c24e00} .bl-hero.st-none{--hero-tint:#eef1f3;--stc:var(--muted)}
+  .bl-hero .eyebrow{font-size:12.5px;letter-spacing:1px;color:var(--muted)}
+  .bl-badge{display:inline-flex;align-items:center;gap:6px;margin:8px 0 4px;padding:4px 14px;border-radius:20px;font-weight:500;font-size:15px;color:#fff;background:var(--stc);animation:pop .5s var(--ease) both}
+  .bl-hero h2{margin:6px 0 4px;font-size:clamp(20px,2.4vw,28px);line-height:1.35;color:var(--navy);font-weight:500}
+  .bl-hero h2 em{font-style:normal;color:var(--stc)}
+  .bl-hero .say{font-size:15px;color:#33525b;margin:0 0 14px;line-height:1.6}
+  .bl-hero .say b{color:var(--navy)}
+  .bl-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .bl-tile{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;border-top:3px solid var(--tc,var(--navy));min-width:0}
+  .bl-tile .l{font-size:12.5px;color:var(--muted)} .bl-tile .v{font-size:clamp(18px,1.7vw,23px);font-weight:500;color:var(--navy);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .bl-tile .v small{font-size:12px;color:var(--muted);font-weight:300} .bl-tile .s{font-size:12px;color:var(--muted)}
+  .scale-wrap{display:flex;flex-direction:column;align-items:center}
+  .scale-svg{width:100%;max-width:400px;height:auto;overflow:visible}
+  .scale-svg .beam,.scale-svg .pan{transition:transform 1.4s cubic-bezier(.34,1.56,.64,1)}
+  .scale-cap{font-size:12.5px;color:var(--muted);text-align:center;margin-top:2px}
+  .mix{display:flex;height:12px;border-radius:7px;overflow:hidden;background:#eef2f4;margin:8px 0 6px}
+  .mix i{display:block;height:100%;width:0;transition:width 1s var(--ease)}
+  .mix-lg{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)} .mix-lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+  .bl-range{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+  .bl-range .t{font-size:13.5px;color:var(--navy)}
+  .stp{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:2px 10px;font-size:12px;white-space:nowrap}
+  .stp.ok{background:var(--ok-soft);color:var(--ok)} .stp.in{background:#e4effa;color:#2f74a8} .stp.out{background:#ffe9dc;color:#c24e00} .stp.none{background:#eef1f3;color:var(--muted)}
+  .stp::before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor}
+  .dv{display:grid;grid-template-columns:minmax(54px,.8fr) 58px minmax(24px,1fr) minmax(24px,1fr) 58px 68px auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed #eef2f4;font-size:13.5px}
+  .dv.hd{font-size:12px;color:var(--muted);border-bottom:1px solid var(--line);padding-top:0}
+  .dv .nm{font-weight:500;color:var(--navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dv .l,.dv .r{position:relative;height:22px;display:flex;align-items:center}
+  .dv .l{justify-content:flex-end;border-right:2px solid #c5cfd3} .dv .r{justify-content:flex-start}
+  .dv .l i,.dv .r i{display:block;height:14px;width:0;transition:width 1s var(--ease)}
+  .dv .l i{background:var(--orange);border-radius:6px 0 0 6px} .dv .r i{background:#4f8fc2;border-radius:0 6px 6px 0}
+  .dv .gv,.dv .rv{font-size:12.5px;font-variant-numeric:tabular-nums;white-space:nowrap} .dv .gv{text-align:right;color:#c24e00} .dv .rv{color:#2f74a8}
+  .dv .st{white-space:nowrap;font-size:12px}
+  .dv .n{text-align:right;font-variant-numeric:tabular-nums;font-weight:500}
+  .dv.hd .l,.dv.hd .r{height:auto;border:0}
+  .callout{display:flex;gap:12px;align-items:flex-start;background:#f4f8fa;border:1px solid #dfe8ec;border-radius:12px;padding:12px 14px;font-size:13.5px;color:#33525b;line-height:1.6;margin-bottom:14px}
+  .callout .ic{width:30px;height:30px;border-radius:9px;background:#fff;display:grid;place-items:center;color:var(--navy);flex:none}
+  .callout.warn{background:#fffaf0;border-color:#f6e3b4} .callout.warn .ic{color:#c98a00}
+  .callout b{color:var(--navy)}
+  .toggle{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:#4a6b75;cursor:pointer;user-select:none}
+  .toggle input{appearance:none;width:36px;height:20px;border-radius:20px;background:#d5dde1;position:relative;cursor:pointer;transition:.2s;border:0;padding:0;margin:0}
+  .toggle input::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s var(--ease);box-shadow:0 1px 3px rgba(0,0,0,.2)}
+  .toggle input:checked{background:var(--orange)} .toggle input:checked::after{left:18px}
+  .toggle input:focus{box-shadow:0 0 0 3px var(--orange-soft)}
+  .bk.link{cursor:pointer;text-align:left;font-family:inherit;border-left:0;border-right:0;border-bottom:0;transition:transform .2s var(--ease),box-shadow .2s;color:inherit;width:100%}
+  .bk.link:hover{transform:translateY(-2px);box-shadow:var(--shadow-h)} .bk.link .n{color:var(--orange)}
+  @media (max-width:1100px){ .bl-hero{grid-template-columns:1fr} .bl-tiles{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:700px){ #blTbl td{white-space:nowrap} .dv{grid-template-columns:62px 52px 1fr 1fr 52px 62px;gap:6px;font-size:12px} .dv .st{display:none} }
+
+  /* ---- ปรับอ่านง่ายขึ้น (รอบ 27 พ.ย.) ---- */
+  .fac-grid{grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+  .fac .info .s{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .fac .info b{flex-wrap:wrap}
+  .filterbar{gap:8px}
+  .filterbar input[type=date]{width:136px}
+  .card h2{font-size:17.5px}
+  .card .desc{line-height:1.55}
+  td.num,th.num{white-space:nowrap}
+  .kpis{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}
+  .kpi .v{white-space:nowrap;font-size:clamp(18px,1.5vw,22px)} .kpi .l{line-height:1.35}
+  @media (max-width:900px){ .kpis{grid-template-columns:1fr 1fr} .kpi .v{white-space:normal;font-size:17px} }
 </style>
 </head>
 <body>
@@ -412,7 +475,7 @@
   <div class="lg-hero">
     <div class="grid-lines"></div><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
     <div style="position:relative">
-      <h1>Data Inventory<br><span>GRGI</span></h1>
+      <h1>Data Inventory<br><span>GR&amp;GI</span></h1>
       <p>ระบบรับ–จ่ายและสต็อกคลังสินค้า · นำเข้าข้อมูล SAP · ตรวจเงื่อนไขอัตโนมัติ</p>
       <div class="chips"><span>ZSDR0013</span><span>ZMMR004</span><span>ZSDR0010</span><span>Master</span><span>Area</span></div>
     </div>
@@ -454,10 +517,11 @@
   <aside class="side">
     <button class="collapse-btn" id="collapseBtn" title="หุบ/ขยายเมนู"><svg class="i" style="width:15px;height:15px"><use href="#i-chev"/></svg></button>
     <div class="brand"><div class="lg"><svg width="24" height="24" viewBox="0 0 36 36"><path d="M8 27V13l10-6 10 6v14M14 27v-8h8v8" fill="none" stroke="#ff6a05" stroke-width="2.6" stroke-linejoin="round"/></svg></div>
-      <div class="t"><b>Data Inventory GRGI</b><small>WAREHOUSE 2 · เข้า–ออก</small></div></div>
+      <div class="t"><b>Data Inventory GR&amp;GI</b><small>WAREHOUSE 2 · เข้า–ออก</small></div></div>
     <nav class="menu" id="menu">
       <div class="grp"><button class="grp-h"><span>ภาพรวม</span><svg class="i chev"><use href="#i-down2"/></svg></button><div class="grp-items">
         <button class="mi active" data-tab="summary" title="สรุปผล"><svg class="i"><use href="#i-chart"/></svg><span>สรุปผล</span><em class="home">หน้าหลัก</em></button>
+        <button class="mi" data-tab="balance" title="สมดุลรับ–จ่าย"><svg class="i"><use href="#i-scale"/></svg><span>สมดุลรับ–จ่าย</span><em class="home" style="border-color:rgba(255,106,5,.6);color:#ffb37f">ใหม่</em></button>
         <button class="mi" data-tab="trends" title="แนวโน้มเข้า–ออก"><svg class="i"><use href="#i-trend"/></svg><span>แนวโน้มเข้า–ออก</span></button>
       </div></div>
       <div class="grp"><button class="grp-h"><span>วิเคราะห์</span><svg class="i chev"><use href="#i-down2"/></svg></button><div class="grp-items">
@@ -520,6 +584,31 @@
       <div class="muted" style="margin-top:10px;line-height:1.8">เกณฑ์ต่อโรง: <span class="tier normal">ปกติ</span> ≤ 80% · <span class="tier warn">ใกล้เต็ม</span> 80–100% · <span class="tier critical">เกินพิกัด</span> &gt; 100% · % ใช้พื้นที่รวม = Stock รวม ÷ ความจุจริงรวม</div></div></div></div>
   <div class="card"><h2><span class="dot"></span>ภาพรวมตามหมวดสินค้า</h2><p class="desc">Flat / Trading / Long / Other · แยก Group Product · รับเข้า–จ่ายออกตามช่วงวันที่ในตัวกรอง</p><div class="fam-grid" id="famCards"></div></div>
   <div class="card"><h2><span class="dot"></span>รายโรงงาน เรียงจากวิกฤตที่สุดก่อน</h2><p class="desc">คลิกการ์ดเพื่อดูว่าโรงนั้นเก็บอะไรบ้าง</p><div class="fac-grid" id="facCards"></div></div>
+</section>
+
+<!-- ===== สมดุลรับ–จ่าย (GR vs GI) ===== -->
+<section data-page="balance" class="page hidden">
+  <section class="bl-hero" id="blHero"></section>
+  <div class="card"><h2><span class="dot"></span>รับเข้า เทียบ จ่ายออก</h2>
+    <p class="desc">แท่งบน = รับเข้า (GR) · แท่งล่าง = จ่ายออก (GI) · จุด = สุทธิ · สมดุล = รับเข้าอยู่ในช่วง ±10% ของจ่ายออก</p>
+    <div class="row" style="margin-bottom:12px">
+      <div class="seg" id="blBy"><button data-v="day" class="active">รายวัน</button><button data-v="week">รายสัปดาห์</button></div>
+      <label class="toggle" title="โอนย้ายระหว่าง Sloc ในคลัง (WH→WH) นับทั้งรับและจ่ายเท่ากัน — ตัดออกเพื่อดูเฉพาะเข้า/ออกจากภายนอก"><input type="checkbox" id="blNoInt">ไม่นับโอนย้ายภายในคลัง</label>
+    </div>
+    <div id="blNote"></div>
+    <div id="blChart"></div>
+    <h3 style="margin-top:22px">อัตรารับต่อจ่าย (GR ÷ GI)</h3>
+    <div id="blRatio"></div></div>
+  <div class="grid2">
+    <div class="card"><h2><span class="dot"></span>ตามหมวดสินค้า</h2><p class="desc">ซ้าย = จ่ายออก · ขวา = รับเข้า · ในช่วงวันที่ที่เลือก (ตัน)</p><div id="blCat"></div></div>
+    <div class="card"><h2><span class="dot"></span>ตามโรง</h2><p class="desc">เรียงจากโรงที่ไม่สมดุลมากที่สุด (|สุทธิ|) · คลิกเพื่อกรองเฉพาะโรง</p><div id="blFac"></div></div>
+  </div>
+  <div class="card"><h2><span class="dot"></span>ตารางสมดุล</h2>
+    <div class="row" style="margin:4px 0 12px"><button class="btn ghost sm" id="blCsv"><svg class="i" style="width:15px;height:15px"><use href="#i-down"/></svg>CSV</button><span class="muted" id="blTblInfo"></span></div>
+    <div class="tbl" id="blTbl"></div></div>
+  <div class="card"><h2><span class="dot"></span>ที่มาของตัวเลข (ราย Movement Type)</h2>
+    <p class="desc">อะไรถูกนับเป็นรับเข้า/จ่ายออก และอะไรไม่นับเพราะไม่ตรงเงื่อนไขชีท Condition · กรองตามช่วงวันที่ / หมวด / โรง</p>
+    <div class="tbl" id="blMov" style="max-height:520px"></div></div>
 </section>
 
 <!-- ===== TRENDS ===== -->
@@ -608,6 +697,11 @@
 <!-- ===== SETTINGS ===== -->
 <section data-page="settings" class="page hidden">
   <div id="settingsRO" class="pill info hidden" style="margin-bottom:12px">ดูได้อย่างเดียว — แก้ไขได้เฉพาะ Admin</div>
+  <div class="card"><h2><span class="dot"></span>การคำนวณรับ–จ่าย</h2>
+    <p class="desc">ใช้เมื่อไฟล์ ZMMR004 ไม่มีคอลัมน์ Sloc ต้นทาง/ปลายทาง · ระบบจับคู่ขาโอน (เช่น 311) จาก Mat.Doc + Material เดียวกัน: พบคู่ในคลัง = โอนภายใน (WH→WH) · ไม่พบคู่ = มาจาก/ไปนอกคลัง แล้วตัดสินตามกฎชีท Condition</p>
+    <div class="row"><label class="toggle"><input type="checkbox" id="setInfer">จับคู่ขาโอนอัตโนมัติ</label>
+      <span class="muted">Mov.Type:</span><input id="setInferTypes" style="width:150px" placeholder="311">
+      <button class="btn sm" id="setInferSave">บันทึก</button><span class="muted" id="setInferInfo"></span></div></div>
   <div class="card"><h2><span class="dot"></span>Sloc และประเภท</h2>
     <p class="desc">ลำดับการหา: ตั้งค่าราย Sloc (ถ้าไม่ใช่ UNKNOWN) → รูปแบบรหัส → UNKNOWN · WH=คลัง · PD=ผลิต · TEMP=พักชั่วคราว · OTH=2OTH · REW=REW1</p>
     <h3>รูปแบบรหัส Sloc</h3><div class="tbl" id="patTbl"></div>
@@ -633,7 +727,7 @@
 
 <script>
 // =====================================================================
-// CONFIG — โปรเจกต์ Supabase "Data Inventory GRGI"
+// CONFIG — ระบบ "Data Inventory GR&GI" (โปรเจกต์ Supabase: Data Inventory GRGI)
 // publishable key เปิดเผยได้ (อ่านอย่างเดียว) · การเขียนทุกอย่างผ่าน RPC ที่ตรวจ session token
 // =====================================================================
 const SUPABASE_URL = 'https://yyqsgrztjultylawtygy.supabase.co';
@@ -644,7 +738,7 @@ const SLOC_TYPES = ['WH','PD','TEMP','OTH','REW','UNKNOWN'];
 const CATS = ['Flat','Trading','Long','Other'];
 const ROLES = ['Admin','Uploader','Viewer'];
 const IMPORT_ORDER = ['Area','Mov.Type','Master','ZSDR0013','ZSDR0010','ZMMR004'];
-const TITLES = { summary:'สรุปผล', trends:'แนวโน้มเข้า–ออก รายวัน', analysis:'วิเคราะห์สต็อก', stock:'Stock คงเหลือ', lookup:'ค้นหา Material', import:'นำเข้าข้อมูล', quality:'ตรวจคุณภาพข้อมูล', settings:'ตั้งค่า', history:'ประวัตินำเข้า' };
+const TITLES = { summary:'สรุปผล', balance:'สมดุลรับ–จ่าย (GR เทียบ GI)', trends:'แนวโน้มเข้า–ออก รายวัน', analysis:'วิเคราะห์สต็อก', stock:'Stock คงเหลือ', lookup:'ค้นหา Material', import:'นำเข้าข้อมูล', quality:'ตรวจคุณภาพข้อมูล', settings:'ตั้งค่า', history:'ประวัตินำเข้า' };
 
 // ---------- นิยามชีท: คอลัมน์ในระบบ ← ชื่อหัวคอลัมน์ใน Excel ----------
 const SHEETS = {
@@ -888,9 +982,9 @@ function downloadCsv(name, rows){
 
 // ---------- เมนู + หน้า ----------
 let CUR = 'summary';
-const loaders = { summary: loadSummaryPage, trends: loadTrendsPage, analysis: loadAnalysisPage, stock: loadStockPage, lookup: loadLookupPage,
+const loaders = { summary: loadSummaryPage, balance: loadBalancePage, trends: loadTrendsPage, analysis: loadAnalysisPage, stock: loadStockPage, lookup: loadLookupPage,
   import: loadImportPage, quality: loadQualityPage, settings: loadSettings, history: loadHistory };
-const RENDER = { summary: () => renderSummary(), trends: () => renderTrends(), analysis: () => renderAnalysis(), stock: () => renderStock() };
+const RENDER = { summary: () => renderSummary(), balance: () => renderBalance(), trends: () => renderTrends(), analysis: () => renderAnalysis(), stock: () => renderStock() };
 function go(tab){
   CUR = tab;
   document.querySelectorAll('#menu .mi').forEach(x => x.classList.toggle('active', x.dataset.tab===tab));
@@ -978,7 +1072,7 @@ function parseSheet(kind, ws, fileName, sheetName){
   if (kind==='ZMMR004'){
     st.qty=sum('qty'); st.kg=sum('weight_kg'); const ds=rows.map(o=>o.posting_date).filter(Boolean).sort(); st.from=ds[0]; st.to=ds[ds.length-1];
     const z = rows.filter(o=>!o.weight_kg).length; if (z) msgs.push(['warn', `น้ำหนัก 0 จำนวน ${z} แถว — ระบบเติมจาก ZSDR0010 (SO+Item) หรือ Weight Spec ใน Master (ดูได้ที่ สรุปผล)`]);
-    if (map.from_sloc===undefined && map.to_sloc===undefined) msgs.push(['warn','ไม่มีคอลัมน์ Sloc ต้นทาง/ปลายทาง — Mov 311 ตรวจเงื่อนไขต้นทางไม่ได้ (จะถูกตัดออก)']);
+    if (map.from_sloc===undefined && map.to_sloc===undefined) msgs.push(['info','ไม่มีคอลัมน์ Sloc ต้นทาง/ปลายทาง — Mov 311 ระบบจะจับคู่ขาโอนจาก Mat.Doc เดียวกันให้ (ไม่พบคู่ = มาจาก/ไปนอกคลัง)']);
     if (map.mat_doc_item===undefined){ const k=new Set(), d=rows.filter(o=>{const s=JSON.stringify([o.mat_doc,o.material,o.batch,o.qty,o.mov_type]); if(k.has(s)) return true; k.add(s); return false;}).length;
       if (d) msgs.push(['info', `มีแถวหน้าตาเหมือนกัน ${d} แถว (ไฟล์ไม่มีเลข Item) — เก็บทุกแถวตามที่ตกลง`]); }
   }
@@ -1011,12 +1105,13 @@ function flowChart(rows){
     g += `<line x1="${L}" y1="${y(v)}" x2="${W-R}" y2="${y(v)}" stroke="${z?'#adb5bd':'#edf1f3'}" stroke-width="${z?1.2:1}"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="#6b7c83">${fmt0(Math.abs(v))}</text>`; }
   let bars = '', pts = [], lab = '';
   rows.forEach((r,i) => { const cx = L + slot*(i+.5), d = Math.min(i*0.025, 0.6);
-    bars += `<rect class="bar-in" style="animation-delay:${d}s" x="${cx-bw/2}" y="${y(r.in)}" width="${bw}" height="${Math.max(0.5,y(0)-y(r.in))}" rx="3" fill="${C_IN}"><title>${dLong(r.date)} · รับเข้า ${fmt(r.in,3)} ตัน</title></rect>`
-          + `<rect class="bar-out" style="animation-delay:${d}s" x="${cx-bw/2}" y="${y(0)}" width="${bw}" height="${Math.max(0.5,y(-r.out)-y(0))}" rx="3" fill="${C_OUT}"><title>${dLong(r.date)} · จ่ายออก ${fmt(r.out,3)} ตัน</title></rect>`;
+    const tl = r.tl || dLong(r.date);
+    bars += `<rect class="bar-in" style="animation-delay:${d}s" x="${cx-bw/2}" y="${y(r.in)}" width="${bw}" height="${Math.max(0.5,y(0)-y(r.in))}" rx="3" fill="${C_IN}"><title>${tl} · รับเข้า ${fmt(r.in,3)} ตัน</title></rect>`
+          + `<rect class="bar-out" style="animation-delay:${d}s" x="${cx-bw/2}" y="${y(0)}" width="${bw}" height="${Math.max(0.5,y(-r.out)-y(0))}" rx="3" fill="${C_OUT}"><title>${tl} · จ่ายออก ${fmt(r.out,3)} ตัน</title></rect>`;
     pts.push([cx, y(r.in - r.out), r]);
-    if (i % step === 0 || i === rows.length-1) lab += `<text x="${cx}" y="${H-14}" text-anchor="middle" font-size="11" fill="#6b7c83">${dShort(r.date)}</text>`; });
+    if (i % step === 0 || i === rows.length-1) lab += `<text x="${cx}" y="${H-14}" text-anchor="middle" font-size="11" fill="#6b7c83">${esc(r.lab || dShort(r.date))}</text>`; });
   const net = rows.length > 1 ? `<polyline class="ln dash" points="${pts.map(p=>p[0]+','+p[1]).join(' ')}" fill="none" stroke="${C_NET}" stroke-width="2"/>` : '';
-  const dots = pts.map(([x,yy,r]) => `<circle cx="${x}" cy="${yy}" r="3.8" fill="${C_NET}" stroke="#fff" stroke-width="1.5"><title>${dLong(r.date)} · สุทธิ ${r.in-r.out>=0?'+':'−'}${fmt(Math.abs(r.in-r.out),3)} ตัน</title></circle>`).join('');
+  const dots = pts.map(([x,yy,r]) => `<circle cx="${x}" cy="${yy}" r="3.8" fill="${C_NET}" stroke="#fff" stroke-width="1.5"><title>${r.tl || dLong(r.date)} · สุทธิ ${r.in-r.out>=0?'+':'−'}${fmt(Math.abs(r.in-r.out),3)} ตัน</title></circle>`).join('');
   return `<div class="chart"><svg viewBox="0 0 ${W} ${H}">${g}${lab}${bars}${net}${dots}</svg></div>
     <div class="legend"><span><i style="background:${C_IN}"></i>รับเข้า</span><span><i style="background:${C_OUT}"></i>จ่ายออก</span><span><i style="background:${C_NET}"></i>สุทธิ</span></div>`;
 }
@@ -1086,7 +1181,7 @@ $('#reloadBtn').onclick = async e => { const btn = e.currentTarget; busy(btn, tr
 // =====================================================================
 // ตัวกรองทั้งระบบ
 // =====================================================================
-const FILTER_PAGES = ['summary','trends','analysis','stock'];
+const FILTER_PAGES = ['summary','balance','trends','analysis','stock'];
 const F = Object.assign({ preset:'30', from:'', to:'', cats:[], facs:[], gps:[], gss:[] }, load('grgi_filter') || {});
 function dateRange(){
   const ds = D.dates; if (!ds.length) return [null, null];
@@ -1261,18 +1356,19 @@ async function renderSummary(){
   if (crit.length + warn.length) lede.push(`โรงที่ต้องตัดสินใจ: ${[...crit, ...warn].slice(0, 3).map(f => f.fac).join(', ')}`);
   $('#bLede').textContent = lede.join(' · ');
 
-  const bk = (accent, l, v, unit, s, sCls, n) => `<div class="bk" style="--accent:${accent}"><div class="l">${l}</div><div class="v">${v}${unit ? ` <small>${unit}</small>` : ''}</div><div class="s ${sCls||''}">${s}</div><div class="n">${n}</div></div>`;
+  const bk = (accent, l, v, unit, s, sCls, n, goTo) => `<${goTo ? `button class="bk link" data-go="${goTo}"` : 'div class="bk"'} style="--accent:${accent}"><div class="l">${l}</div><div class="v">${v}${unit ? ` <small>${unit}</small>` : ''}</div><div class="s ${sCls||''}">${s}</div><div class="n">${n}</div></${goTo ? 'button' : 'div'}>`;
   $('#bKpis').innerHTML = [
     bk('var(--orange)', 'Stock เปลี่ยนแปลง (วันล่าสุด)', last ? sgn(netL) + fmt0(Math.abs(netL)) : '—', last ? 'ตัน' : '',
        diffPct === null ? 'ยังไม่มีข้อมูลให้เทียบ' : `${netL >= 0 ? '▲' : '▼'} ${Math.abs(diffPct).toFixed(1)}%`, netL > 0 ? 'up' : '', last ? `จาก ${fmt0(before)} ตัน` : '&nbsp;'),
-    bk('var(--navy)', 'รับเข้า / จ่ายออก (วันล่าสุด)', last ? `${fmt0(L.in)} <small>/ ${fmt0(L.out)}</small>` : '—', last ? 'ตัน' : '',
-       last ? `สุทธิ ${sgn(netL)}${fmt0(Math.abs(netL))} ตัน` : 'ยังไม่มีข้อมูล', '', last ? dLong(last) : '&nbsp;'),
+    bk('var(--navy)', 'สมดุลรับ–จ่าย (วันล่าสุด)', last ? `${fmt0(L.in)} <small>/ ${fmt0(L.out)}</small>` : '—', last ? 'ตัน' : '',
+       last ? `${stPill(balStatus(L.in, L.out))} GR/GI ${ratioTxt(L.in, L.out)}` : 'ยังไม่มีข้อมูล', '', last ? 'รับ / จ่าย · ดูรายวัน–สัปดาห์ →' : '&nbsp;', 'balance'),
     bk('#fdc440', 'Days on Hand', doh !== null ? '≈ ' + fmt0(doh) : '—', doh !== null ? 'วัน' : '',
        avgOut > 0 ? `จ่ายออกเฉลี่ย ${fmt0(avgOut)} ตัน/วัน` : 'ยังไม่มีข้อมูลจ่ายออก', '', nd ? `เฉลี่ยจาก ${nd} วันที่มีข้อมูลในช่วงที่เลือก` : '&nbsp;'),
     bk('#8bbade', 'พื้นที่เต็มใน', cap <= 0 ? '—' : remain <= 0 ? 'เต็มแล้ว' : eta !== null && eta <= 365 ? '~' + fmt0(eta) : 'ยังไม่เร่ง', cap > 0 && remain > 0 && eta !== null && eta <= 365 ? 'วัน' : '',
        cap > 0 ? (remain >= 0 ? `ว่าง ${fmt0(remain)} ตัน (${Math.max(0, 100 - pctAll).toFixed(1)}%)` : `เกินรวม ${fmt0(-remain)} ตัน`) : 'ไม่มีข้อมูลความจุ', '',
        nd ? `สุทธิเฉลี่ย ${sgn(avgNet)}${fmt(Math.abs(avgNet),1)} ตัน/วัน` : '&nbsp;') ].join('');
 
+  $('#bKpis').querySelectorAll('[data-go]').forEach(b => b.onclick = () => go(b.dataset.go));
   // ----- ต้องดูวันนี้ -----
   const contTxt = f => 'เก็บ: ' + (f.top.slice(0, 3).map(([k, t]) => `${k.split(' · ')[1]} ${fmt0(t)} ตัน`).join(', ') || '—');
   const sameCat = f => { const s = roomy.filter(x => x.fac !== f.fac && x.top.some(([k, t]) => k.startsWith(f.mainCat + ' ·') && t >= 0.5)).slice(0, 2);
@@ -1335,7 +1431,7 @@ async function renderSummary(){
   $('#facCards').innerHTML = facs.map((f, i) => `<button class="fac ${f.tier}" data-fac="${esc(f.fac)}" style="animation-delay:${Math.min(i*.04,.5)}s">${ring(f.pct, f.tier)}
     <div class="info"><b>${esc(f.fac)} <span class="tier ${f.tier}">${TIER_TXT[f.tier]}</span></b>
       <div class="s">${fmt(f.used,1)} / ${f.cap > 0 ? fmt0(f.cap) : '—'} ตัน · ${f.remain >= 0 ? 'ว่าง ' + fmt0(f.remain) : 'เกิน ' + fmt0(-f.remain)}</div>
-      <div class="s"><span style="color:${C_IN}">+${fmt(f.inL,1)}</span> / <span style="color:${C_OUT}">−${fmt(f.outL,1)}</span> ตัน วันล่าสุด</div>
+      <div class="s">${f.inL + f.outL > 0.05 ? `วันล่าสุด รับ <span style="color:${C_IN}">${fmt(f.inL,1)}</span> · จ่าย <span style="color:${C_OUT}">${fmt(f.outL,1)}</span> ตัน` : 'วันล่าสุดไม่มีเคลื่อนไหว'}</div>
       <div class="c">${esc(f.top.slice(0, 2).map(([k]) => k.split(' · ')[1]).join(', ') || 'ไม่มี Stock')}</div></div></button>`).join('') || '<div class="empty">ไม่มีข้อมูล</div>';
   $('#facCards').querySelectorAll('[data-fac]').forEach(b => b.onclick = () => facModal(b.dataset.fac));
   animateRings(document.querySelector('[data-page=summary]'));
@@ -1359,7 +1455,7 @@ document.querySelectorAll('[data-cap]').forEach(b => b.onclick = async () => {
   busy(b, true, 'กำลังแคป...');
   try{
     const cv = await html2canvas(target, { scale: 2, backgroundColor: '#f5f7f9', ignoreElements: el => el.hasAttribute && el.hasAttribute('data-cap') });
-    const a = document.createElement('a'); a.download = `GRGI_สรุปผล_${D.dates[D.dates.length-1] || ymd(new Date())}.jpg`; a.href = cv.toDataURL('image/jpeg', 0.92); a.click();
+    const a = document.createElement('a'); a.download = `GR&GI_สรุปผล_${D.dates[D.dates.length-1] || ymd(new Date())}.jpg`; a.href = cv.toDataURL('image/jpeg', 0.92); a.click();
     toast('บันทึกรูปแล้ว');
   }catch(e){ toast('แคปรูปไม่สำเร็จ: ' + errMsg(e), true); }
   busy(b, false);
@@ -1377,8 +1473,8 @@ function renderTrends(){
   const day = d => { const rs = flowR.filter(r => r.posting_date === d); return { date:d, in:sum(rs,'in_ton'), out:sum(rs,'out_ton'), inQty:sum(rs,'in_qty'), outQty:sum(rs,'out_qty'), valid:sum(rs,'valid_rows'), excl:sum(rs,'excluded_rows') }; };
   const rows = dates.map(day), nd = rows.length, tin = sum(rows,'in'), tout = sum(rows,'out');
   const busiest = rows.reduce((m, r) => (r.in + r.out) > (m ? m.in + m.out : -1) ? r : m, null);
-  const cards = [['รับเข้ารวม (ตัน)', tin, 2, 'g', 'in'], ['จ่ายออกรวม (ตัน)', tout, 2, 'o', 'out'], ['สุทธิ (ตัน)', tin - tout, 2, tin - tout >= 0 ? '' : 'a', 'scale'],
-    ['เฉลี่ยรับเข้า/วัน', nd ? tin/nd : null, 2, '', 'in'], ['เฉลี่ยจ่ายออก/วัน', nd ? tout/nd : null, 2, '', 'out'], ['Stock ล่าสุด (ตัน)', nd ? lv[rows[nd-1].date] : sum(bal, posKg)/1000, 2, '', 'box']];
+  const cards = [['รับเข้ารวม (ตัน)', tin, 1, 'g', 'in'], ['จ่ายออกรวม (ตัน)', tout, 1, 'o', 'out'], ['สุทธิ (ตัน)', tin - tout, 1, tin - tout >= 0 ? '' : 'a', 'scale'],
+    ['เฉลี่ยรับเข้า/วัน', nd ? tin/nd : null, 1, '', 'in'], ['เฉลี่ยจ่ายออก/วัน', nd ? tout/nd : null, 1, '', 'out'], ['Stock ล่าสุด (ตัน)', nd ? lv[rows[nd-1].date] : sum(bal, posKg)/1000, 0, '', 'box']];
   $('#trKpis').innerHTML = cards.map((c,i)=>`<div class="kpi ${c[3]}" style="animation-delay:${i*0.04}s"><div class="ic">${icon(c[4])}</div><div><div class="l">${c[0]}</div><div class="v" data-v="${c[1]??''}" data-d="${c[2]}">0</div></div></div>`).join('')
     + (busiest ? `<div class="kpi" style="animation-delay:.24s"><div class="ic">${icon('trend')}</div><div><div class="l">วันที่เคลื่อนไหวมากสุด</div><div class="v" style="font-size:18px">${dShort(busiest.date)}</div><div class="muted">${fmt(busiest.in+busiest.out,1)} ตัน</div></div></div>` : '');
   $('#trKpis').querySelectorAll('.v[data-v]').forEach(v => v.dataset.v==='' ? v.textContent='-' : countUp(v, v.dataset.v, Number(v.dataset.d)));
@@ -1539,7 +1635,7 @@ const SHEET_INFO = {
   'ZSDR0013': { title:'Stock ตั้งต้น', tcode:'Stock By Bundle (ZSDR0013)', owner:'แต่ละส่วนงาน',
     rule:'1 แถว = 1 มัด · ระบบรวม Mat+Batch ภายใต้ Sloc ให้เอง · <b>นำเข้าแบบต่อกัน</b> — ไม่ตรวจซ้ำ ไม่แทนที่ของเดิม (แบ่งไฟล์วางหลายครั้งได้) · ⚠️ วางไฟล์เดิมซ้ำ = นับซ้ำ ถ้าวางผิดให้ใช้ "ลบข้อมูลรายวันตาม Sloc" ด้านล่างแล้ววางใหม่', asOf:true, append:true },
   'ZSDR0010': { title:'ขาออก (Sub)', tcode:'ZSDR0010', owner:'—',
-    rule:'ใช้เติมน้ำหนัก 0 ของขาออกตาม SO + Item เดียวกัน · ตรวจซ้ำและแทนที่<b>เป็นรายวัน (Actual GI date)</b> — วันไหนอยู่ในไฟล์ ข้อมูลวันนั้นทั้งวันถูกแทนที่', check:true },
+    rule:'ใช้เติมน้ำหนัก 0 ของขาออกตาม SO + Item เดียวกัน · ตรวจซ้ำ<b>รายวัน (Actual GI date)</b> แต่แทนที่<b>เฉพาะ Delivery ที่อยู่ในไฟล์</b> — วันเดียวกันแบ่งหลายไฟล์ (Section / HS / Flat) วางต่อกันได้ ไม่ทับกัน', check:true },
   'Master': { title:'Group Product', tcode:'Google Sheet Master Data', owner:'พี่ปุ้ย (Long) · พี่ดา (Flat) · พี่เก๋ (Trading)',
     rule:'ชุดเต็ม — นำเข้าแล้ว<b>แทนที่ Master เดิมทั้งหมด</b> (ของเดิมเก็บในประวัติ) · ใช้ไฟล์เดียว', single:true },
   'Area': { title:'พื้นที่จัดเก็บ', tcode:'Config Area Excel', owner:'นาย (Eng.)', rule:'อัปเดตตามชื่อโรง (กว้าง × ยาว, % รับน้ำหนักต่อพื้นที่ → ความจุจริงตัน)' },
@@ -1825,7 +1921,7 @@ const inp = (v, w=120) => `<input style="width:${w}px" value="${esc(v??'')}" ${i
 const chk = v => `<input type="checkbox" ${v?'checked':''} ${isAdmin()?'':'disabled'}>`;
 const saveBtn = () => isAdmin() ? `<button class="btn sm" data-save>บันทึก</button>` : '';
 async function adm(fn, args, okMsg='บันทึกแล้ว'){
-  try{ const d = await call(fn, args); toast(okMsg); return d ?? true; }catch(e){ toast(errMsg(e), true); return null; }
+  try{ const d = await call(fn, args); if (okMsg) toast(okMsg); return d ?? true; }catch(e){ toast(errMsg(e), true); return null; }
 }
 function bindRows(container, onSave){
   container.querySelectorAll('tbody tr').forEach(tr => { const b = tr.querySelector('[data-save]'); if (b) b.onclick = async () => { busy(b,true,'...'); await onSave(tr, [...tr.querySelectorAll('input,select')]); busy(b,false); }; });
@@ -1834,6 +1930,18 @@ let FACTORIES = [];
 async function loadSettings(){
   ['#patTbl','#slocTbl','#catTbl','#ruleCfgTbl'].forEach(loading);
   FACTORIES = (await q('factory_area', x=>x.order('factory'))).map(f=>f.factory);
+  // ---- การคำนวณรับ–จ่าย (app_settings) ----
+  const cfg = Object.fromEntries((await q('app_settings')).map(r => [r.key, r.value]));
+  $('#setInfer').checked = cfg.infer_transfer_partner !== false;
+  $('#setInferTypes').value = (cfg.infer_mov_types || ['311']).join(', ');
+  [$('#setInfer'), $('#setInferTypes'), $('#setInferSave')].forEach(e => e.disabled = !isAdmin());
+  $('#setInferInfo').textContent = isAdmin() ? 'มีผลกับทุกหน้าทันทีหลังบันทึก' : 'แก้ได้เฉพาะ Admin';
+  $('#setInferSave').onclick = async () => {
+    const types = $('#setInferTypes').value.split(/[\s,]+/).map(x => x.trim()).filter(Boolean);
+    if (!types.length) return toast('ใส่ Mov.Type อย่างน้อย 1 ตัว', true);
+    if (await adm('grgi_admin_set_setting', { p_key:'infer_transfer_partner', p_value: $('#setInfer').checked }, null)
+     && await adm('grgi_admin_set_setting', { p_key:'infer_mov_types', p_value: types }, 'บันทึกแล้ว — กำลังคำนวณใหม่')){ BLV.mov = null; await loadData(true); }
+  };
   // ---- patterns ----
   const pats = await q('sloc_type_patterns', x=>x.order('priority'));
   const patRows = [...pats, ...(isAdmin()?[{pattern:'',sloc_type:'WH',priority:100,note:'',_new:1}]:[])];
@@ -1913,10 +2021,186 @@ async function loadHistory(){
   loading('#histTbl');
   const h = (await q('import_batches', x=>x.order('id',{ascending:false}).limit(120))).filter(r => !String(r.sheet_name).startsWith('_')).slice(0, 100);
   $('#histTbl').innerHTML = table([{k:'id',l:'#'},{k:'imported_at',l:'เวลา',f:v=>new Date(v).toLocaleString('th-TH')},{k:'sheet_name',l:'ชีท',f:v=>`<span class="pill info">${esc(v)}</span>`},
-    {k:'action',l:'รายการ',f:v=>v==='REMOVE'?'<span class="pill bad">ลบข้อมูล</span>':'<span class="pill ok">นำเข้า</span>'},
-    {k:'file_name',l:'ไฟล์ / รายละเอียด',f:(v,r)=>esc(r.action==='REMOVE' ? (r.note_detail||v) : v)},{k:'as_of_date',l:'วันที่ข้อมูล'},{k:'row_count',l:'แถวนำเข้า',num:1,f:fmt0},
+    {k:'action',l:'รายการ',f:(v,r)=>v==='REMOVE'?'<span class="pill bad">ลบข้อมูล</span>':r.note==='restore'?'<span class="pill warn">กู้คืน</span>':'<span class="pill ok">นำเข้า</span>'},
+    {k:'file_name',l:'ไฟล์ / รายละเอียด',f:(v,r)=>esc(r.action==='REMOVE' ? (r.note_detail||v) : v) + (r.note==='restore' && r.note_detail ? `<div class="muted">${esc(r.note_detail)}</div>` : '')},{k:'as_of_date',l:'วันที่ข้อมูล'},{k:'row_count',l:'แถวนำเข้า',num:1,f:fmt0},
     {k:'superseded_rows',l:'แทนที่/ลบ',num:1,f:fmt0},{k:'imported_by',l:'ผู้ทำรายการ'}], h);
 }
+
+
+// =====================================================================
+// สมดุลรับ–จ่าย (GR vs GI) — รายวัน / รายสัปดาห์
+// GR/GI = รับเข้า ÷ จ่ายออก · สมดุลเมื่ออยู่ในช่วง 1 ± BAL_TOL
+// =====================================================================
+const BAL_TOL = 0.10;
+let BLV = { by:'day', noInt:false, mov:null, table:[] };
+const ST_TXT = { ok:'สมดุล', in:'รับมากกว่าจ่าย', out:'จ่ายมากกว่ารับ', none:'ไม่มีความเคลื่อนไหว' };
+const ST_COLOR = { ok:'#1f9d63', in:'#2f74a8', out:'#ff6a05', none:'#adb5bd' };
+function balStatus(gr, gi){
+  if (gr < 0.0005 && gi < 0.0005) return 'none';
+  if (gi < 0.0005) return 'in';
+  const r = gr / gi; return Math.abs(r - 1) <= BAL_TOL ? 'ok' : r > 1 ? 'in' : 'out';
+}
+// สัปดาห์แบบ ISO (จันทร์–อาทิตย์)
+function weekOf(k){
+  const d = new Date(k + 'T00:00:00Z'), dow = (d.getUTCDay() + 6) % 7;
+  const mon = new Date(d); mon.setUTCDate(d.getUTCDate() - dow);
+  const sun = new Date(mon); sun.setUTCDate(mon.getUTCDate() + 6);
+  const thu = new Date(mon); thu.setUTCDate(mon.getUTCDate() + 3);
+  const y0 = Date.UTC(thu.getUTCFullYear(), 0, 1), wn = 1 + Math.floor((thu - y0) / 864e5 / 7);
+  const s = x => x.toISOString().slice(0, 10);
+  return { key: s(mon), wn, mon: s(mon), sun: s(sun) };
+}
+const stPill = k => `<span class="stp ${k}">${ST_TXT[k]}</span>`;
+const ratioTxt = (gr, gi) => gi > 0.0005 ? (gr / gi).toFixed(2) : gr > 0 ? '∞' : '—';
+
+function balPeriods(rows, by){
+  const g = {};
+  rows.forEach(r => {
+    const key = by === 'week' ? weekOf(r.posting_date).key : r.posting_date;
+    const o = g[key] ||= { key, days:new Set(), gr:0, gi:0, grInt:0, giInt:0, grInf:0, exIn:0, exOut:0, exRows:0 };
+    o.days.add(r.posting_date); o.gr += +r.in_ton; o.gi += +r.out_ton;
+    o.grInt += +(r.in_internal_ton || 0); o.giInt += +(r.out_internal_ton || 0); o.grInf += +(r.in_inferred_ton || 0);
+    o.exIn += +(r.excl_in_ton || 0); o.exOut += +(r.excl_out_ton || 0); o.exRows += +(r.excluded_rows || 0);
+  });
+  return Object.values(g).sort((a, b) => a.key < b.key ? -1 : 1).map(o => {
+    if (BLV.noInt){ o.gr -= o.grInt; o.gi -= o.giInt; }
+    o.net = o.gr - o.gi; o.st = balStatus(o.gr, o.gi); o.n = o.days.size;
+    if (by === 'week'){ const w = weekOf(o.key); o.lab = `W${w.wn}`; o.name = `สัปดาห์ ${w.wn} · ${dShort(w.mon)}–${dShort(w.sun)}`; o.tl = o.name + ` (มีข้อมูล ${o.n} วัน)`; }
+    else { o.lab = dShort(o.key); o.name = dLong(o.key); o.tl = dLong(o.key); }
+    return o;
+  });
+}
+// ตาชั่ง: ฝั่งที่หนักกว่าจะต่ำลง (เอียงสูงสุด ±16°)
+function scaleSvg(gr, gi){
+  const tot = gr + gi, ang = tot > 0 ? Math.max(-16, Math.min(16, 16 * (gi - gr) / tot * 2.2)) : 0;
+  const cx = 200, cy = 70, L = 140, rad = ang * Math.PI / 180;
+  const end = s => ({ x: cx + s * L * Math.cos(rad), y: cy + s * L * Math.sin(rad) });
+  const pL = end(-1), pR = end(1);   // ซ้าย = รับเข้า, ขวา = จ่ายออก
+  const pan = (p, col, t, v, id) => `<g class="pan" id="${id}" style="transform:translate(${cx + (id==='panL'?-L:L)}px,${cy}px)" data-to="translate(${p.x}px,${p.y}px)">
+      <line x1="-38" y1="54" x2="0" y2="0" stroke="#9fb0b6" stroke-width="1.5"/><line x1="38" y1="54" x2="0" y2="0" stroke="#9fb0b6" stroke-width="1.5"/>
+      <path d="M-50 54 Q0 84 50 54 Z" fill="${col}" opacity=".95"/>
+      <text y="104" text-anchor="middle" font-size="13" fill="#6b7c83">${t}</text>
+      <text y="124" text-anchor="middle" font-size="17" font-weight="500" fill="#0c3843">${fmt0(v)} ตัน</text></g>`;
+  return `<svg class="scale-svg" viewBox="0 0 400 220">
+    <path d="M${cx} ${cy} L${cx-26} 206 L${cx+26} 206 Z" fill="#0c3843"/><rect x="${cx-70}" y="204" width="140" height="8" rx="4" fill="#0c3843"/>
+    <g class="beam" style="transform-origin:${cx}px ${cy}px;transform:rotate(0deg)" data-to="rotate(${ang}deg)"><rect x="${cx-L-6}" y="${cy-4}" width="${2*L+12}" height="8" rx="4" fill="#0c3843"/></g>
+    <circle cx="${cx}" cy="${cy}" r="9" fill="#ff6a05" stroke="#fff" stroke-width="3"/>
+    ${pan(pL, '#4f8fc2', 'รับเข้า', gr, 'panL')}${pan(pR, '#ff6a05', 'จ่ายออก', gi, 'panR')}</svg>`;
+}
+function animateScale(root){ requestAnimationFrame(() => requestAnimationFrame(() => root.querySelectorAll('[data-to]').forEach(e => e.style.transform = e.dataset.to))); }
+
+function ratioChart(ps){
+  const pts = ps.filter(p => p.gi > 0.0005);
+  if (pts.length < 2) return `<div class="muted" style="padding:6px 0 2px">ต้องมีข้อมูลอย่างน้อย 2 ${BLV.by === 'week' ? 'สัปดาห์' : 'วัน'} จึงจะเห็นแนวโน้มอัตรารับต่อจ่าย</div>`;
+  const W = 900, H = 200, L = 58, R = 18, T = 14, B = 34, iw = W-L-R, ih = H-T-B;
+  const vals = pts.map(p => p.gr / p.gi), mx = Math.max(2, Math.ceil(Math.max(...vals) * 2) / 2);
+  const y = v => T + ih - ih * Math.min(v, mx) / mx, x = i => L + (pts.length === 1 ? iw/2 : iw * i / (pts.length - 1));
+  let g = `<rect x="${L}" y="${y(1+BAL_TOL)}" width="${iw}" height="${y(1-BAL_TOL)-y(1+BAL_TOL)}" fill="#e3f6ec"/>`
+    + `<text x="${W-R-4}" y="${y(1+BAL_TOL)-4}" text-anchor="end" font-size="11" fill="#1f9d63">ช่วงสมดุล ${(1-BAL_TOL).toFixed(1)}–${(1+BAL_TOL).toFixed(1)}</text>`;
+  for (let v = 0; v <= mx + 1e-9; v += mx > 3 ? 1 : 0.5) g += `<line x1="${L}" y1="${y(v)}" x2="${W-R}" y2="${y(v)}" stroke="${v===1?'#9fb0b6':'#edf1f3'}"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="#6b7c83">${v.toFixed(1)}</text>`;
+  const step = Math.max(1, Math.ceil(pts.length / 12));
+  const lab = pts.map((p, i) => (i % step === 0 || i === pts.length-1) ? `<text x="${x(i)}" y="${H-12}" text-anchor="middle" font-size="11" fill="#6b7c83">${esc(p.lab)}</text>` : '').join('');
+  const ln = `<polyline class="ln" points="${pts.map((p,i)=>`${x(i)},${y(p.gr/p.gi)}`).join(' ')}" fill="none" stroke="#0c3843" stroke-width="2" stroke-linejoin="round"/>`;
+  const dots = pts.map((p, i) => `<circle cx="${x(i)}" cy="${y(p.gr/p.gi)}" r="5" fill="${ST_COLOR[p.st]}" stroke="#fff" stroke-width="1.6"><title>${esc(p.tl)} · GR/GI ${(p.gr/p.gi).toFixed(2)} · ${ST_TXT[p.st]}</title></circle>`).join('');
+  return `<div class="chart"><svg viewBox="0 0 ${W} ${H}">${g}${lab}${ln}${dots}</svg></div>
+    <div class="legend"><span><i style="background:${ST_COLOR.ok}"></i>สมดุล</span><span><i style="background:${ST_COLOR.in}"></i>รับมากกว่าจ่าย (Stock เพิ่ม)</span><span><i style="background:${ST_COLOR.out}"></i>จ่ายมากกว่ารับ (Stock ลด)</span></div>`;
+}
+function divBars(items, clickable){
+  if (!items.length) return '<div class="empty">ไม่มีข้อมูลในช่วงที่เลือก</div>';
+  const mx = Math.max(...items.map(r => Math.max(r.gr, r.gi)), 0.001);
+  return `<div class="dv hd"><span>ชื่อ</span><span class="gv">จ่ายออก</span><span class="l"></span><span class="r"></span><span class="rv">รับเข้า</span><span style="text-align:right">สุทธิ</span><span class="st">สถานะ · GR/GI</span></div>`
+    + items.map(r => `<div class="dv" ${clickable ? `data-fac="${esc(r.name)}" style="cursor:pointer" title="คลิกเพื่อกรองเฉพาะ ${esc(r.name)}"` : ''}>
+      <span class="nm" title="${esc(r.name)}">${esc(r.name)}</span>
+      <span class="gv">${fmt(r.gi,1)}</span><span class="l"><i data-w="${100*r.gi/mx}"></i></span>
+      <span class="r"><i data-w="${100*r.gr/mx}"></i></span><span class="rv">${fmt(r.gr,1)}</span>
+      <span class="n" style="color:${r.gr-r.gi>=0?C_NET:'#c24e00'}">${sgn(r.gr-r.gi)}${fmt(Math.abs(r.gr-r.gi),1)}</span>
+      <span class="st">${stPill(balStatus(r.gr, r.gi))} <span class="muted">${ratioTxt(r.gr, r.gi)}</span></span></div>`).join('');
+}
+
+async function loadBalancePage(){
+  await loadData();
+  if (!BLV.mov) BLV.mov = await fetchAll('v_flow_by_movtype', ['posting_date','factory','sloc','category','mov_type','direction']);
+  renderBalance();
+}
+function renderBalance(){
+  const rowsR = flowF(true), all = balPeriods(rowsR, BLV.by), days = balPeriods(rowsR, 'day');
+  const tot = all.reduce((a, p) => (a.gr += p.gr, a.gi += p.gi, a.grInt += p.grInt, a.giInt += p.giInt, a.grInf += p.grInf, a.exIn += p.exIn, a.exOut += p.exOut, a), { gr:0, gi:0, grInt:0, giInt:0, grInf:0, exIn:0, exOut:0 });
+  const lastP = all[all.length - 1], unit = BLV.by === 'week' ? 'สัปดาห์' : 'วัน';
+  // ---------- HERO: งวดล่าสุด ----------
+  if (!lastP){
+    $('#blHero').className = 'bl-hero st-none';
+    $('#blHero').innerHTML = `<div><div class="eyebrow">สมดุลรับ–จ่าย</div><h2>ยังไม่มีข้อมูลเข้า–ออกในช่วงที่เลือก</h2><p class="say">ลองเปลี่ยนช่วงวันที่ หรือนำเข้า ZMMR004 ที่หน้า นำเข้าข้อมูล</p></div>`;
+  } else {
+    const p = lastP, st = p.st, per100 = p.gi > 0.0005 ? Math.round(100 * p.gr / p.gi) : null;
+    const prevs = all.slice(0, -1), avgR = prevs.filter(x => x.gi > 0.0005);
+    const avg = avgR.length ? avgR.reduce((a, x) => a + x.gr / x.gi, 0) / avgR.length : null;
+    const cnt = k => days.filter(d => d.st === k).length;
+    const head = st === 'none' ? 'ไม่มีการรับเข้าหรือจ่ายออก'
+      : `รับเข้า <em>${fmt0(p.gr)}</em> ตัน · จ่ายออก <em>${fmt0(p.gi)}</em> ตัน → Stock ${Math.abs(p.net) < 0.5 ? 'ทรงตัว' : (p.net > 0 ? 'เพิ่มขึ้น ' : 'ลดลง ') + `<em>${fmt0(Math.abs(p.net))}</em> ตัน`}`;
+    const say = per100 === null ? (p.gr > 0 ? 'มีแต่รับเข้า ไม่มีจ่ายออก' : '')
+      : `ทุก <b>100 ตัน</b> ที่จ่ายออก มีรับเข้ากลับมา <b>${fmt0(per100)} ตัน</b>` + (st === 'ok' ? ' — อยู่ในช่วงสมดุล' : st === 'out' ? ` — จ่ายออกเร็วกว่ารับเข้า ${fmt0(100 - per100)}%` : ` — รับเข้ามากกว่าจ่ายออก ${fmt0(per100 - 100)}%`)
+        + (avg !== null ? ` · ${unit}ก่อนหน้าเฉลี่ย ${avg.toFixed(2)}` : '');
+    const tile = (c, l, v, u, s) => `<div class="bl-tile" style="--tc:${c}"><div class="l">${l}</div><div class="v">${v} <small>${u}</small></div><div class="s">${s}</div></div>`;
+    $('#blHero').className = 'bl-hero st-' + st;
+    $('#blHero').innerHTML = `<div>
+        <div class="eyebrow">${BLV.by === 'week' ? 'สัปดาห์ล่าสุด' : 'วันล่าสุด'} · ${esc(p.name)}${BLV.by === 'week' ? ` · มีข้อมูล ${p.n}/7 วัน` : ''}${activeCount() ? ' · ตามตัวกรอง' : ''}</div>
+        <span class="bl-badge">${ST_TXT[st]}</span>
+        <h2>${head}</h2><p class="say">${say}</p>
+        <div class="bl-tiles">${tile('#4f8fc2','รับเข้า (GR)', fmt0(p.gr), 'ตัน', BLV.noInt ? 'ไม่รวมโอนภายใน' : p.grInt > 0.05 ? `โอนภายใน ${fmt0(p.grInt)}` : '&nbsp;')}
+          ${tile('#ff6a05','จ่ายออก (GI)', fmt0(p.gi), 'ตัน', BLV.noInt ? 'ไม่รวมโอนภายใน' : p.giInt > 0.05 ? `โอนภายใน ${fmt0(p.giInt)}` : '&nbsp;')}
+          ${tile(p.net >= 0 ? '#0c3843' : '#c24e00','สุทธิ', sgn(p.net) + fmt0(Math.abs(p.net)), 'ตัน', p.net >= 0 ? 'Stock เพิ่ม' : 'Stock ลด')}
+          ${tile(ST_COLOR[st],'GR ÷ GI', ratioTxt(p.gr, p.gi), '', 'สมดุล = 0.90–1.10')}</div>
+        <div class="bl-range"><div class="t">ทั้งช่วงที่เลือก ${days.length} วัน: รับ ${fmt0(tot.gr)} · จ่าย ${fmt0(tot.gi)} · สุทธิ ${sgn(tot.gr-tot.gi)}${fmt0(Math.abs(tot.gr-tot.gi))} ตัน · GR/GI ${ratioTxt(tot.gr, tot.gi)}</div>
+          <div class="mix">${['ok','in','out'].map(k => `<i style="background:${ST_COLOR[k]}" data-w="${days.length ? 100*cnt(k)/days.length : 0}" title="${ST_TXT[k]} ${cnt(k)} วัน"></i>`).join('')}</div>
+          <div class="mix-lg">${['ok','in','out'].map(k => `<span><i style="background:${ST_COLOR[k]}"></i>${ST_TXT[k]} ${cnt(k)} วัน</span>`).join('')}</div></div>
+      </div>
+      <div class="scale-wrap">${scaleSvg(p.gr, p.gi)}<div class="scale-cap">ตาชั่งเอียงไปฝั่งที่หนักกว่า</div></div>`;
+    animateScale($('#blHero')); animateBars($('#blHero'));
+  }
+  // ---------- ข้อสังเกตข้อมูล ----------
+  const notes = [];
+  if (D.dates.length && days.length < 2) notes.push(['warn', `ตอนนี้มีข้อมูลเคลื่อนไหว (ZMMR004) ในช่วงที่เลือก <b>${days.length} วัน</b>${days.length ? ' (' + days.map(d => dShort(d.key)).join(', ') + ')' : ''} — กราฟรายวัน/รายสัปดาห์จะเห็นแนวโน้มเมื่อนำเข้า ZMMR004 ต่อเนื่องหลายวัน`]);
+  const extInf = Math.max(0, tot.grInf - tot.grInt);
+  if (extInf > 0.5) notes.push(['info', `รับเข้า 311 จำนวน <b>${fmt0(extInf)} ตัน</b> ไฟล์ ZMMR004 ไม่มี Sloc ต้นทาง — ระบบจับคู่ขาโอนจาก Mat.Doc เดียวกัน: พบคู่ = โอนภายในคลัง · ไม่พบคู่ = รับจากนอกคลัง (ผลิต/TEMP/OTH) · ปิด/เปิดได้ที่หน้า ตั้งค่า`]);
+  if (tot.exIn + tot.exOut > 0.5) notes.push(['info', `ไม่นับ ${fmt0(tot.exIn)} ตัน (ขาเข้า) และ ${fmt0(tot.exOut)} ตัน (ขาออก) เพราะไม่ตรงเงื่อนไข Condition เช่น 309/413 เปลี่ยนรหัส, 343/344 เปลี่ยนสถานะ — ดูตารางด้านล่าง`]);
+  $('#blNote').innerHTML = notes.map(([k, t]) => `<div class="callout ${k === 'warn' ? 'warn' : ''}"><span class="ic">${icon(k === 'warn' ? 'alert' : 'scale', 17)}</span><div>${t}</div></div>`).join('');
+  // ---------- กราฟ ----------
+  $('#blChart').innerHTML = flowChart(all.map(p => ({ date:p.key, in:p.gr, out:p.gi, lab:p.lab, tl:p.tl })));
+  $('#blRatio').innerHTML = ratioChart(all);
+  // ---------- หมวด / โรง ----------
+  const grp = kf => { const m = {}; rowsR.forEach(r => { const o = m[kf(r)] ||= { name:kf(r), gr:0, gi:0 };
+    o.gr += +r.in_ton - (BLV.noInt ? +(r.in_internal_ton||0) : 0); o.gi += +r.out_ton - (BLV.noInt ? +(r.out_internal_ton||0) : 0); });
+    return Object.values(m).filter(o => o.gr + o.gi > 0.0005); };
+  $('#blCat').innerHTML = divBars(grp(kCat).sort((a, b) => CATS.indexOf(a.name) - CATS.indexOf(b.name)));
+  $('#blFac').innerHTML = divBars(grp(kFac).sort((a, b) => Math.abs(b.gr - b.gi) - Math.abs(a.gr - a.gi)), true);
+  $('#blFac').querySelectorAll('[data-fac]').forEach(e => e.onclick = () => { F.facs = [e.dataset.fac]; MSEL.fFac(); onFilter(); toast(`กรองเฉพาะ ${e.dataset.fac}`); });
+  animateBars($('#blCat')); animateBars($('#blFac'));
+  // ---------- ตาราง ----------
+  BLV.table = all.map(p => ({ ช่วง:p.name, วันที่มีข้อมูล:p.n, รับเข้า_ตัน:+p.gr.toFixed(3), จ่ายออก_ตัน:+p.gi.toFixed(3), สุทธิ_ตัน:+p.net.toFixed(3),
+    GR_GI: p.gi > 0 ? +(p.gr/p.gi).toFixed(3) : '', สถานะ:ST_TXT[p.st], โอนภายใน_รับ:+p.grInt.toFixed(3), โอนภายใน_จ่าย:+p.giInt.toFixed(3), ไม่นับ_ขาเข้า:+p.exIn.toFixed(3), ไม่นับ_ขาออก:+p.exOut.toFixed(3) }));
+  $('#blTblInfo').textContent = `${all.length} ${unit}${BLV.noInt ? ' · ไม่นับโอนภายใน' : ''}`;
+  $('#blTbl').innerHTML = table([{k:'name',l:BLV.by === 'week' ? 'สัปดาห์' : 'วันที่',f:v=>`<b>${esc(v)}</b>`},
+    ...(BLV.by === 'week' ? [{k:'n',l:'มีข้อมูล',num:1,f:v=>v + '/7 วัน'}] : []),
+    {k:'gr',l:'รับเข้า (ตัน)',num:1,f:v=>`<span style="color:${C_IN}">${fmt(v,1)}</span>`},{k:'gi',l:'จ่ายออก (ตัน)',num:1,f:v=>`<span style="color:${C_OUT}">${fmt(v,1)}</span>`},
+    {k:'net',l:'สุทธิ',num:1,f:v=>`<b style="color:${v>=0?C_NET:'#c24e00'}">${sgn(v)}${fmt(Math.abs(v),1)}</b>`},
+    {k:'gr',l:'GR/GI',num:1,f:(v,r)=>ratioTxt(r.gr,r.gi)},{k:'st',l:'สถานะ',f:stPill},
+    {k:'grInt',l:'โอนภายใน รับ/จ่าย',num:1,f:(v,r)=>`<span class="muted">${fmt(r.grInt,1)} / ${fmt(r.giInt,1)}</span>`},
+    {k:'exIn',l:'ไม่นับ เข้า/ออก',num:1,f:(v,r)=>r.exIn + r.exOut > 0.0005 ? `<span class="pill warn">${fmt(r.exIn,1)} / ${fmt(r.exOut,1)}</span>` : '<span class="muted">0</span>'}], [...all].reverse(), 'ไม่มีข้อมูลในช่วงที่เลือก');
+  // ---------- ราย Movement Type ----------
+  const mv = {};
+  (BLV.mov || []).filter(r => inRange(r.posting_date) && (!F.cats.length || F.cats.includes(kCat(r))) && (!F.facs.length || F.facs.includes(kFac(r)))).forEach(r => {
+    const k = [r.direction, r.mov_type, r.is_valid, r.route || '', r.label || ''].join('|');
+    const o = mv[k] ||= { direction:r.direction, mov_type:r.mov_type, is_valid:r.is_valid, route:r.route || '', label:r.label || '', rows:0, ton:0, cats:new Set() };
+    o.rows += +r.rows_n; o.ton += +r.ton; o.cats.add(kCat(r)); });
+  const mvRows = Object.values(mv).sort((a, b) => String(a.direction).localeCompare(String(b.direction)) || (b.is_valid - a.is_valid) || b.ton - a.ton);
+  $('#blMov').innerHTML = table([{k:'direction',l:'ทิศ',f:v=>v==='IN'?`<span class="pill info">รับเข้า</span>`:v==='OUT'?`<span class="pill or">จ่ายออก</span>`:'<span class="muted">—</span>'},
+    {k:'mov_type',l:'Mov',f:v=>`<b>${esc(v)}</b>`},{k:'is_valid',l:'นับ?',f:v=>v?'<span class="pill ok">นับ</span>':'<span class="pill bad">ไม่นับ</span>'},
+    {k:'route',l:'เส้นทาง',f:v=>v?`<span class="muted">${esc(v)}</span>`:''},{k:'label',l:'กฎ / เหตุผล'},{k:'cats',l:'หมวด',f:v=>esc([...v].join(', '))},
+    {k:'rows',l:'แถว',num:1,f:fmt0},{k:'ton',l:'ตัน',num:1,f:v=>fmt(v,1)}], mvRows, 'ไม่มีข้อมูลในช่วงที่เลือก');
+}
+segBind('blBy', BLV, 'by', 'v', renderBalance);
+$('#blNoInt').onchange = e => { BLV.noInt = e.target.checked; renderBalance(); };
+$('#blCsv').onclick = () => downloadCsv(`GR-GI_balance_${BLV.by}.csv`, BLV.table || []);
 
 // ---------- start: ตรวจ session ที่ค้างอยู่ ----------
 (async () => {
