@@ -655,7 +655,7 @@ const SHEETS = {
   'ZSDR0013': { cols: {
     material:{h:['Material'],t:'code',req:1},
     material_desc:{h:['Material Description'],t:'text'},
-    batch:{h:['Batch'],t:'code',req:1},
+    batch:{h:['Batch'],t:'code',blank:''},   // Batch ว่างได้ (ผู้ใช้ยืนยัน 27 พ.ย.) → เก็บเป็นค่าว่าง
     sloc:{h:['Storage Location','Sloc'],t:'code',req:1},
     qty:{h:['Quantity'],t:'num',req:1},
     weight_kg:{h:['น้ำหนัก spec','Weight'],t:'num',req:1} } },
@@ -949,7 +949,8 @@ function parseSheet(kind, ws, fileName, sheetName){
     const a = aoa[r]; if (!a || a.every(v => v===null || String(v).trim()==='')) continue;
     const o = { row_no: r+1 };
     for (const [col, c] of Object.entries(spec)){
-      const v = map[col] === undefined ? null : conv(a[map[col]], c.t);
+      let v = map[col] === undefined ? null : conv(a[map[col]], c.t);
+      if (v === null && c.blank !== undefined) v = c.blank;
       if (c.t==='num' && Number.isNaN(v)) errs.push(`แถว ${r+1}: ${c.h[0]} ไม่ใช่ตัวเลข`);
       if (c.t==='date' && v==='INVALID') errs.push(`แถว ${r+1}: ${c.h[0]} วันที่ไม่ถูกต้อง`);
       if (c.req && (v===null || v==='')) errs.push(`แถว ${r+1}: ${c.h[0]} ว่าง`);
