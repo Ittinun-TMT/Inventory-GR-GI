@@ -438,6 +438,49 @@
   .kpis{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}
   .kpi .v{white-space:nowrap;font-size:clamp(18px,1.5vw,22px)} .kpi .l{line-height:1.35}
   @media (max-width:900px){ .kpis{grid-template-columns:1fr 1fr} .kpi .v{white-space:normal;font-size:17px} }
+  /* ================= Monitor นำเข้ารายวัน ================= */
+  .imp-tabs{display:inline-flex;gap:4px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:16px;box-shadow:var(--shadow)}
+  .imp-tabs button{display:flex;align-items:center;gap:8px;border:0;background:none;padding:9px 18px;border-radius:9px;font-size:15px;color:#4a6b75;cursor:pointer;font-family:inherit;transition:.2s}
+  .imp-tabs button:hover{background:#f2f6f7;color:var(--navy)}
+  .imp-tabs button.active{background:var(--navy);color:#fff;box-shadow:0 3px 10px rgba(8,28,56,.22)} .imp-tabs button.active svg{color:var(--orange)}
+  .mon-top{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px} .mon-nav{margin-left:auto}
+  .mon-nav .btn.sm{min-width:34px}
+  .mon-sum{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;font-size:13.5px;color:#4a6b75}
+  .mon-sum span{background:#f4f7f8;border-radius:20px;padding:4px 12px} .mon-sum b{color:var(--navy)}
+  .mon-strip{display:grid;grid-template-columns:repeat(var(--n,14),minmax(60px,1fr));gap:7px;overflow-x:auto;padding:12px 2px 8px}
+  #monSlocTbl{max-height:none}
+  .dt{--c:#e04848;--bg:#fff5f5;position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;border:1.5px solid transparent;background:var(--bg);border-radius:12px;padding:8px 4px 7px;cursor:pointer;font-family:inherit;color:var(--text);transition:transform .2s var(--ease),box-shadow .2s,border-color .2s;animation:fadeUp .4s var(--ease) both;min-width:0}
+  .dt:hover{transform:translateY(-3px);box-shadow:var(--shadow-h)}
+  .dt.full{--c:#1f9d63;--bg:#ecf8f1} .dt.part{--c:#e0a100;--bg:#fff8e6} .dt.none{--c:#e04848;--bg:#fff3f3} .dt.off{--c:#adb5bd;--bg:#f6f8f9} .dt.wait{--c:#ff6a05;--bg:#fff7f0}
+  .dt.sel{border-color:var(--navy);background:#fff;box-shadow:0 6px 18px rgba(12,56,67,.18)}
+  .dt.today::after{content:'วันนี้';position:absolute;top:-8px;left:50%;transform:translateX(-50%);font-size:10px;background:var(--orange);color:#fff;border-radius:8px;padding:0 6px;line-height:15px}
+  .dt .dw{font-size:11.5px;color:var(--muted)} .dt b{font-size:20px;font-weight:500;color:var(--navy);line-height:1.1} .dt .mo{font-size:11px;color:var(--muted)}
+  .dt .pb{width:78%;height:6px;border-radius:4px;background:rgba(0,0,0,.07);overflow:hidden;margin-top:4px} .dt .pb i{display:block;height:100%;background:var(--c);border-radius:4px;width:0;transition:width .9s var(--ease)}
+  .dt .cnt{font-size:11.5px;color:var(--c);font-weight:500;font-variant-numeric:tabular-nums}
+  .dt .dots{display:flex;gap:4px;height:8px} .dt .dots i{width:7px;height:7px;border-radius:50%;background:#dfe5e8} .dt .dots i.d10{background:#4f8fc2} .dt .dots i.d13{background:var(--orange)}
+  .mon-legend{display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:12.5px;color:var(--muted);margin-top:8px}
+  .mon-legend i{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:5px;vertical-align:-1px}
+  .mon-legend i.full{background:#1f9d63} .mon-legend i.part{background:#e0a100} .mon-legend i.none{background:#e04848} .mon-legend i.off{background:#c5cfd3}
+  .mon-legend .dl b{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px} .mon-legend b.d10{background:#4f8fc2} .mon-legend b.d13{background:var(--orange)}
+  .md-head{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+  .md-head h2{font-size:22px!important;margin:0!important} .md-head .eyebrow{font-size:12px;color:var(--muted);letter-spacing:1px}
+  .md-head .stp{font-size:13.5px;padding:4px 14px} .md-head .row{margin-left:auto}
+  .stp.part{background:#fff6dc;color:#946300} .stp.full{background:var(--ok-soft);color:var(--ok)} .stp.off{background:#eef1f3;color:var(--muted)} .stp.wait{background:var(--orange-soft);color:var(--orange)}
+  .md-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+  .mk{border:1px solid var(--line);border-radius:12px;padding:12px 14px;border-left:4px solid var(--kc,#c5cfd3);background:#fff;min-width:0}
+  .mk .t{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px} .mk .v{font-size:21px;font-weight:500;color:var(--navy);margin:2px 0}
+  .mk .v small{font-size:13px;font-weight:300;color:var(--muted)} .mk .s{font-size:12.5px;color:#4a6b75;line-height:1.5;overflow:hidden;text-overflow:ellipsis}
+  .mk.ok{--kc:#1f9d63} .mk.warn{--kc:#e0a100} .mk.bad{--kc:#e04848} .mk.info{--kc:#4f8fc2}
+  .ck{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;border-radius:20px;padding:3px 10px;white-space:nowrap}
+  .ck.y{background:var(--ok-soft);color:var(--ok)} .ck.n{background:var(--bad-soft);color:var(--bad)} .ck.o{background:#eef1f3;color:var(--muted)}
+  #monSlocTbl tr.miss td{background:#fffafa} #monSlocTbl td .files{font-size:12px;color:var(--muted);max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tl{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--line);margin-left:8px;padding-left:16px}
+  .tl-i{position:relative;padding:8px 0;font-size:13.5px;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+  .tl-i::before{content:'';position:absolute;left:-23px;top:13px;width:10px;height:10px;border-radius:50%;background:#fff;border:2.5px solid var(--tc,var(--navy))}
+  .tl-i .tm{font-variant-numeric:tabular-nums;color:var(--navy);font-weight:500;min-width:44px}
+  .tl-i .fn{color:#33525b;overflow:hidden;text-overflow:ellipsis;max-width:420px;white-space:nowrap}
+  @media (max-width:1100px){ .md-kpis{grid-template-columns:repeat(2,1fr)} }
+  @media (max-width:700px){ .mon-strip{grid-template-columns:repeat(var(--n,14),58px)} .md-head .row{margin-left:0} .imp-tabs{display:flex} .imp-tabs button{flex:1;justify-content:center;padding:9px 8px} }
 </style>
 </head>
 <body>
@@ -670,13 +713,26 @@
 <!-- ===== IMPORT (แยกตามชีท) ===== -->
 <section data-page="import" class="page hidden">
   <div id="viewerNote" class="note hidden">สิทธิ์ Viewer ตรวจไฟล์ได้ แต่นำเข้าไม่ได้ — ติดต่อ Admin</div>
-  <div class="sheet-grid" id="sheetCards"></div>
-  <div class="card" id="sheetPanel"></div>
-  <div class="card"><h2><span class="dot"></span>Sloc ไหนวางข้อมูลแล้ว</h2><p class="desc">ภาพรวมข้อมูลที่อยู่ในระบบ แยกวันที่ × Sloc · ช่องเขียว = มีข้อมูล (จำนวนแถว) · ช่องแดง = Sloc คลังที่ยังไม่มีข้อมูลในวันที่มีคนอื่นวางแล้ว</p>
-    <div class="row" style="margin-bottom:12px"><div class="seg" id="covSheet"><button data-v="ZMMR004" class="active">ZMMR004</button><button data-v="ZSDR0013">ZSDR0013</button><button data-v="ZSDR0010">ZSDR0010</button></div>
-      <div class="seg" id="covDays"><button data-v="14" class="active">14 วันล่าสุด</button><button data-v="31">31 วัน</button><button data-v="all">ทั้งหมด</button></div></div>
-    <div class="tbl" id="covTbl" style="max-height:520px"></div>
-    <div class="cov-legend"><span><i style="background:var(--ok-soft)"></i>มีข้อมูล</span><span><i style="background:#fdf1f1"></i>ยังไม่วาง</span><span><i style="background:#f6f8f9"></i>ไม่มีข้อมูลทั้งวัน</span></div></div>
+  <div class="imp-tabs" id="impTabs"><button data-v="mon" class="active"><svg class="i" style="width:17px;height:17px"><use href="#i-clock"/></svg>Monitor รายวัน</button><button data-v="up"><svg class="i" style="width:17px;height:17px"><use href="#i-upload"/></svg>นำเข้าไฟล์</button></div>
+  <!-- ===== Monitor รายวัน ===== -->
+  <div id="impMon">
+    <div class="card mon-card">
+      <div class="mon-top"><div><h2><span class="dot"></span>ติดตามการวางข้อมูลรายวัน</h2><p class="desc" style="margin:0">ZMMR004 ต้องวางทุกวันครบทุก Sloc · ZSDR0010 วางรายวัน · ZSDR0013 วางเมื่อตั้งต้น Stock · คลิกวันเพื่อดูรายละเอียด</p></div>
+        <div class="row mon-nav"><button class="btn ghost sm" id="monPrev" title="ช่วงก่อนหน้า">‹</button><button class="btn ghost sm" id="monToday">วันนี้</button><button class="btn ghost sm" id="monNext" title="ช่วงถัดไป">›</button>
+          <div class="seg" id="monDays"><button data-v="14" class="active">14 วัน</button><button data-v="31">31 วัน</button></div></div></div>
+      <div class="mon-sum" id="monSum"></div>
+      <div class="mon-strip" id="monStrip"></div>
+      <div class="mon-legend"><span><i class="full"></i>ZMMR004 ครบทุก Sloc</span><span><i class="part"></i>ขาดบาง Sloc</span><span><i class="none"></i>ยังไม่วาง</span><span><i class="off"></i>วันอาทิตย์ / ก่อนเริ่มระบบ / ยังไม่ถึง</span>
+        <span class="dl"><b class="d10"></b>ZSDR0010</span><span class="dl"><b class="d13"></b>ZSDR0013</span>
+        <label class="toggle" style="margin-left:auto"><input type="checkbox" id="monAll"><span id="monAllTxt">แสดง Sloc คลังที่ไม่เคยมีข้อมูล</span></label></div>
+    </div>
+    <div class="card" id="monDay"></div>
+  </div>
+  <!-- ===== นำเข้าไฟล์ ===== -->
+  <div id="impUp" class="hidden">
+    <div class="sheet-grid" id="sheetCards"></div>
+    <div class="card" id="sheetPanel"></div>
+  </div>
 </section>
 
 <!-- ===== DATA QUALITY ===== -->
@@ -1642,18 +1698,17 @@ const SHEET_INFO = {
   'Mov.Type': { title:'Movement Type', tcode:'คำอธิบาย Movement Type', owner:'—', rule:'อัปเดตตามรหัส Mov' },
 };
 const SHEET_ORDER = ['ZMMR004','ZSDR0013','ZSDR0010','Master','Area','Mov.Type'];
-let IMP = { sheet:'ZMMR004', parsed:null, check:null, last:{}, cov:[], covSheet:'ZMMR004', covDays:'14' };
+let IMP = { sheet:'ZMMR004', parsed:null, check:null, last:{}, cov:[], batches:[], tab:'mon', monDays:'14', monEnd:null, monSel:null, monAll:false };
 async function loadImportPage(){
   const li = await q('v_last_import'); IMP.last = Object.fromEntries(li.map(r => [r.sheet_name, r]));
-  renderSheetCards(); renderSheetPanel(); loadCoverage();
+  renderSheetCards(); renderSheetPanel(); impTab(IMP.tab); loadCoverage();
 }
 function renderSheetCards(){
   $('#sheetCards').innerHTML = SHEET_ORDER.map((k, i) => { const s = SHEET_INFO[k], l = IMP.last[k];
     return `<button class="sc ${IMP.sheet === k ? 'on' : ''}" data-s="${k}" style="animation-delay:${i*.04}s"><span class="ok ${l ? '' : 'none'}"></span>
       <div class="nm">${icon('upload',17)}${esc(k)}</div><div class="tc">${esc(s.title)} · ${esc(s.tcode)}</div>
       <div class="last">${l ? `ล่าสุด ${new Date(l.imported_at).toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'})}<br>${fmt0(l.row_count)} แถว${l.as_of_date ? ' · ข้อมูล ' + dShort(l.as_of_date) : ''} · ${esc((l.imported_by||'').split(' ').slice(1).join(' ') || l.imported_by || '')}` : '<span class="muted">ยังไม่เคยนำเข้า</span>'}</div></button>`; }).join('');
-  $('#sheetCards').querySelectorAll('[data-s]').forEach(b => b.onclick = () => { IMP.sheet = b.dataset.s; IMP.parsed = null; IMP.check = null; IMP.log = ''; renderSheetCards(); renderSheetPanel();
-    if (['ZMMR004','ZSDR0013','ZSDR0010'].includes(IMP.sheet)){ IMP.covSheet = IMP.sheet; document.querySelectorAll('#covSheet button').forEach(x => x.classList.toggle('active', x.dataset.v === IMP.sheet)); renderCoverage(); } });
+  $('#sheetCards').querySelectorAll('[data-s]').forEach(b => b.onclick = () => { IMP.sheet = b.dataset.s; IMP.parsed = null; IMP.check = null; IMP.log = ''; renderSheetCards(); renderSheetPanel(); renderRemoveBox(); });
 }
 function renderSheetPanel(){
   const k = IMP.sheet, s = SHEET_INFO[k], p = IMP.parsed, multi = !s.single;
@@ -1825,7 +1880,7 @@ async function removeData(k, date, slocs){
   if (!confirm(`ยืนยันลบข้อมูล ${what}?\n\nข้อมูลจะไม่ถูกนับในระบบอีก (ยังเก็บประวัติไว้ตรวจย้อนหลังได้) · นำเข้าใหม่ได้ภายหลัง`)) return false;
   try{
     const d = await call('grgi_remove_data', { p_sheet:k, p_date:date, p_slocs: k === 'ZSDR0010' ? null : slocs });
-    toast(`ลบแล้ว ${fmt0(d.removed)} แถว — ${what}`); D.loaded = false; refreshBadge();
+    toast(`ลบแล้ว ${fmt0(d?.removed ?? 0)} แถว — ${what}`); D.loaded = false; refreshBadge();
     await loadCoverage(); if (IMP.parsed && SHEET_INFO[IMP.sheet].check) runPrecheck();
     return true;
   }catch(e){ toast(errMsg(e), true); return false; }
@@ -1837,7 +1892,7 @@ function renderRemoveBox(){
   if (!IMP.rmDate || !dates.includes(IMP.rmDate)) IMP.rmDate = dates[0];
   const day = rows.filter(r => r.data_date === IMP.rmDate).sort((a, b) => a.grp.localeCompare(b.grp));
   box.innerHTML = `<details class="rm" ${IMP.rmOpen ? 'open' : ''}><summary>${icon('trash',17)} ลบข้อมูล ${esc(k)} รายวัน${k !== 'ZSDR0010' ? ' ตาม Sloc' : ''}</summary>
-    <div class="muted" style="margin:6px 0 10px">ใช้เมื่อวางไฟล์ผิดวัน/ผิด Sloc · ลบแบบเก็บประวัติ (ดูได้ในหน้า ประวัตินำเข้า) แล้วนำเข้าใหม่ได้ · หรือคลิกช่องเขียวในตาราง "Sloc ไหนวางข้อมูลแล้ว"</div>
+    <div class="muted" style="margin:6px 0 10px">ใช้เมื่อวางไฟล์ผิดวัน/ผิด Sloc · ลบแบบเก็บประวัติ (ดูได้ในหน้า ประวัตินำเข้า) แล้วนำเข้าใหม่ได้ · หรือกดปุ่มถังขยะในแท็บ Monitor รายวัน</div>
     ${!dates.length ? '<div class="muted">ยังไม่มีข้อมูลในระบบ</div>' : `
     <div class="row" style="margin-bottom:10px"><label class="muted">วันที่</label><select id="rmDate">${dates.map(d => `<option value="${d}" ${d === IMP.rmDate ? 'selected' : ''}>${dLong(d)}</option>`).join('')}</select>
       ${k !== 'ZSDR0010' ? `<label class="row muted" style="gap:6px"><input type="checkbox" id="rmAll"> เลือกทุก Sloc (${day.length})</label>` : ''}</div>
@@ -1856,30 +1911,136 @@ function renderRemoveBox(){
     const b = $('#rmGo'); busy(b, true, 'กำลังลบ...'); const ok = await removeData(k, IMP.rmDate, sl); if (!ok) busy(b, false); };
 }
 
-async function loadCoverage(){ loading('#covTbl'); IMP.cov = await fetchAll('v_import_coverage', ['sheet','data_date','grp']); if (!D.slocs.length) D.slocs = await q('v_sloc_effective', x => x.order('sloc')); renderCoverage(); }
-function renderCoverage(){
-  const rows = IMP.cov.filter(r => r.sheet === IMP.covSheet);
-  let dates = [...new Set(rows.map(r => r.data_date))].sort();
-  if (IMP.covDays !== 'all') dates = dates.slice(-Number(IMP.covDays));
-  if (!dates.length) return $('#covTbl').innerHTML = '<div class="empty">ยังไม่มีข้อมูลชีทนี้ในระบบ</div>';
-  const map = {}; rows.forEach(r => map[`${r.data_date}|${r.grp}`] = r);
-  let groups;
-  if (IMP.covSheet === 'ZSDR0010') groups = ['Delivery'];
-  else { const wh = D.slocs.filter(s => s.effective_type === 'WH').map(s => s.sloc); groups = [...new Set([...wh, ...rows.map(r => r.grp)])].sort(); }
-  const cell = (d, g) => {
-    if (IMP.covSheet === 'ZSDR0010'){ const r = rows.find(x => x.data_date === d); return r ? `<td class="y" data-d="${d}" data-g="" title="${esc(r.grp)} · ${fmt(r.ton,2)} ตัน · ${esc(r.imported_by||'')}${canImport() ? '\nคลิกเพื่อลบข้อมูลวันนี้' : ''}">${fmt0(r.row_count)}</td>` : '<td class="x">·</td>'; }
-    const r = map[`${d}|${g}`], dayHas = rows.some(x => x.data_date === d);
-    return r ? `<td class="y" data-d="${d}" data-g="${esc(g)}" title="${esc(g)} · ${dLong(d)}\n${fmt0(r.row_count)} แถว · ${fmt(r.ton,2)} ตัน\nวางโดย ${esc(r.imported_by||'')} · ${new Date(r.imported_at).toLocaleString('th-TH')}${canImport() ? '\nคลิกเพื่อลบข้อมูลช่องนี้' : ''}">${fmt0(r.row_count)}</td>`
-             : dayHas ? `<td class="n" title="${esc(g)} ยังไม่วางข้อมูลวันที่ ${dLong(d)}">✕</td>` : '<td class="x">·</td>';
-  };
-  const fac = g => (D.slocs.find(s => s.sloc === g) || {}).factory || '';
-  $('#covTbl').innerHTML = `<table class="cov"><thead><tr><th style="text-align:left">${IMP.covSheet === 'ZSDR0010' ? '' : 'Sloc'}</th>${dates.map(d => `<th>${dShort(d)}</th>`).join('')}</tr></thead><tbody>${
-    groups.map(g => `<tr><td class="s">${esc(g)} <span class="muted" style="font-weight:300">${esc(fac(g))}</span></td>${dates.map(d => cell(d, g)).join('')}</tr>`).join('')}</tbody></table>`;
-  if (canImport()) $('#covTbl').querySelectorAll('td.y').forEach(td => { td.style.cursor = 'pointer';
-    td.onclick = () => removeData(IMP.covSheet, td.dataset.d, td.dataset.g ? [td.dataset.g] : []); });
-  renderRemoveBox();
+async function loadCoverage(){
+  if (!IMP.covLoaded) loading('#monStrip');
+  const [cov, bt] = await Promise.all([fetchAll('v_import_coverage', ['sheet','data_date','grp']),
+    q('import_batches', x => x.order('id', { ascending:false }).limit(400))]);
+  IMP.cov = cov; IMP.covLoaded = true; IMP.batches = bt.filter(b => !String(b.sheet_name).startsWith('_'));
+  if (!D.slocs.length) D.slocs = await q('v_sloc_effective', x => x.order('sloc'));
+  renderCoverage();
 }
-segBind('covSheet', IMP, 'covSheet', 'v', renderCoverage); segBind('covDays', IMP, 'covDays', 'v', renderCoverage);
+// วาดใหม่ทุกส่วนที่ใช้ข้อมูลความครอบคลุม (Monitor + กล่องลบข้อมูล)
+function renderCoverage(){ renderMonitor(); renderRemoveBox(); }
+
+// =====================================================================
+// Monitor รายวัน — วันไหนวางอะไรแล้ว / ยังขาด Sloc ไหน
+// =====================================================================
+const todayYmd = () => ymd(new Date());
+const addDays = (k, n) => { const d = new Date(k + 'T00:00:00'); d.setDate(d.getDate() + n); return ymd(d); };
+const dowTh = k => ['อา.','จ.','อ.','พ.','พฤ.','ศ.','ส.'][new Date(k + 'T00:00:00').getDay()];
+const monTh = k => new Date(k + 'T00:00:00').toLocaleDateString('th-TH', { month:'short' });
+const localDay = ts => ymd(new Date(ts));
+const hm = ts => new Date(ts).toLocaleTimeString('th-TH', { hour:'2-digit', minute:'2-digit' });
+const shortName = s => { const p = String(s || '').split(' '); return p.length > 1 && /^\d{8}$/.test(p[0]) ? p.slice(1).join(' ') : (s || ''); };
+const MON_ST = { full:'ครบทุก Sloc', part:'ขาดบาง Sloc', none:'ยังไม่วาง ZMMR004', wait:'รอวาง (วันนี้)', off:'ไม่ต้องวาง (วันอาทิตย์ / ก่อนเริ่มระบบ / ยังไม่ถึง)' };
+function monSlocs(){
+  const seen = new Set(IMP.cov.filter(r => r.sheet !== 'ZSDR0010').map(r => r.grp));
+  const wh = D.slocs.filter(s => s.effective_type === 'WH').map(s => s.sloc);
+  const all = [...new Set([...wh, ...seen])].sort();
+  return { list: IMP.monAll ? all : all.filter(s => seen.has(s)), hidden: all.filter(s => !seen.has(s)) };
+}
+function dayInfo(d, exp){
+  const z4 = IMP.cov.filter(r => r.sheet === 'ZMMR004' && r.data_date === d);
+  const z10 = IMP.cov.find(r => r.sheet === 'ZSDR0010' && r.data_date === d);
+  const z13 = IMP.cov.filter(r => r.sheet === 'ZSDR0013' && r.data_date === d);
+  const have = new Set(z4.map(r => r.grp)), miss = exp.filter(s => !have.has(s));
+  const first = IMP.cov.filter(r => r.sheet === 'ZMMR004').map(r => r.data_date).sort()[0];
+  const off = new Date(d + 'T00:00:00').getDay() === 0 || d > todayYmd() || !first || d < first;   // อาทิตย์ / อนาคต / ก่อนเริ่มใช้ระบบ
+  const st = !z4.length ? (off ? 'off' : d === todayYmd() ? 'wait' : 'none') : miss.length ? 'part' : 'full';
+  return { d, z4, z10, z13, have, miss, st, exp: [...new Set([...exp, ...have])] };
+}
+function monRange(){
+  const n = Number(IMP.monDays), lastData = IMP.cov.map(r => r.data_date).sort().pop();
+  const end = IMP.monEnd || (lastData && lastData > todayYmd() ? lastData : todayYmd());
+  return Array.from({ length:n }, (_, i) => addDays(end, i - n + 1));
+}
+function renderMonitor(){
+  if (!$('#monStrip') || !IMP.covLoaded) return;
+  const { list: exp, hidden } = monSlocs(), days = monRange(), infos = days.map(d => dayInfo(d, exp));
+  if (!IMP.monSel || !days.includes(IMP.monSel)){
+    // ค่าเริ่มต้น = วันล่าสุดที่มี ZMMR004 (ข้อมูลเข้า–ออกมักวางย้อนหลัง 1 วัน)
+    const pick = infos.filter(x => x.z4.length).pop() || infos.filter(x => x.z10 || x.z13.length).pop() || infos[infos.length - 1];
+    IMP.monSel = pick.d;
+  }
+  $('#monAllTxt').textContent = IMP.monAll ? 'แสดง Sloc คลังทั้งหมด' : `ซ่อน Sloc ที่ไม่เคยมีข้อมูล${hidden.length ? ` (${hidden.length}: ${hidden.join(', ')})` : ''}`;
+  $('#monAll').checked = IMP.monAll;
+  const cnt = k => infos.filter(x => x.st === k).length;
+  const work = infos.filter(x => x.st !== 'off' && x.st !== 'wait').length;
+  $('#monSum').innerHTML = `<span>${dLong(days[0])} – ${dLong(days[days.length-1])}</span>
+    <span>ZMMR004 ครบ <b>${cnt('full')}</b>/${work} วันทำงาน</span><span>ขาดบาง Sloc <b>${cnt('part')}</b></span><span>ยังไม่วาง <b>${cnt('none')}</b></span>
+    <span>ZSDR0010 <b>${infos.filter(x => x.z10).length}</b> วัน</span><span>Sloc ที่ติดตาม <b>${exp.length}</b></span>`;
+  const strip = $('#monStrip'); strip.style.setProperty('--n', days.length);
+  strip.innerHTML = infos.map((x, i) => { const pct = x.exp.length ? 100 * x.have.size / x.exp.length : 0;
+    return `<button class="dt ${x.st} ${x.d === IMP.monSel ? 'sel' : ''} ${x.d === todayYmd() ? 'today' : ''}" data-d="${x.d}" style="animation-delay:${Math.min(i * .02, .4)}s"
+      title="${dLong(x.d)} · ${MON_ST[x.st]}${x.miss.length && x.z4.length ? '\nขาด: ' + x.miss.join(', ') : ''}">
+      <span class="dw">${dowTh(x.d)}</span><b>${+x.d.slice(8)}</b><span class="mo">${monTh(x.d)}</span>
+      <span class="pb"><i data-w="${pct}"></i></span><span class="cnt">${(x.st === 'off' || x.st === 'wait') && !x.z4.length ? '—' : `${x.have.size}/${x.exp.length}`}</span>
+      <span class="dots"><i class="${x.z10 ? 'd10' : ''}" title="ZSDR0010"></i><i class="${x.z13.length ? 'd13' : ''}" title="ZSDR0013"></i></span></button>`; }).join('');
+  strip.querySelectorAll('[data-d]').forEach(b => b.onclick = () => { IMP.monSel = b.dataset.d; renderMonitor(); });
+  animateBars(strip);
+  const sel = strip.querySelector('.sel'); if (sel && strip.scrollWidth > strip.clientWidth) sel.scrollIntoView({ block:'nearest', inline:'center' });
+  renderMonDay(dayInfo(IMP.monSel, exp));
+}
+function renderMonDay(x){
+  const d = x.d, facOf = s => (D.slocs.find(r => r.sloc === s) || {}).factory || '—';
+  const snap13 = s => { const all = IMP.cov.filter(r => r.sheet === 'ZSDR0013' && r.grp === s).sort((a, b) => a.data_date < b.data_date ? 1 : -1);
+    return all.find(r => r.data_date <= d) || (all.length ? { ...all[all.length - 1], later:true } : null); };
+  const ups = IMP.batches.filter(b => localDay(b.imported_at) === d).sort((a, b) => a.imported_at < b.imported_at ? -1 : 1);
+  const z4rows = sum(x.z4, 'row_count'), z4in = sum(x.z4, 'in_ton'), z4out = sum(x.z4, 'out_ton');
+  const who = [...new Set(ups.map(u => shortName(u.imported_by)))];
+  const k = (cls, ic, t, v, s) => `<div class="mk ${cls}"><div class="t">${icon(ic, 15)}${t}</div><div class="v">${v}</div><div class="s">${s}</div></div>`;
+  const rows = x.exp.map(s => { const r = x.z4.find(z => z.grp === s), z13 = snap13(s); return { s, fac: facOf(s), r, z13 }; })
+    .sort((a, b) => (!!a.r - !!b.r) || a.s.localeCompare(b.s));
+  $('#monDay').innerHTML = `<div class="md-head"><div><div class="eyebrow">ข้อมูลวันที่ (Posting / GI date)</div><h2>${dLong(d)}</h2></div>
+      <span class="stp ${x.st}">${MON_ST[x.st]}${x.st === 'part' ? ` · ขาด ${x.miss.length}` : ''}</span>
+      <div class="row"><button class="btn ghost sm" data-step="-1">‹ วันก่อน</button><button class="btn ghost sm" data-step="1">วันถัดไป ›</button>
+        ${canImport() ? `<button class="btn orange sm" data-up="ZMMR004">${icon('upload', 15)}วางไฟล์</button>` : ''}</div></div>
+    <div class="md-kpis">
+      ${k(x.st === 'full' ? 'ok' : x.z4.length ? 'warn' : x.st === 'off' ? '' : 'bad', 'trend', 'ZMMR004 เข้า–ออก', `${x.have.size}<small> / ${x.exp.length} Sloc</small>`,
+        x.z4.length ? `${fmt0(z4rows)} แถว · รับ ${fmt0(z4in)} / จ่าย ${fmt0(z4out)} ตัน` : 'ยังไม่มีข้อมูลวันนี้')}
+      ${k(x.z10 ? 'ok' : '', 'out', 'ZSDR0010 ขาออก', x.z10 ? esc(x.z10.grp) : '<small>ยังไม่วาง</small>',
+        x.z10 ? `${fmt0(x.z10.row_count)} แถว · ${fmt0(x.z10.ton)} ตัน · ${x.z10.file_count} ไฟล์` : 'ใช้เติมน้ำหนักขาออกที่เป็น 0')}
+      ${k(x.z13.length ? 'info' : '', 'box', 'ZSDR0013 Stock ตั้งต้น', x.z13.length ? `${x.z13.length}<small> Sloc</small>` : '<small>ไม่มีในวันนี้</small>',
+        x.z13.length ? `${fmt0(sum(x.z13, 'row_count'))} มัด · ${fmt0(sum(x.z13, 'ton'))} ตัน` : 'วางเฉพาะวันที่ตั้งต้น Stock')}
+      ${k(ups.length ? 'info' : '', 'clock', 'กดนำเข้าในวันนี้', `${ups.length}<small> ครั้ง</small>`, ups.length ? esc(who.slice(0, 3).join(', ')) + (who.length > 3 ? ` +${who.length - 3}` : '') : 'ยังไม่มีการนำเข้า')}
+    </div>
+    <h3>รายการตาม Sloc ${x.miss.length && x.z4.length ? `<span class="pill bad" style="margin-left:6px">ยังขาด ${x.miss.length} Sloc: ${esc(x.miss.join(', '))}</span>` : ''}</h3>
+    <div class="tbl" id="monSlocTbl"><table><thead><tr><th>Sloc</th><th>โรง</th><th>ZMMR004</th><th class="num">แถว</th><th class="num">รับ (ตัน)</th><th class="num">จ่าย (ตัน)</th><th>ไฟล์ · วางโดย</th><th>Stock ตั้งต้น (ZSDR0013)</th><th></th></tr></thead><tbody>${
+      rows.map(({ s, fac, r, z13 }) => `<tr class="${r ? '' : 'miss'}"><td><b>${esc(s)}</b></td><td>${esc(fac)}</td>
+        <td>${r ? `<span class="ck y">${icon('check', 13)}วางแล้ว</span>` : x.st === 'off' ? '<span class="ck o">—</span>' : x.st === 'wait' ? '<span class="ck o">รอวาง</span>' : '<span class="ck n">✕ ยังไม่วาง</span>'}</td>
+        <td class="num">${r ? fmt0(r.row_count) : ''}</td><td class="num" style="color:${C_IN}">${r ? fmt(r.in_ton, 1) : ''}</td><td class="num" style="color:${C_OUT}">${r ? fmt(r.out_ton, 1) : ''}</td>
+        <td>${r ? `<div class="files" title="${esc(r.files || '')}">${esc(r.files || '')}</div><div class="muted">${hm(r.imported_at)} น. ${localDay(r.imported_at) !== d ? '(' + dShort(localDay(r.imported_at)) + ') ' : ''}· ${esc(shortName(r.imported_by))}</div>` : ''}</td>
+        <td>${z13 ? `<span class="ck ${z13.data_date === d ? 'y' : 'o'}">${z13.data_date === d ? 'วันนี้' : (z13.later ? 'ตั้งต้น ' : 'ล่าสุด ') + dShort(z13.data_date)}</span> <span class="muted">${fmt0(z13.ton)} ตัน</span>` : '<span class="muted">ยังไม่มี</span>'}</td>
+        <td>${canImport() ? (r ? `<button class="btn ghost sm" data-rm="${esc(s)}" title="ลบข้อมูล ZMMR004 ของ Sloc นี้ วันนี้">${icon('trash', 14)}</button>` : `<button class="btn ghost sm" data-up="ZMMR004">วางไฟล์</button>`) : ''}</td></tr>`).join('')}</tbody></table></div>
+    ${x.z10 ? `<div class="sum-line" style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">${icon('out', 16)}<b>ZSDR0010</b> ${esc(x.z10.grp)} · ${fmt0(x.z10.row_count)} แถว · ${fmt(x.z10.ton, 1)} ตัน
+        <span class="muted" style="flex:1;min-width:200px">${esc(x.z10.files || '')}</span>${canImport() ? `<button class="btn ghost sm" data-rm10>${icon('trash', 14)}ลบทั้งวัน</button>` : ''}</div>` : ''}
+    <h3 style="margin-top:20px">ความเคลื่อนไหวการนำเข้าในวันนี้ <span class="muted" style="font-weight:300">(ตามเวลาที่กดนำเข้า)</span></h3>
+    ${ups.length ? `<div class="tl">${ups.map(u => { const c = u.action === 'REMOVE' ? 'var(--bad)' : u.note === 'restore' ? '#e0a100' : 'var(--ok)';
+      return `<div class="tl-i" style="--tc:${c}"><span class="tm">${hm(u.imported_at)}</span>
+        ${u.action === 'REMOVE' ? '<span class="pill bad">ลบ</span>' : u.note === 'restore' ? '<span class="pill warn">กู้คืน</span>' : '<span class="pill ok">นำเข้า</span>'}
+        <span class="pill info">${esc(u.sheet_name)}</span><span class="fn" title="${esc(u.action === 'REMOVE' ? u.note_detail || '' : u.file_name)}">${esc(u.action === 'REMOVE' ? (u.note_detail || u.file_name) : u.file_name)}</span>
+        <span class="muted">${u.action === 'REMOVE' ? fmt0(u.superseded_rows) + ' แถว' : fmt0(u.row_count) + ' แถว'}${u.as_of_date ? ' · ข้อมูล ' + dShort(u.as_of_date) : ''} · ${esc(shortName(u.imported_by))}</span></div>`; }).join('')}</div>`
+      : '<div class="muted" style="padding:6px 0">ยังไม่มีการนำเข้าในวันนี้</div>'}`;
+  const md = $('#monDay');
+  md.querySelectorAll('[data-step]').forEach(b => b.onclick = () => { const nd = addDays(d, +b.dataset.step); IMP.monSel = nd;
+    const r = monRange(); if (!r.includes(nd)) IMP.monEnd = nd > r[r.length - 1] ? nd : addDays(nd, Number(IMP.monDays) - 1); renderMonitor(); });
+  md.querySelectorAll('[data-up]').forEach(b => b.onclick = () => { IMP.sheet = b.dataset.up; IMP.parsed = null; IMP.check = null; IMP.log = ''; impTab('up'); renderSheetCards(); renderSheetPanel(); });
+  md.querySelectorAll('[data-rm]').forEach(b => b.onclick = () => removeData('ZMMR004', d, [b.dataset.rm]));
+  const r10 = md.querySelector('[data-rm10]'); if (r10) r10.onclick = () => removeData('ZSDR0010', d, []);
+}
+function impTab(t){
+  IMP.tab = t; document.querySelectorAll('#impTabs button').forEach(b => b.classList.toggle('active', b.dataset.v === t));
+  $('#impMon').classList.toggle('hidden', t !== 'mon'); $('#impUp').classList.toggle('hidden', t !== 'up');
+  const el = $(t === 'mon' ? '#impMon' : '#impUp'); el.style.animation = 'none'; el.offsetHeight; el.style.animation = 'fadeUp .4s var(--ease) both';
+  if (t === 'mon') renderMonitor();
+}
+document.querySelectorAll('#impTabs button').forEach(b => b.onclick = () => impTab(b.dataset.v));
+segBind('monDays', IMP, 'monDays', 'v', () => { IMP.monEnd = null; renderMonitor(); });
+$('#monPrev').onclick = () => { const r = monRange(); IMP.monEnd = addDays(r[0], -1); IMP.monSel = null; renderMonitor(); };
+$('#monNext').onclick = () => { const r = monRange(); IMP.monEnd = addDays(r[r.length - 1], Number(IMP.monDays)); IMP.monSel = null; renderMonitor(); };
+$('#monToday').onclick = () => { IMP.monEnd = null; IMP.monSel = null; renderMonitor(); };
+$('#monAll').onchange = e => { IMP.monAll = e.target.checked; renderMonitor(); };
+
 
 // =====================================================================
 // ตรวจคุณภาพข้อมูล
