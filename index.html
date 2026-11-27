@@ -359,6 +359,18 @@
   .rm-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px}
   .rm-list label{display:flex;gap:8px;align-items:center;border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 10px;font-size:13.5px;cursor:pointer}
   .rm-list label:hover{border-color:var(--bad)}
+  .modal.proc{width:min(620px,94vw)}
+  .pm-list{max-height:320px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:4px}
+  .pm-item{display:flex;gap:10px;align-items:center;padding:7px 10px;border-radius:8px;font-size:13.5px;animation:fadeUp .3s var(--ease) both}
+  .pm-item .ic{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;flex:none;font-size:12px;background:#eef2f4;color:var(--muted)}
+  .pm-item .lb{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap} .pm-item .st{font-size:12.5px;text-align:right}
+  .pm-item.run{background:var(--orange-soft)} .pm-item.run .ic{background:#fff}
+  .pm-item.ok .ic{background:var(--ok-soft);color:var(--ok)} .pm-item.ok .st{color:var(--ok)}
+  .pm-item.bad .ic{background:var(--bad-soft);color:var(--bad)} .pm-item.bad .st{color:var(--bad)}
+  .spin2{width:14px;height:14px;border:2px solid #f3d0b8;border-top-color:var(--orange);border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+  .pm-sum{margin-top:12px;padding:10px 14px;border-radius:10px;font-weight:500} .pm-sum span{font-weight:300;font-size:13px}
+  .pm-sum.ok{background:var(--ok-soft);color:var(--ok)} .pm-sum.bad{background:var(--warn-soft);color:#946300}
+  .sum-line{background:#f7f9fa;border-radius:10px;padding:8px 12px;font-size:13.5px;color:var(--navy);margin-bottom:10px}
   .modal.wide{width:min(860px,94vw);max-height:88vh;overflow:auto}
   @media (max-width:1100px){ .bk-grid,.cap-cards{grid-template-columns:repeat(2,1fr)} .grid2{grid-template-columns:1fr} .cap-row{grid-template-columns:1fr} }
   @media (max-width:900px){ .filterbar{margin:-6px -16px 14px;padding:8px 16px;position:static} .abc-cards{grid-template-columns:1fr} }
@@ -1525,11 +1537,11 @@ const SHEET_INFO = {
   'ZMMR004': { title:'เคลื่อนไหวเข้า–ออก', tcode:'ZMMR004 (Main) · Ex+In', owner:'HS & Plate & Scrap: พี่หนู+พี่หร่อง · Flat Bar: พี่ดา+พี่ณัฐ · Section: พี่เก๋+พี่ปอ · Long & Pre-Process: Q1 Fac.O / Q2 Fac.01 / Q3 Fac.02 / Q4 Fac.03',
     rule:'แทนที่เฉพาะ <b>Posting Date × Sloc</b> ที่อยู่ในไฟล์ — Sloc อื่น/วันอื่นไม่กระทบ · ระบบตัดสินเงื่อนไขชีท Condition ให้อัตโนมัติ · แนะนำให้มีคอลัมน์ Sloc ต้นทาง/ปลายทาง', check:true },
   'ZSDR0013': { title:'Stock ตั้งต้น', tcode:'Stock By Bundle (ZSDR0013)', owner:'แต่ละส่วนงาน',
-    rule:'1 แถว = 1 มัด · ระบบรวม Mat+Batch ภายใต้ Sloc ให้เอง · แทนที่เฉพาะ <b>วันที่ Stock ตั้งต้น × Sloc</b> ที่อยู่ในไฟล์', check:true, asOf:true },
+    rule:'1 แถว = 1 มัด · ระบบรวม Mat+Batch ภายใต้ Sloc ให้เอง · <b>นำเข้าแบบต่อกัน</b> — ไม่ตรวจซ้ำ ไม่แทนที่ของเดิม (แบ่งไฟล์วางหลายครั้งได้) · ⚠️ วางไฟล์เดิมซ้ำ = นับซ้ำ ถ้าวางผิดให้ใช้ "ลบข้อมูลรายวันตาม Sloc" ด้านล่างแล้ววางใหม่', asOf:true, append:true },
   'ZSDR0010': { title:'ขาออก (Sub)', tcode:'ZSDR0010', owner:'—',
     rule:'ใช้เติมน้ำหนัก 0 ของขาออกตาม SO + Item เดียวกัน · ตรวจซ้ำและแทนที่<b>เป็นรายวัน (Actual GI date)</b> — วันไหนอยู่ในไฟล์ ข้อมูลวันนั้นทั้งวันถูกแทนที่', check:true },
   'Master': { title:'Group Product', tcode:'Google Sheet Master Data', owner:'พี่ปุ้ย (Long) · พี่ดา (Flat) · พี่เก๋ (Trading)',
-    rule:'ชุดเต็ม — นำเข้าแล้ว<b>แทนที่ Master เดิมทั้งหมด</b> (ของเดิมเก็บในประวัติ)' },
+    rule:'ชุดเต็ม — นำเข้าแล้ว<b>แทนที่ Master เดิมทั้งหมด</b> (ของเดิมเก็บในประวัติ) · ใช้ไฟล์เดียว', single:true },
   'Area': { title:'พื้นที่จัดเก็บ', tcode:'Config Area Excel', owner:'นาย (Eng.)', rule:'อัปเดตตามชื่อโรง (กว้าง × ยาว, % รับน้ำหนักต่อพื้นที่ → ความจุจริงตัน)' },
   'Mov.Type': { title:'Movement Type', tcode:'คำอธิบาย Movement Type', owner:'—', rule:'อัปเดตตามรหัส Mov' },
 };
@@ -1548,40 +1560,94 @@ function renderSheetCards(){
     if (['ZMMR004','ZSDR0013','ZSDR0010'].includes(IMP.sheet)){ IMP.covSheet = IMP.sheet; document.querySelectorAll('#covSheet button').forEach(x => x.classList.toggle('active', x.dataset.v === IMP.sheet)); renderCoverage(); } });
 }
 function renderSheetPanel(){
-  const k = IMP.sheet, s = SHEET_INFO[k], p = IMP.parsed;
+  const k = IMP.sheet, s = SHEET_INFO[k], p = IMP.parsed, multi = !s.single;
   $('#sheetPanel').innerHTML = `<h2><span class="dot"></span>${esc(k)} — ${esc(s.title)}</h2><p class="desc">${esc(s.tcode)} · ผู้รับผิดชอบ: ${esc(s.owner)}</p>
     <div class="rule-box">${s.rule}</div>
     ${s.asOf ? `<div class="row" style="margin-bottom:12px"><label class="muted">วันที่ Stock ตั้งต้น</label><input type="date" id="impAsOf" value="${IMP.asOf || ymd(new Date())}"></div>` : ''}
-    <div class="drop" id="impDrop"><div class="ic">${icon('upload',26)}</div><b>ลากไฟล์ ${esc(k)} (.xlsx) มาวางที่นี่</b><div class="muted">หรือคลิกเพื่อเลือกไฟล์ · ไฟล์ที่มีหลายชีท ระบบเลือกชีท ${esc(k)} ให้เอง</div><input type="file" id="impFile" accept=".xlsx,.xls" hidden></div>
+    <div class="drop" id="impDrop"><div class="ic">${icon('upload',26)}</div><b>ลากไฟล์ ${esc(k)} (.xlsx) มาวางที่นี่${multi ? ' — ได้หลายไฟล์พร้อมกัน' : ''}</b>
+      <div class="muted">หรือคลิกเพื่อเลือกไฟล์${multi ? ' (กด Ctrl/Shift เลือกหลายไฟล์)' : ''} · ไฟล์ที่มีหลายชีท ระบบเลือกชีท ${esc(k)} ให้เอง</div><input type="file" id="impFile" accept=".xlsx,.xls" ${multi ? 'multiple' : ''} hidden></div>
     <div id="impBody"></div>
     <div id="rmBox"></div>`;
   renderRemoveBox();
   const drop = $('#impDrop'), fi = $('#impFile');
   drop.onclick = () => fi.click(); drop.ondragover = e => { e.preventDefault(); drop.classList.add('over'); }; drop.ondragleave = () => drop.classList.remove('over');
-  drop.ondrop = e => { e.preventDefault(); drop.classList.remove('over'); if (e.dataTransfer.files[0]) readSheetFile(e.dataTransfer.files[0]); };
-  fi.onchange = () => { if (fi.files[0]) readSheetFile(fi.files[0]); fi.value = ''; };
-  if ($('#impAsOf')) $('#impAsOf').onchange = () => { IMP.asOf = $('#impAsOf').value; if (IMP.parsed) runPrecheck(); };
+  drop.ondrop = e => { e.preventDefault(); drop.classList.remove('over'); if (e.dataTransfer.files.length) readSheetFiles([...e.dataTransfer.files]); };
+  fi.onchange = () => { if (fi.files.length) readSheetFiles([...fi.files]); fi.value = ''; };
+  if ($('#impAsOf')) $('#impAsOf').onchange = () => { IMP.asOf = $('#impAsOf').value; if (!IMP.parsed) return; SHEET_INFO[IMP.sheet].check ? runPrecheck() : renderImpBody(); };
   if (p) renderImpBody();
 }
-async function readSheetFile(f){
-  const k = IMP.sheet;
-  try{
-    const wb = XLSX.read(await f.arrayBuffer(), { type:'array', cellDates:false });
-    let sn = wb.SheetNames.find(n => detectSheet(n, (XLSX.utils.sheet_to_json(wb.Sheets[n], { header:1, defval:null })[0] || []).map(String)) === k);
-    if (!sn && wb.SheetNames.length === 1) sn = wb.SheetNames[0];
-    if (!sn) return toast(`ไม่พบชีท ${k} ในไฟล์ ${f.name} (มี: ${wb.SheetNames.join(', ')})`, true);
-    IMP.parsed = parseSheet(k, wb.Sheets[sn], f.name, sn);
-    // แถวซ้ำกันเองในไฟล์ (เหมือนกันทุกช่อง) — แจ้งให้ทราบ (เก็บทุกแถวตามที่ตกลง)
-    const seen = new Map(); IMP.parsed.rows.forEach(r => { const s = JSON.stringify({ ...r, row_no:0 }); seen.set(s, (seen.get(s) || 0) + 1); });
-    IMP.parsed.dupInFile = [...seen.values()].filter(n => n > 1).reduce((a, n) => a + n - 1, 0);
-    IMP.check = null; IMP.log = ''; renderImpBody();
-    if (SHEET_INFO[k].check && IMP.parsed.ok) runPrecheck();
-  }catch(e){ toast(`อ่านไฟล์ไม่ได้: ${errMsg(e)}`, true); }
+
+// ---------- ป๊อปอัปประมวลผล ----------
+function procModal(title){
+  const bg = document.createElement('div'); bg.className = 'modal-bg';
+  bg.innerHTML = `<div class="modal proc"><div class="row" style="margin-bottom:6px"><h3 style="margin:0">${title}</h3><span class="muted" id="pmPct" style="margin-left:auto">0%</span></div>
+    <div class="muted" id="pmSub">กำลังเตรียม...</div><div class="progress" style="margin:10px 0 14px"><i id="pmBar"></i></div>
+    <div class="pm-list" id="pmList"></div><div id="pmSum"></div>
+    <div class="row" style="justify-content:flex-end;margin-top:14px"><button class="btn" id="pmClose" disabled>กำลังประมวลผล...</button></div></div>`;
+  document.body.appendChild(bg);
+  const q1 = sel => bg.querySelector(sel); let n = 0, total = 1;
+  return {
+    total(t){ total = Math.max(1, t); },
+    add(label){ const el = document.createElement('div'); el.className = 'pm-item wait'; el.innerHTML = `<span class="ic">•</span><span class="lb">${esc(label)}</span><span class="st muted">รอคิว</span>`; q1('#pmList').appendChild(el); return el; },
+    set(el, state, text){ el.className = 'pm-item ' + state; el.querySelector('.ic').innerHTML = state === 'run' ? '<span class="spin2"></span>' : state === 'ok' ? '✓' : state === 'bad' ? '✕' : state === 'skip' ? '–' : '•';
+      el.querySelector('.st').textContent = text || ''; if (state === 'run') el.scrollIntoView({ block:'nearest' });
+      if (['ok','bad','skip'].includes(state)){ n++; const p = Math.round(100 * n / total); q1('#pmBar').style.width = p + '%'; q1('#pmPct').textContent = p + '%'; } },
+    sub(t){ q1('#pmSub').textContent = t; },
+    done(html, ok = true){ q1('#pmBar').style.width = '100%'; q1('#pmPct').textContent = '100%'; q1('#pmSub').textContent = ok ? 'เสร็จสิ้น' : 'เสร็จสิ้น (มีบางรายการไม่สำเร็จ)';
+      q1('#pmSum').innerHTML = html; const b = q1('#pmClose'); b.disabled = false; b.textContent = 'ปิด'; b.className = 'btn orange'; b.onclick = () => bg.remove(); },
+  };
+}
+
+// ---------- อ่านหลายไฟล์ แล้วรวมเป็นชุดเดียว ----------
+async function readSheetFiles(files){
+  const k = IMP.sheet, s = SHEET_INFO[k];
+  if (s.single && files.length > 1){ toast(`${k} เป็นชุดเต็ม ใช้ไฟล์เดียว — เลือกไฟล์แรก (${files[0].name})`, true); files = [files[0]]; }
+  const pm = files.length > 1 ? procModal(`อ่านไฟล์ ${k} (${files.length} ไฟล์)`) : null;
+  if (pm){ pm.total(files.length); pm.sub('กำลังอ่านและตรวจรูปแบบข้อมูล'); }
+  const items = pm ? files.map(f => pm.add(f.name)) : [];
+  const parts = [];
+  for (const [i, f] of files.entries()){
+    if (pm) pm.set(items[i], 'run', 'กำลังอ่าน...');
+    try{
+      const wb = XLSX.read(await f.arrayBuffer(), { type:'array', cellDates:false });
+      let sn = wb.SheetNames.find(n => detectSheet(n, (XLSX.utils.sheet_to_json(wb.Sheets[n], { header:1, defval:null })[0] || []).map(String)) === k);
+      if (!sn && wb.SheetNames.length === 1) sn = wb.SheetNames[0];
+      if (!sn){ const m = `ไม่พบชีท ${k} (มี: ${wb.SheetNames.join(', ')})`; pm ? pm.set(items[i], 'bad', m) : toast(`${f.name}: ${m}`, true); continue; }
+      const p = parseSheet(k, wb.Sheets[sn], f.name, sn);
+      const seen = new Map(); p.rows.forEach(r => { const x = JSON.stringify({ ...r, row_no:0 }); seen.set(x, (seen.get(x) || 0) + 1); });
+      p.dupInFile = [...seen.values()].filter(n => n > 1).reduce((a, n) => a + n - 1, 0);
+      parts.push(p);
+      if (pm) pm.set(items[i], p.ok ? 'ok' : 'bad', `${fmt0(p.rows.length)} แถว${p.ok ? '' : ' · มีข้อผิดพลาด (จะไม่ถูกนำเข้า)'}`);
+    }catch(e){ pm ? pm.set(items[i], 'bad', 'อ่านไม่ได้: ' + errMsg(e)) : toast(`อ่านไฟล์ ${f.name} ไม่ได้: ${errMsg(e)}`, true); }
+  }
+  if (pm) pm.done(`<div class="muted">อ่านได้ ${parts.filter(p => p.ok).length}/${files.length} ไฟล์ · ${fmt0(parts.filter(p => p.ok).reduce((a, p) => a + p.rows.length, 0))} แถวพร้อมนำเข้า</div>`, parts.every(p => p.ok) && parts.length === files.length);
+  if (!parts.length) return;
+  IMP.parsed = mergeParsed(k, parts); IMP.check = null; IMP.log = ''; renderImpBody();
+  if (s.check && IMP.parsed.ok) runPrecheck();
+}
+// รวมผลอ่านหลายไฟล์: ไฟล์ที่มีข้อผิดพลาดไม่ถูกรวมในแถวที่จะนำเข้า
+function mergeParsed(k, parts){
+  // ไฟล์ที่ข้อมูลเหมือนไฟล์ก่อนหน้าทุกแถว (เลือกไฟล์เดิมซ้ำ) → ไม่รวม กันนับซ้ำ
+  const sigs = new Map();
+  parts.forEach(p => { if (!p.ok) return; const sg = p.rows.map(r => JSON.stringify({ ...r, row_no:0 })).sort().join('\n');
+    if (sigs.has(sg)){ p.ok = false; p.msgs = [...p.msgs, ['bad', `ข้อมูลเหมือนไฟล์ ${sigs.get(sg)} ทุกแถว — ไม่นำเข้าซ้ำ`]]; } else sigs.set(sg, p.fileName); });
+  const good = parts.filter(p => p.ok), rows = [];
+  good.forEach((p, fi) => p.rows.forEach(r => rows.push({ ...r, _f: p.fileName })));
+  const sum = f => rows.reduce((a, r) => a + (Number(r[f]) || 0), 0);
+  const st = { rows: rows.length };
+  if (k === 'ZSDR0013'){ st.qty = sum('qty'); st.kg = sum('weight_kg'); st.mats = new Set(rows.map(r => r.material)).size; }
+  if (k === 'ZMMR004'){ st.qty = sum('qty'); st.kg = sum('weight_kg'); }
+  if (k === 'ZSDR0010'){ st.qty = sum('qty'); st.kg = sum('net_weight_kg'); }
+  if (k === 'Master') st.mats = new Set(rows.map(r => r.mat_code)).size;
+  if (k === 'Area') st.cap = sum('capacity_ton_actual');
+  const ds = rows.map(r => r.posting_date || r.gi_date).filter(Boolean).sort(); if (ds.length){ st.from = ds[0]; st.to = ds[ds.length - 1]; }
+  return { kind:k, files: parts, rows, st, ok: good.length > 0, fileName: parts.map(p => p.fileName).join(', '),
+    dupInFile: good.reduce((a, p) => a + (p.dupInFile || 0), 0) };
 }
 function impAsOf(){ return SHEET_INFO[IMP.sheet].asOf ? ($('#impAsOf')?.value || null) : (IMP.parsed?.st.from || null); }
 async function runPrecheck(){
-  const p = IMP.parsed; $('#impCheck').innerHTML = '<div class="muted" style="padding:10px">กำลังตรวจกับข้อมูลในระบบ...</div>';
-  const { data, error } = await sb.rpc('grgi_precheck', { p_sheet: IMP.sheet, p_as_of: impAsOf(), p_rows: p.rows });
+  const p = IMP.parsed; if (!p || !p.ok) return; $('#impCheck').innerHTML = '<div class="muted" style="padding:10px">กำลังตรวจกับข้อมูลในระบบ...</div>';
+  const { data, error } = await sb.rpc('grgi_precheck', { p_sheet: IMP.sheet, p_as_of: impAsOf(), p_rows: p.rows.map(({ _f, ...r }) => r) });
   if (error){ $('#impCheck').innerHTML = `<div class="note">ตรวจซ้ำไม่สำเร็จ: ${esc(errMsg(error))}</div>`; return; }
   IMP.check = data.map(g => ({ ...g, use: g.status !== 'SAME' })); renderImpBody();
 }
@@ -1590,62 +1656,71 @@ function renderImpBody(){
   if (s.mats !== undefined) parts.push(`${fmt0(s.mats)} Material`); if (s.qty !== undefined) parts.push(`จำนวน ${fmt0(s.qty)}`);
   if (s.kg !== undefined) parts.push(`${fmt(s.kg/1000,3)} ตัน`); if (s.from) parts.push(`${s.from}${s.to !== s.from ? ' – ' + s.to : ''}`);
   if (s.cap !== undefined) parts.push(`ความจุจริงรวม ${fmt(s.cap)} ตัน`);
-  const slocs = [...new Set(p.rows.map(r => r.sloc).filter(Boolean))];
-  const ck = IMP.check, isGroupable = true;
-  const cnt = st => ck ? ck.filter(g => g.status === st).length : 0;
-  $('#impBody').innerHTML = `<div class="sheet" style="margin-top:14px"><div class="sheet-head"><b>${esc(p.fileName)} › ${esc(p.sheetName)}</b><span class="pill ${p.ok?'ok':'bad'}">${p.ok?'ข้อมูลถูกรูปแบบ':'มีข้อผิดพลาด'}</span><span class="muted">${parts.join(' · ')}</span></div>
-      ${slocs.length ? `<div class="muted" style="margin-top:6px">Sloc ในไฟล์ (${slocs.length}): ${esc(slocs.join(', '))}</div>` : ''}
-      <ul class="msgs">${p.msgs.map(m => `<li class="${m[0]}">${esc(m[1])}</li>`).join('')}${p.dupInFile ? `<li class="info">แถวที่เหมือนกันทุกช่องในไฟล์ ${fmt0(p.dupInFile)} แถว — เก็บทุกแถว (ถือว่าเป็นคนละมัด/คนละ Item)</li>` : ''}</ul></div>
-    ${SHEET_INFO[k].check ? `<h3 style="color:var(--navy);font-size:15px;margin:16px 0 8px">ตรวจซ้ำกับข้อมูลในระบบ ${ck ? `<span class="st NEW">ใหม่ ${cnt('NEW')}</span> <span class="st CHANGED">เปลี่ยน ${cnt('CHANGED')}</span> <span class="st SAME">ซ้ำ ${cnt('SAME')}</span>` : ''}</h3>
-      <div id="impCheck">${ck ? `<div class="tbl" style="max-height:340px"><table><thead><tr>${isGroupable ? '<th>นำเข้า</th>' : ''}<th>วันที่</th><th>${k === 'ZSDR0010' ? 'กลุ่ม' : 'Sloc'}</th><th class="num">แถวในไฟล์</th><th class="num">แถวในระบบ</th><th>สถานะ</th><th>วางล่าสุดโดย</th></tr></thead><tbody>${
-        ck.map((g, i) => `<tr>${isGroupable ? `<td><input type="checkbox" data-g="${i}" ${g.use ? 'checked' : ''}></td>` : ''}<td>${g.data_date ? dLong(g.data_date) : '—'}</td><td><b>${esc(g.grp)}</b></td><td class="num">${fmt0(g.file_rows)}</td><td class="num">${fmt0(g.db_rows)}</td>
+  const slocs = [...new Set(p.rows.map(r => r.sloc).filter(Boolean))].sort();
+  const ck = IMP.check, cnt = st => ck ? ck.filter(g => g.status === st).length : 0;
+  const fileCard = f => { const fs = f.st, fp = [`${fmt0(fs.rows)} แถว`]; if (fs.kg !== undefined) fp.push(`${fmt(fs.kg/1000,3)} ตัน`); if (fs.from) fp.push(fs.from + (fs.to !== fs.from ? ' – ' + fs.to : ''));
+    const fsl = [...new Set(f.rows.map(r => r.sloc).filter(Boolean))];
+    return `<div class="sheet"><div class="sheet-head"><b>${esc(f.fileName)} › ${esc(f.sheetName)}</b><span class="pill ${f.ok?'ok':'bad'}">${f.ok?'ข้อมูลถูกรูปแบบ':'มีข้อผิดพลาด · ไม่นำเข้าไฟล์นี้'}</span><span class="muted">${fp.join(' · ')}${fsl.length ? ' · Sloc ' + esc(fsl.join(', ')) : ''}</span></div>
+      <ul class="msgs">${f.msgs.map(m => `<li class="${m[0]}">${esc(m[1])}</li>`).join('')}${f.dupInFile ? `<li class="info">แถวที่เหมือนกันทุกช่องในไฟล์ ${fmt0(f.dupInFile)} แถว — เก็บทุกแถว (ถือว่าเป็นคนละมัด/คนละ Item)</li>` : ''}</ul></div>`; };
+  $('#impBody').innerHTML = `<div style="margin-top:14px">${p.files.length > 1 ? `<div class="sum-line"><b>รวม ${p.files.length} ไฟล์</b> · ${parts.join(' · ')}${slocs.length ? ` · Sloc (${slocs.length}): ${esc(slocs.join(', '))}` : ''}</div>` : ''}
+      ${p.files.map(fileCard).join('')}
+      ${SHEET_INFO[k].append ? (() => { const d = impAsOf(), ex = IMP.cov.filter(r => r.sheet === k && r.data_date === d && slocs.includes(r.grp));
+        return ex.length ? `<div class="note" style="border-color:#ffd59a;background:#fffaf0">ในระบบมีข้อมูลวันที่ ${dLong(d)} ของ Sloc นี้อยู่แล้ว: ${ex.map(r => `<b>${esc(r.grp)}</b> ${fmt0(r.row_count)} แถว (วางโดย ${esc(r.imported_by || '')})`).join(' · ')} — นำเข้าจะ<b>ต่อเพิ่ม</b>จากของเดิม ถ้าเป็นไฟล์เดิมซ้ำจะนับซ้ำ</div>`
+          : `<div class="muted">วันที่ ${dLong(d)} ยังไม่มีข้อมูลของ Sloc ${esc(slocs.join(', '))} ในระบบ</div>`; })() : ''}</div>
+    ${SHEET_INFO[k].check && p.ok ? `<h3 style="color:var(--navy);font-size:15px;margin:16px 0 8px">ตรวจซ้ำกับข้อมูลในระบบ ${ck ? `<span class="st NEW">ใหม่ ${cnt('NEW')}</span> <span class="st CHANGED">เปลี่ยน ${cnt('CHANGED')}</span> <span class="st SAME">ซ้ำ ${cnt('SAME')}</span>` : ''}</h3>
+      <div id="impCheck">${ck ? `<div class="tbl" style="max-height:340px"><table><thead><tr><th>นำเข้า</th><th>วันที่</th><th>${k === 'ZSDR0010' ? 'กลุ่ม' : 'Sloc'}</th><th class="num">แถวในไฟล์</th><th class="num">แถวในระบบ</th><th>สถานะ</th><th>วางล่าสุดโดย</th></tr></thead><tbody>${
+        ck.map((g, i) => `<tr><td><input type="checkbox" data-g="${i}" ${g.use ? 'checked' : ''}></td><td>${g.data_date ? dLong(g.data_date) : '—'}</td><td><b>${esc(g.grp)}</b></td><td class="num">${fmt0(g.file_rows)}</td><td class="num">${fmt0(g.db_rows)}</td>
           <td><span class="st ${g.status}">${{ NEW:'ใหม่', SAME:'ซ้ำ (เหมือนเดิมทุกแถว)', CHANGED:'มีอยู่แล้ว · ต่างจากเดิม → แทนที่' }[g.status]}</span></td>
           <td class="muted">${g.db_imported_at ? esc(g.db_imported_by || '') + ' · ' + new Date(g.db_imported_at).toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'}) : '—'}</td></tr>`).join('')}</tbody></table></div>
-        <div class="muted" style="margin-top:6px">${isGroupable ? 'ค่าเริ่มต้น: ข้ามกลุ่มที่ "ซ้ำ" (ไม่ต้องนำเข้าซ้ำ) · ติ๊กเพื่อเลือกกลุ่มที่จะนำเข้า' : 'ZSDR0010 นำเข้าทั้งไฟล์ — Delivery ที่ซ้ำจะถูกแทนที่ด้วยข้อมูลชุดเดียวกัน'}</div>` : '<div class="muted">—</div>'}</div>` : ''}
+        <div class="muted" style="margin-top:6px">ค่าเริ่มต้น: ข้ามกลุ่มที่ "ซ้ำ" (ไม่ต้องนำเข้าซ้ำ) · ติ๊กเพื่อเลือกกลุ่มที่จะนำเข้า</div>` : '<div class="muted">—</div>'}</div>` : ''}
     <div class="row" style="margin-top:14px"><button class="btn orange" id="impGo" ${canImport() && p.ok ? '' : 'disabled'}>${icon('upload',17)}นำเข้า ${esc(k)}</button><button class="btn ghost" id="impClear">ล้าง</button><span class="muted" id="impSel"></span></div>
     <div id="impLog" class="log ${IMP.log ? '' : 'hidden'}">${esc(IMP.log || '')}</div>`;
-  const selInfo = () => { if (!ck || !isGroupable) return; const n = ck.filter(g => g.use).reduce((a, g) => a + g.file_rows, 0); $('#impSel').textContent = `จะนำเข้า ${fmt0(n)} แถว จาก ${ck.filter(g=>g.use).length} กลุ่ม`; };
+  const selInfo = () => { if (!ck) return; const n = ck.filter(g => g.use).reduce((a, g) => a + g.file_rows, 0); $('#impSel').textContent = `จะนำเข้า ${fmt0(n)} แถว จาก ${ck.filter(g=>g.use).length} กลุ่ม`; };
   $('#impBody').querySelectorAll('[data-g]').forEach(c => c.onchange = () => { ck[c.dataset.g].use = c.checked; selInfo(); }); selInfo();
-  $('#impClear').onclick = () => { IMP.parsed = null; IMP.check = null; $('#impBody').innerHTML = ''; };
+  $('#impClear').onclick = () => { IMP.parsed = null; IMP.check = null; IMP.log = ''; $('#impBody').innerHTML = ''; };
   $('#impGo').onclick = doSheetImport;
 }
 async function doSheetImport(){
-  const k = IMP.sheet, p = IMP.parsed, ck = IMP.check;
-  if (SHEET_INFO[k].check && !ck) return toast('รอตรวจซ้ำให้เสร็จก่อน', true);
-  if (k === 'ZSDR0013' && !impAsOf()) return toast('ระบุวันที่ Stock ตั้งต้นก่อน', true);
-  // แบ่งส่งทีละกลุ่ม (ZSDR0010 = รายวัน, อื่น = วันที่ × Sloc) — แต่ละกลุ่มเข้าทั้งก้อนหรือไม่เข้าเลย และไฟล์ใหญ่ไม่ติด timeout
-  const gk = r => k === 'ZSDR0010' ? r.gi_date : `${k === 'ZSDR0013' ? impAsOf() : r.posting_date}|${r.sloc}`;
-  let groups;
-  if (ck){ const use = ck.filter(g => g.use).map(g => k === 'ZSDR0010' ? g.data_date : `${g.data_date}|${g.grp}`);
-    const by = {}; p.rows.forEach(r => (by[gk(r)] ||= []).push(r));
-    groups = [...new Set(use)].filter(u => by[u]).map(u => ({ key:u, rows:by[u] })); }
-  else groups = [{ key:'ทั้งไฟล์', rows:p.rows }];
+  const k = IMP.sheet, p = IMP.parsed, ck = IMP.check, s = SHEET_INFO[k];
+  if (s.check && !ck) return toast('รอตรวจซ้ำให้เสร็จก่อน', true);
+  if (s.asOf && !impAsOf()) return toast('ระบุวันที่ Stock ตั้งต้นก่อน', true);
+  // แบ่งส่งทีละกลุ่ม — แต่ละกลุ่มเข้าทั้งก้อนหรือไม่เข้าเลย และไฟล์ใหญ่ไม่ติด timeout
+  //   ZMMR004 = วันที่ × Sloc · ZSDR0010 = รายวัน · ZSDR0013 (ต่อกัน) = ไฟล์ × Sloc · อื่น = ทั้งชุด
+  const gk = r => k === 'ZSDR0010' ? r.gi_date : k === 'ZMMR004' ? `${r.posting_date}|${r.sloc}` : k === 'ZSDR0013' ? `${r._f}|${r.sloc}` : 'all';
+  const by = {}; p.rows.forEach(r => (by[gk(r)] ||= []).push(r));
+  let keys = Object.keys(by);
+  if (ck){ const use = new Set(ck.filter(g => g.use).map(g => k === 'ZSDR0010' ? g.data_date : `${g.data_date}|${g.grp}`)); keys = keys.filter(x => use.has(x)); }
+  const groups = keys.sort().map(x => ({ key:x, rows:by[x] }));
   const total = groups.reduce((a, g) => a + g.rows.length, 0);
   if (!total) return toast('ไม่มีกลุ่มที่เลือกให้นำเข้า (ทุกกลุ่มซ้ำกับในระบบ)', true);
-  const log = $('#impLog'); log.classList.remove('hidden');
-  const say = t => { IMP.log += t + '\n'; log.textContent = IMP.log; log.scrollTop = 1e9; };
-  IMP.log = ''; say(`⏳ ${k}: ${fmt0(total)} แถว · ${groups.length} กลุ่ม`);
+  const label = g => k === 'ZSDR0010' ? `วันที่ ${dLong(g.key)}` : k === 'ZMMR004' ? `${dLong(g.key.split('|')[0])} · Sloc ${g.key.split('|')[1]}`
+    : k === 'ZSDR0013' ? `${g.key.split('|')[0]} · Sloc ${g.key.split('|')[1]}` : p.fileName;
+  const pm = procModal(`นำเข้า ${k}`); pm.total(groups.length); pm.sub(`${fmt0(total)} แถว · ${groups.length} กลุ่ม${s.asOf ? ' · วันที่ Stock ตั้งต้น ' + dLong(impAsOf()) : ''}`);
+  const items = groups.map(g => pm.add(`${label(g)} — ${fmt0(g.rows.length)} แถว`));
   const b = $('#impGo'); busy(b, true, 'กำลังนำเข้า...');
+  IMP.log = ''; const say = t => IMP.log += t + '\n';
   let ok = 0, ins = 0, sup = 0;
   for (const [i, g] of groups.entries()){
-    const label = g.key.replace('|', ' · Sloc ');
-    b.innerHTML = `<span class="spin"></span>กำลังนำเข้า ${i + 1}/${groups.length}...`;
+    pm.set(items[i], 'run', 'กำลังส่ง...');
+    const files = [...new Set(g.rows.map(r => r._f))].join(', ');
     try{
-      const d = await call('grgi_import_sheet', { p_sheet:k, p_file_name:p.fileName, p_as_of:impAsOf(), p_rows:g.rows });
+      const d = await call('grgi_import_sheet', { p_sheet:k, p_file_name:files, p_as_of:impAsOf(), p_rows:g.rows.map(({ _f, ...r }) => r) });
       ok++; ins += d.inserted; sup += d.superseded;
-      say(`✅ ${label}: ${fmt0(d.inserted)} แถว · แทนที่ของเดิม ${fmt0(d.superseded)} · batch #${d.batch_id}`);
+      pm.set(items[i], 'ok', `${fmt0(d.inserted)} แถว${d.superseded ? ' · แทนที่ ' + fmt0(d.superseded) : ''} · batch #${d.batch_id}`);
+      say(`✅ ${label(g)}: ${fmt0(d.inserted)} แถว · แทนที่ของเดิม ${fmt0(d.superseded)} · batch #${d.batch_id}`);
     }catch(e){
-      const m = errMsg(e);
-      say(`❌ ${label}: ${/timeout/i.test(m) ? 'ฐานข้อมูลใช้เวลานานเกินกำหนด — ลองกดนำเข้าใหม่อีกครั้ง (กลุ่มที่สำเร็จแล้วจะขึ้นว่า "ซ้ำ")' : m} (กลุ่มนี้ไม่ถูกนำเข้า)`);
-      if (!USER) break;
+      const m = /timeout/i.test(errMsg(e)) ? 'ฐานข้อมูลใช้เวลานานเกินกำหนด — ลองนำเข้าใหม่' : errMsg(e);
+      pm.set(items[i], 'bad', m); say(`❌ ${label(g)}: ${m} (กลุ่มนี้ไม่ถูกนำเข้า)`);
+      if (!USER){ groups.slice(i + 1).forEach((_, j) => pm.set(items[i + 1 + j], 'skip', 'ยกเลิก — หมดเวลาเข้าระบบ')); break; }
     }
   }
+  const allOk = ok === groups.length;
   say(`สรุป: สำเร็จ ${ok}/${groups.length} กลุ่ม · นำเข้า ${fmt0(ins)} แถว · แทนที่ของเดิม ${fmt0(sup)} แถว`);
-  toast(ok === groups.length ? `นำเข้า ${k} เรียบร้อย` : `นำเข้า ${k} สำเร็จ ${ok}/${groups.length} กลุ่ม`, ok !== groups.length);
+  pm.done(`<div class="pm-sum ${allOk ? 'ok' : 'bad'}">${allOk ? '✓ นำเข้าสำเร็จทั้งหมด' : `สำเร็จ ${ok}/${groups.length} กลุ่ม — กลุ่มที่ไม่สำเร็จ นำเข้าใหม่ได้`}<br><span>นำเข้า ${fmt0(ins)} แถว · แทนที่ของเดิม ${fmt0(sup)} แถว</span></div>`, allOk);
   busy(b, false); b.disabled = !canImport();
   if (ok){ D.loaded = false; refreshBadge();
-    const li = await q('v_last_import'); IMP.last = Object.fromEntries(li.map(r => [r.sheet_name, r])); renderSheetCards(); loadCoverage();
-    if (SHEET_INFO[k].check) runPrecheck(); }
+    const li = await q('v_last_import'); IMP.last = Object.fromEntries(li.map(r => [r.sheet_name, r])); renderSheetCards(); await loadCoverage(); }
+  if (s.check && ok) runPrecheck(); else renderImpBody();
 }
 
 // ---------- ลบข้อมูลรายวัน (× Sloc) — ลบแบบเก็บประวัติ ----------
