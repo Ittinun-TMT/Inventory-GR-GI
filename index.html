@@ -481,6 +481,63 @@
   .tl-i .fn{color:#33525b;overflow:hidden;text-overflow:ellipsis;max-width:420px;white-space:nowrap}
   @media (max-width:1100px){ .md-kpis{grid-template-columns:repeat(2,1fr)} }
   @media (max-width:700px){ .mon-strip{grid-template-columns:repeat(var(--n,14),58px)} .md-head .row{margin-left:0} .imp-tabs{display:flex} .imp-tabs button{flex:1;justify-content:center;padding:9px 8px} }
+  /* ================= ตรวจคุณภาพข้อมูล ================= */
+  .dq-sum{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+  .dq-chip{border-radius:20px;padding:4px 12px;font-size:13px} .dq-chip b{font-weight:600}
+  .dq-chip.bad{background:var(--bad-soft);color:var(--bad)} .dq-chip.warn{background:var(--warn-soft);color:#946300} .dq-chip.info{background:var(--info-soft);color:var(--navy)} .dq-chip.ok{background:var(--ok-soft);color:var(--ok)}
+  .dq-list{display:flex;flex-direction:column;gap:8px}
+  .dq-item{--dc:var(--ok);border:1px solid var(--line);border-left:4px solid var(--dc);border-radius:12px;background:#fff;transition:box-shadow .2s,border-color .2s;animation:fadeUp .4s var(--ease) both}
+  .dq-item.bad{--dc:var(--bad)} .dq-item.warn{--dc:#e0a100} .dq-item.info{--dc:#4f8fc2} .dq-item.ok{--dc:#1f9d63}
+  .dq-item:hover{box-shadow:var(--shadow)} .dq-item.open{box-shadow:var(--shadow-h)}
+  .dq-h{display:flex;align-items:center;gap:12px;width:100%;background:none;border:0;padding:12px 14px;cursor:pointer;text-align:left;font-family:inherit;color:var(--text)}
+  .dq-dot{width:10px;height:10px;border-radius:50%;background:var(--dc);flex:none;box-shadow:0 0 0 4px color-mix(in srgb,var(--dc) 18%,transparent)}
+  .dq-t{flex:1;min-width:0;display:flex;flex-direction:column} .dq-t b{color:var(--navy);font-size:15px} .dq-t small{font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dq-n{font-size:20px;font-weight:500;color:var(--navy);min-width:70px;text-align:right;font-variant-numeric:tabular-nums}
+  .dq-item.ok .dq-n{color:var(--ok)}
+  .dq-h .chev{width:16px;height:16px;color:var(--muted);transition:transform .25s var(--ease)} .dq-item.open .dq-h .chev{transform:rotate(180deg)}
+  .dq-b{display:none;padding:0 14px 14px} .dq-item.open .dq-b{display:block;animation:fadeUp .3s var(--ease) both}
+  .dq-info{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px}
+  .dq-info > div{background:#f7f9fa;border-radius:10px;padding:10px 12px;font-size:13.5px;line-height:1.6;color:#33525b}
+  .dq-info span{display:block;font-size:12px;color:var(--dc);font-weight:500;margin-bottom:2px;letter-spacing:.3px}
+  .dq-b h4{margin:14px 0 6px;font-size:14px;color:var(--navy);font-weight:500}
+  @media (max-width:900px){ .dq-info{grid-template-columns:1fr} .dq-t small{white-space:normal} .dq-n{font-size:17px;min-width:50px} }
+  /* ================= ตัวกรองแบบการ์ด ================= */
+  .fpanel{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);margin:0 0 16px;padding:10px 12px;animation:fadeUp .4s var(--ease) both}
+  .fpanel.collapsed{position:sticky;top:8px;z-index:25;background:rgba(255,255,255,.94);backdrop-filter:blur(8px)}
+  .fbar{display:flex;align-items:center;gap:10px;min-height:34px}
+  .ftog{display:flex;align-items:center;gap:7px;border:0;background:var(--navy);color:#fff;border-radius:10px;padding:7px 12px;font-family:inherit;font-size:14px;cursor:pointer;flex:none}
+  .ftog em{font-style:normal;background:var(--orange);color:#fff;border-radius:10px;font-size:11px;padding:0 7px;line-height:18px}
+  .ftog .chev{width:15px;height:15px;transition:transform .25s var(--ease)} .fpanel.collapsed .ftog .chev{transform:rotate(-90deg)}
+  .fsum{display:flex;gap:6px;flex-wrap:wrap;flex:1;min-width:0;align-items:center}
+  .fs{display:inline-flex;align-items:center;gap:4px;background:#f1f5f7;color:var(--navy);border-radius:20px;padding:3px 10px;font-size:12.5px;white-space:nowrap;animation:pop .25s var(--ease)}
+  .fs.date{background:var(--info-soft)} .fs.cat{background:#e9f1f8} .fs.fac{background:var(--orange-soft);color:#c24e00}
+  .fs button{border:0;background:none;cursor:pointer;color:inherit;font-size:15px;line-height:1;padding:0 0 0 2px;opacity:.6} .fs button:hover{opacity:1}
+  .fs-none{font-size:12.5px}
+  .fcards{display:grid;grid-template-columns:minmax(290px,1.1fr) minmax(220px,.85fr) minmax(300px,1.7fr) minmax(200px,.8fr);gap:10px;margin-top:10px}
+  .fpanel.collapsed .fcards{display:none}
+  .fc{background:#f8fafb;border:1px solid #edf1f3;border-radius:12px;padding:9px 11px;display:flex;flex-direction:column;gap:7px;min-width:0}
+  .fc-h{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--navy);font-weight:500} .fc-h svg{width:15px;height:15px;color:var(--orange)}
+  .fc-h small{font-weight:300;color:var(--muted);font-size:11.5px;margin-left:auto;white-space:nowrap}
+  .fc .seg{display:flex} .fc .seg button{flex:1;padding:5px 6px;font-size:13px}
+  .fdates{display:flex;align-items:center;gap:6px} .fdates input{flex:1;min-width:0;padding:5px 4px;font-size:12.5px}
+  .fcat{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .fcc{position:relative;border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:4px 6px 4px 11px;text-align:left;cursor:pointer;font-family:inherit;color:var(--text);transition:.18s;overflow:hidden;min-width:0}
+  .fcc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--cc)}
+  .fcc b{display:inline;font-size:13.5px;font-weight:500;color:var(--navy)} .fcc span{display:inline;margin-left:6px;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .fcc .ck{position:absolute;right:5px;top:4px;font-style:normal;font-size:11px;color:#fff;background:var(--cc);border-radius:50%;width:16px;height:16px;display:grid;place-items:center;transform:scale(0);transition:transform .2s var(--ease)}
+  .fcc:hover{border-color:var(--cc)} .fcc.on{border-color:var(--cc);background:color-mix(in srgb,var(--cc) 8%,#fff);box-shadow:0 3px 10px color-mix(in srgb,var(--cc) 25%,transparent)} .fcc.on .ck{transform:scale(1)}
+  .ffac{display:flex;flex-wrap:wrap;gap:5px}
+  .ffc{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:3px 8px;font-family:inherit;font-size:12.5px;cursor:pointer;color:var(--text);transition:.18s}
+  .ffc b{font-weight:500;color:var(--navy)} .ffc span{font-size:11.5px;font-variant-numeric:tabular-nums}
+  .ffc:hover{border-color:var(--navy)} .ffc.on{border-color:var(--orange);background:var(--orange-soft)}
+  .fc .msel-btn{width:100%;min-width:0;background:#fff;white-space:nowrap;overflow:hidden} .fc .msel-btn b{overflow:hidden;text-overflow:ellipsis}
+  .fcc{padding-right:22px!important}
+  @media (max-width:1250px){ .fcards{grid-template-columns:1fr 1fr} }
+  @media (max-width:700px){ .fcards{grid-template-columns:1fr} .fbar{flex-wrap:wrap} .fsum{order:3;flex-basis:100%} .fbar #fReset{margin-left:auto} .fpanel.collapsed{top:0} }
+  /* ---- ใช้พื้นที่ให้คุ้ม ---- */
+  .content{max-width:1680px;padding:18px 22px 40px}
+  .card{padding:18px;margin-bottom:14px} .pagehead{margin-bottom:12px} .kpis{margin-bottom:14px;gap:12px} .grid2{gap:14px}
+  .brief{padding:20px 22px;margin-bottom:14px} .bl-hero{margin-bottom:14px}
 </style>
 </head>
 <body>
@@ -598,15 +655,20 @@
         <span class="right"><span id="dataAsOf"></span> <button class="btn ghost sm" id="reloadBtn" title="โหลดข้อมูลใหม่"><svg class="i" style="width:15px;height:15px"><use href="#i-refresh"/></svg>รีเฟรช</button></span></div>
 
       <!-- ===== ตัวกรองทั้งระบบ (ใช้กับ สรุปผล / แนวโน้ม / วิเคราะห์ / Stock) ===== -->
-      <div class="filterbar hidden" id="filterbar">
-        <span class="fl"><svg class="i" style="width:17px;height:17px"><use href="#i-filter"/></svg>ตัวกรอง <em id="fCount" class="hidden"></em></span>
-        <div class="seg" id="fPreset"><button data-p="7">7 วัน</button><button data-p="30">30 วัน</button><button data-p="90">90 วัน</button><button data-p="all">ทั้งหมด</button></div>
-        <input type="date" id="fFrom" title="ตั้งแต่วันที่"><span class="muted">–</span><input type="date" id="fTo" title="ถึงวันที่">
-        <div class="chips" id="fCats"></div>
-        <div class="msel" id="fFac"></div>
-        <div class="msel" id="fGp"></div>
-        <div class="msel" id="fGs"></div>
-        <button class="btn ghost sm" id="fReset">ล้างตัวกรอง</button>
+      <div class="fpanel hidden" id="filterbar">
+        <div class="fbar">
+          <button class="ftog" id="fToggle" title="ย่อ/ขยายตัวกรอง"><svg class="i" style="width:17px;height:17px"><use href="#i-filter"/></svg>ตัวกรอง<em id="fCount" class="hidden"></em><svg class="i chev"><use href="#i-down2"/></svg></button>
+          <div class="fsum" id="fSum"></div>
+          <button class="btn ghost sm" id="fReset">ล้างทั้งหมด</button>
+        </div>
+        <div class="fcards" id="fCards">
+          <div class="fc"><div class="fc-h"><svg class="i"><use href="#i-clock"/></svg>ช่วงเวลา</div>
+            <div class="seg" id="fPreset"><button data-p="7">7 วัน</button><button data-p="30">30 วัน</button><button data-p="90">90 วัน</button><button data-p="all">ทั้งหมด</button></div>
+            <div class="fdates"><input type="date" id="fFrom" title="ตั้งแต่วันที่"><span class="muted">ถึง</span><input type="date" id="fTo" title="ถึงวันที่"></div></div>
+          <div class="fc"><div class="fc-h"><svg class="i"><use href="#i-layers"/></svg>หมวดสินค้า <small>ตัน = Stock ปัจจุบัน</small></div><div class="fcat" id="fCats"></div></div>
+          <div class="fc"><div class="fc-h"><svg class="i"><use href="#i-box"/></svg>โรง / พื้นที่ <small>% = ใช้พื้นที่ · เลือกได้หลายโรง</small></div><div class="ffac" id="fFac"></div></div>
+          <div class="fc"><div class="fc-h"><svg class="i"><use href="#i-pie"/></svg>กลุ่มสินค้า</div><div class="msel" id="fGp"></div><div class="msel" id="fGs"></div></div>
+        </div>
       </div>
 
 <!-- ===== SUMMARY (หน้าหลัก) ===== -->
@@ -737,18 +799,13 @@
 
 <!-- ===== DATA QUALITY ===== -->
 <section data-page="quality" class="page hidden">
-  <div class="card"><h2><span class="dot"></span>ตรวจคุณภาพข้อมูล</h2><p class="desc">รายการที่ควรตรวจหรือแก้ที่ต้นทาง</p><div class="tbl" id="dqTbl"></div></div>
-  <div class="card"><h2><span class="dot"></span>Code ที่ไม่พบใน Master</h2><p class="desc">Material ในข้อมูลเข้า–ออก/สต็อก ที่ยังไม่มีคู่ใน Group Sale / Group Product / Product Type — ระบบจัดเป็นหมวด Other</p>
-    <div class="row" style="margin:4px 0 12px"><button class="btn ghost sm" id="umCsv"><svg class="i" style="width:15px;height:15px"><use href="#i-down"/></svg>CSV</button><span class="muted" id="umInfo"></span></div>
-    <div class="tbl" id="umTbl"></div></div>
-  <div class="card"><h2><span class="dot"></span>ผลตัดสินเงื่อนไข ZMMR004</h2>
+  <div class="card"><h2><span class="dot"></span>ตรวจคุณภาพข้อมูล</h2><p class="desc">เรียงจากเรื่องที่ต้องแก้ก่อน · ต้องแก้ = ทำให้ตัวเลขผิด · ควรตรวจ = อาจทำให้ตัวเลขคลาดเคลื่อน · รับทราบ = ระบบจัดการให้แล้ว</p>
+    <div class="dq-sum" id="dqSum"></div>
+    <div class="dq-list" id="dqTbl"></div></div>
+  <div class="card"><h2><span class="dot"></span>ผลตัดสินเงื่อนไข ZMMR004 (รายวัน × หมวด × Mov)</h2>
     <div class="row" style="margin:4px 0 12px"><label class="row muted" style="gap:6px"><input type="checkbox" id="onlyExcluded"> เฉพาะที่ถูกตัดออก</label></div>
     <div class="tbl" id="ruleTbl"></div></div>
-  <div class="card"><h2><span class="dot"></span>รายการน้ำหนัก 0 และวิธีเติม</h2>
-    <div class="row" style="margin:4px 0 12px"><button class="btn ghost sm" id="zeroCsv"><svg class="i" style="width:15px;height:15px"><use href="#i-down"/></svg>CSV</button></div>
-    <div class="tbl" id="zeroTbl"></div></div>
 </section>
-
 
 <!-- ===== SETTINGS ===== -->
 <section data-page="settings" class="page hidden">
@@ -1284,24 +1341,50 @@ function closeMsel(){ document.querySelectorAll('.msel-pop').forEach(p => p.remo
 document.addEventListener('click', closeMsel);
 
 function buildFilterUI(){
-  $('#fCats').innerHTML = CATS.map(c => `<button class="chip ${F.cats.includes(c)?'on':''}" data-c="${c}">${c}</button>`).join('');
-  $('#fCats').querySelectorAll('.chip').forEach(b => b.onclick = () => { const c = b.dataset.c;
+  // ---- หมวดสินค้า: การ์ดเล็ก 4 ใบ (แสดง Stock ปัจจุบันของหมวด) ----
+  const catT = {}; D.bal.forEach(r => catT[kCat(r)] = (catT[kCat(r)] || 0) + posKg(r) / 1000);
+  $('#fCats').innerHTML = CATS.map(c => `<button class="fcc ${F.cats.includes(c)?'on':''}" data-c="${c}" style="--cc:${CAT_COLOR[c]}"><b>${c}</b><span>${(catT[c] || 0) >= 1000 ? fmt((catT[c] || 0) / 1000, 1) + 'k' : fmt0(catT[c] || 0)} ตัน</span><i class="ck">✓</i></button>`).join('');
+  $('#fCats').querySelectorAll('[data-c]').forEach(b => b.onclick = () => { const c = b.dataset.c;
     F.cats = F.cats.includes(c) ? F.cats.filter(x => x !== c) : [...F.cats, c]; b.classList.toggle('on'); onFilter(); });
   const uniq = (arr) => [...new Set(arr)].sort((a, b) => a.localeCompare(b, 'th'));
-  msel('fFac', 'โรง', 'facs', () => uniq([...D.area.map(a => a.factory), ...D.bal.map(kFac), ...D.flow.map(kFac)]));
+  MSEL.fFac = renderFacChips; renderFacChips();
   msel('fGp', 'Group Product', 'gps', () => uniq([...D.bal.map(kGp), ...D.flow.map(kGp)]));
   msel('fGs', 'Group Sale', 'gss', () => uniq([...D.bal.map(kGs), ...D.flow.map(kGs)]));
   document.querySelectorAll('#fPreset button').forEach(b => b.classList.toggle('active', b.dataset.p === F.preset));
   const [a, b] = dateRange(); $('#fFrom').value = a || ''; $('#fTo').value = b || '';
   updateFilterCount();
 }
+// ---- โรง: ชิปกดเลือกได้ทันที + % ใช้พื้นที่ (สีตามเกณฑ์) ----
+function renderFacChips(){
+  const used = {}; D.bal.forEach(r => used[kFac(r)] = (used[kFac(r)] || 0) + posKg(r) / 1000);
+  const facs = [...new Set([...D.area.map(a => a.factory), ...Object.keys(used)])].sort((a, b) => a.localeCompare(b, 'th', { numeric:true }));
+  $('#fFac').innerHTML = facs.map(f => { const a = D.area.find(x => x.factory === f), cap = a ? +a.capacity_ton_actual : 0, u = used[f] || 0;
+    const pct = cap > 0 ? 100 * u / cap : null, t = tierOf(pct, cap, u);
+    return `<button class="ffc ${F.facs.includes(f) ? 'on' : ''}" data-f="${esc(f)}" title="${esc(f)} · Stock ${fmt0(u)} / ${cap ? fmt0(cap) : '—'} ตัน"><b>${esc(f)}</b><span style="color:${TIER[t]}">${pct === null ? (u > 0 ? '—' : '0%') : Math.round(pct) + '%'}</span></button>`; }).join('');
+  $('#fFac').querySelectorAll('[data-f]').forEach(b => b.onclick = () => { const f = b.dataset.f;
+    F.facs = F.facs.includes(f) ? F.facs.filter(x => x !== f) : [...F.facs, f]; b.classList.toggle('on'); onFilter(); });
+}
+// ---- แถบสรุปตัวกรองที่ใช้อยู่ (กด × เพื่อเอาออก) ----
+function renderFilterSum(){
+  const [a, b] = dateRange(), lbl = { '7':'7 วันล่าสุด', '30':'30 วันล่าสุด', '90':'90 วันล่าสุด', all:'ทั้งหมด', custom:'กำหนดเอง' }[F.preset];
+  const chip = (t, key, v, cls = '') => `<span class="fs ${cls}">${esc(t)}${key ? `<button data-k="${key}" data-v="${esc(v)}" title="เอาออก">×</button>` : ''}</span>`;
+  $('#fSum').innerHTML = chip(`${lbl}${a ? ` · ${dShort(a)}–${dShort(b)}` : ''}`, null, null, 'date')
+    + F.cats.map(c => chip(c, 'cats', c, 'cat')).join('') + F.facs.map(f => chip(f, 'facs', f, 'fac')).join('')
+    + F.gps.map(g => chip('GP: ' + g, 'gps', g)).join('') + F.gss.map(g => chip('GS: ' + g, 'gss', g)).join('')
+    + (activeCount() ? '' : '<span class="muted fs-none">ทุกหมวด · ทุกโรง · ทุกกลุ่มสินค้า</span>');
+  $('#fSum').querySelectorAll('[data-k]').forEach(x => x.onclick = e => { e.stopPropagation(); const k = x.dataset.k;
+    F[k] = F[k].filter(v => v !== x.dataset.v); buildFilterUI(); onFilter(); });
+}
+const setFOpen = o => { $('#filterbar').classList.toggle('collapsed', !o); try{ localStorage.setItem('grgi_fopen', o ? '1' : '0'); }catch(e){} };
+$('#fToggle').onclick = () => setFOpen($('#filterbar').classList.contains('collapsed'));
+try{ const fo = localStorage.getItem('grgi_fopen'); if (fo === '0' || (fo === null && innerWidth < 700)) $('#filterbar').classList.add('collapsed'); }catch(e){}   // มือถือ: ย่อไว้ก่อน
 document.querySelectorAll('#fPreset button').forEach(b => b.onclick = () => { F.preset = b.dataset.p;
   document.querySelectorAll('#fPreset button').forEach(x => x.classList.toggle('active', x === b));
   const [a, c] = dateRange(); $('#fFrom').value = a || ''; $('#fTo').value = c || ''; onFilter(); });
 ['fFrom','fTo'].forEach(id => $('#' + id).onchange = () => { F.preset = 'custom'; F.from = $('#fFrom').value; F.to = $('#fTo').value;
   document.querySelectorAll('#fPreset button').forEach(x => x.classList.remove('active')); onFilter(); });
 $('#fReset').onclick = () => { Object.assign(F, { preset:'30', from:'', to:'', cats:[], facs:[], gps:[], gss:[] }); buildFilterUI(); onFilter(); };
-function updateFilterCount(){ const n = activeCount(); $('#fCount').textContent = n; $('#fCount').classList.toggle('hidden', !n); }
+function updateFilterCount(){ const n = activeCount(); $('#fCount').textContent = n; $('#fCount').classList.toggle('hidden', !n); renderFilterSum(); }
 let filterTimer;
 function onFilter(){
   store('grgi_filter', F); updateFilterCount();
@@ -2050,19 +2133,126 @@ async function refreshBadge(){
   const dq = await q('v_data_quality'); const n = dq.filter(d => d.row_count > 0).length;
   const b = $('#dqBadge'); b.textContent = n; b.classList.toggle('hidden', !n); b.closest('.mi').classList.toggle('dq', !!n);
 }
-async function loadQualityPage(){
-  ['#dqTbl','#umTbl','#ruleTbl','#zeroTbl'].forEach(loading);
+// =====================================================================
+// ตรวจคุณภาพข้อมูล — คลิกขยายแต่ละรายการ: ความหมาย / ผลกระทบ / วิธีแก้ / สรุปกลุ่ม / ตัวอย่าง + CSV
+// =====================================================================
+const DQL = { posting_date:'วันที่', gi_date:'GI date', sloc:'Sloc', material:'Material', material_desc:'Description', mat_doc:'Mat.Doc', mov_type:'Mov',
+  direction:'ทิศ', category:'หมวด', code_prefix:'Code', qty:'จำนวน', sales_order:'SO', so_item:'Item', weight_kg:'น้ำหนัก SAP (กก.)',
+  weight_final_kg:'น้ำหนักที่ใช้ (กก.)', weight_source:'ที่มาน้ำหนัก', weight_spec:'Weight Spec', delivery_no:'Delivery', payer_name:'ลูกค้า',
+  net_weight_kg:'Net Weight (กก.)', eff_from_sloc:'ต้นทาง', eff_to_sloc:'ปลายทาง', from_sloc_type:'ประเภทต้นทาง', to_sloc_type:'ประเภทปลายทาง',
+  ton:'ตัน', invalid_reason:'เหตุผล', partner_sloc:'คู่โอน', is_valid:'นับ?', rule_or_reason:'กฎ / เหตุผล', sloc_type:'ประเภทที่ตั้ง',
+  description:'Description', zmmr_rows:'แถวใน ZMMR004', group_product:'Group Product', materials:'จำนวน Material', example_material:'ตัวอย่าง Material',
+  example_desc:'ตัวอย่าง Description', mat_code:'Mat.Code', copies:'ซ้ำ (แถว)', group_products:'Group Product', group_sales:'Group Sale',
+  weight_specs:'Weight Spec', conflict:'ข้อมูลขัดกัน', excel_rows:'แถวใน Excel', batch:'Batch', factory:'โรง', open_qty:'ตั้งต้น', in_qty:'รับ',
+  out_qty:'จ่าย', closing_qty:'คงเหลือ', closing_ton:'คงเหลือ (ตัน)', rows_n:'แถว', valid_rows:'แถวที่นับ', last_date:'ล่าสุด' };
+const DQ_NUM = new Set(['qty','weight_kg','weight_final_kg','weight_spec','net_weight_kg','ton','zmmr_rows','materials','copies','open_qty','in_qty','out_qty','closing_qty','closing_ton','rows_n','valid_rows']);
+const DQ_META = [
+  { k:'zero_all', m:'ZMMR004 น้ำหนัก 0 (ทั้งหมด)', t:'ZMMR004 แถวที่น้ำหนักเป็น 0', sev:'info',
+    what:'แถวใน ZMMR004 ที่คอลัมน์ "น้ำหนัก spec" เป็น 0 มาจาก SAP',
+    impact:'ไม่กระทบตัวเลข ถ้าระบบเติมน้ำหนักให้ได้ (ดูที่มาในตาราง): ขาออกใช้ ZSDR0010 ตาม SO+Item ก่อน ไม่พบจึงใช้ Weight Spec × จำนวนจาก Master',
+    fix:'ไม่ต้องทำอะไร ถ้าทุกแถวมีที่มา · ถ้าอยากให้แม่นขึ้น ให้วาง ZSDR0010 ของวันเดียวกันให้ครบ',
+    gcols:['ที่มาน้ำหนักที่ใช้','rows_n','ton'], cols:['posting_date','sloc','material','material_desc','mat_doc','mov_type','qty','sales_order','so_item','weight_final_kg','weight_source'] },
+  { k:'zero_unfixed', m:'ZMMR004 น้ำหนัก 0 ที่ยังแก้ไม่ได้', t:'น้ำหนัก 0 ที่ระบบเติมไม่ได้', sev:'bad',
+    what:'น้ำหนักเป็น 0 และหาน้ำหนักจาก ZSDR0010 หรือ Weight Spec ใน Master ไม่ได้',
+    impact:'แถวนี้ถูกนับเป็น 0 ตัน → รับเข้า/จ่ายออก/Stock ต่ำกว่าจริง',
+    fix:'เติม Weight Spec ของ Material นั้นใน Master แล้วนำเข้า Master ใหม่ หรือวาง ZSDR0010 ที่มี SO+Item ตรงกัน',
+    gcols:['Mov','Sloc','rows_n','materials'], cols:['posting_date','sloc','material','material_desc','mat_doc','mov_type','qty','sales_order','so_item','weight_spec'] },
+  { k:'mm_zmmr', m:'ZMMR004 Material ไม่พบใน Master', t:'ZMMR004: Material ที่ไม่มีใน Master', sev:'warn',
+    what:'Material ที่เคลื่อนไหวใน ZMMR004 แต่ไม่มีใน Master (Group Product)',
+    impact:'ระบบไม่รู้หมวด → จัดเป็น Other และกฎ Condition ไม่รู้จัก → มักถูกตัดออก ไม่นับรับ/จ่าย',
+    fix:'เพิ่ม Material เหล่านี้ใน Google Sheet Master (Group Product / Group Sale / Product Type / Weight Spec) แล้วนำเข้า Master ใหม่',
+    gcols:['Material','Description','Sloc','rows_n','ton','last_date'], cols:['posting_date','sloc','material','material_desc','mat_doc','mov_type','qty','weight_kg'] },
+  { k:'mm_zsdr10', m:'ZSDR0010 Material ไม่พบใน Master', t:'ZSDR0010: Material ที่ไม่มีใน Master', sev:'warn',
+    what:'Material ในใบส่งของ ZSDR0010 ที่ไม่มีใน Master',
+    impact:'ใช้เติมน้ำหนักได้ตามปกติ แต่รายงานแยกกลุ่มสินค้าจะไม่ครบ',
+    fix:'เพิ่มใน Master แล้วนำเข้าใหม่',
+    gcols:['Material','Description','rows_n','ton','last_date'], cols:['gi_date','delivery_no','payer_name','material','material_desc','qty','net_weight_kg','sales_order','so_item'] },
+  { k:'excluded', m:'ZMMR004 แถวถูกตัดออก', t:'แถวที่ไม่นับเป็นรับ/จ่าย (ไม่ตรงเงื่อนไข Condition)', sev:'warn',
+    what:'แถว ZMMR004 ที่ Mov.Type / หมวด / ต้นทาง–ปลายทาง / Code ไม่ตรงกฎในชีท Condition',
+    impact:'ไม่ถูกนับในรับเข้า/จ่ายออก/Stock · ถ้าเป็นความเคลื่อนไหวจริงที่ควรนับ ตัวเลขจะคลาดเคลื่อน',
+    fix:'ดูกลุ่มที่ตันสูงสุดก่อน: ถ้าควรนับ ให้เพิ่มกฎในหน้า ตั้งค่า → กฎการเคลื่อนไหว · ถ้าไม่ควรนับ (เช่น 309/413 เปลี่ยนรหัส, 343/344 เปลี่ยนสถานะ ที่มีขาเข้า–ออกคู่กัน) ปล่อยไว้ได้',
+    go:['settings','ไปตั้งค่ากฎ'], gcols:['เหตุผลที่ตัดออก','หมวด','Mov','ทิศ','rows_n','ton'],
+    cols:['posting_date','sloc','material','material_desc','mat_doc','mov_type','direction','category','code_prefix','eff_from_sloc','eff_to_sloc','qty','ton','invalid_reason'] },
+  { k:'no_sloc', m:'ZMMR004 ไม่มี Sloc ต้นทาง/ปลายทาง', t:'ไฟล์ ZMMR004 ไม่มีคอลัมน์ Sloc ต้นทาง/ปลายทาง', sev:'info',
+    what:'ไฟล์ที่วางไม่มีคอลัมน์ Sloc ต้นทาง/ปลายทาง (ปกติของ export นี้)',
+    impact:'Mov ที่กฎไม่สนต้นทาง (601, 641, 201…) ไม่กระทบ · Mov 311 ระบบจับคู่ขาโอนจาก Mat.Doc เดียวกัน: เจอคู่ = โอนภายใน · ไม่เจอ = มาจาก/ไปนอกคลัง (EXT)',
+    fix:'ถ้า export จาก SAP ได้ ให้เพิ่มคอลัมน์ Issuing / Receiving Storage Location จะแม่นที่สุด · ปิด/เปิดการจับคู่ได้ที่หน้า ตั้งค่า',
+    go:['settings','ตั้งค่าการจับคู่'], gcols:['Mov','ทิศ','ผลการจับคู่','rows_n','valid_rows','ton'],
+    cols:['posting_date','sloc','material','mat_doc','mov_type','direction','qty','eff_from_sloc','eff_to_sloc','partner_sloc','is_valid','rule_or_reason'] },
+  { k:'unknown_sloc', m:'Sloc ยังไม่ระบุประเภท', t:'Sloc ที่ยังไม่รู้ประเภท (UNKNOWN)', sev:'bad',
+    what:'Sloc ที่พบในข้อมูลแต่ไม่ได้ตั้งประเภท (WH / PD / TEMP / OTH / REW) และไม่ตรงรูปแบบรหัส',
+    impact:'กฎที่ดูต้นทาง/ปลายทางตัดสินไม่ได้ → แถวถูกตัดออก',
+    fix:'ตั้งประเภทใน ตั้งค่า → Sloc รายตัว หรือเพิ่มรูปแบบรหัส (เช่น 2G% = PD)', go:['settings','ไปตั้งค่า Sloc'],
+    gcols:[], cols:['sloc','sloc_type','description','zmmr_rows'] },
+  { k:'gp_unmapped', m:'Group Product ไม่มีใน product_category_map', t:'Group Product ที่ยังไม่ผูกหมวด', sev:'bad',
+    what:'Group Product ใน Master ที่ยังไม่ได้บอกว่าเป็นหมวด Flat / Trading / Long / Other',
+    impact:'สินค้ากลุ่มนี้ถูกจัดเป็น Other → กฎ Condition ของหมวดจริงไม่ถูกใช้',
+    fix:'ตั้งหมวดใน ตั้งค่า → กลุ่มสินค้า → หมวดเงื่อนไข', go:['settings','ไปตั้งหมวด'],
+    gcols:[], cols:['group_product','materials','example_material','example_desc'] },
+  { k:'master_dup', m:'Master Mat.Code ซ้ำ', t:'Master: Mat.Code ซ้ำใน Sloc เดียวกัน', sev:'warn',
+    what:'Mat.Code + Sloc เดียวกันมีมากกว่า 1 แถวใน Master',
+    impact:'ถ้าข้อมูลซ้ำขัดกัน (Group Product / Weight Spec ต่างกัน) ระบบเลือกใช้ได้แค่ 1 ค่า → หมวดหรือน้ำหนักที่เติมอาจผิด',
+    fix:'แก้ใน Google Sheet Master ให้เหลือแถวเดียว (ดูเลขแถวใน Excel) แล้วนำเข้า Master ใหม่ · แถว "ขัดกัน" ควรแก้ก่อน',
+    gcols:[], cols:['mat_code','sloc','copies','conflict','group_products','group_sales','weight_specs','excel_rows'] },
+  { k:'neg_stock', m:'Stock คงเหลือติดลบ', t:'Stock คงเหลือติดลบ', sev:'bad',
+    what:'Mat + Batch + Sloc ที่ Stock ตั้งต้น + รับ − จ่าย ได้ค่าติดลบ',
+    impact:'จ่ายออกมากกว่าที่มี → Stock ตั้งต้น (ZSDR0013) ไม่ครบ หรือขาเข้าถูกตัดออก',
+    fix:'ตรวจว่าวาง ZSDR0013 ของ Sloc นั้นครบทุกไฟล์ และขาเข้าที่ถูกตัดออก (ดูรายการด้านบน)',
+    gcols:[], cols:['material','description','batch','sloc','factory','open_qty','in_qty','out_qty','closing_qty','closing_ton'] },
+];
+const DQ_SEV = { bad:['ต้องแก้','bad'], warn:['ควรตรวจ','warn'], info:['รับทราบ','info'], ok:['ปกติ','ok'] };
+const DQ = { open:{}, cache:{} };
+const dqMeta = name => DQ_META.find(m => name.startsWith(m.m));
+const dqCell = (k, v) => v === null || v === undefined ? '' : k === 'is_valid' ? (v ? '<span class="pill ok">นับ</span>' : '<span class="pill bad">ไม่นับ</span>')
+  : k === 'conflict' ? (v ? '<span class="pill bad">ขัดกัน</span>' : '<span class="pill info">เหมือนกัน</span>')
+  : k === 'weight_source' ? `<span class="pill ${String(v).startsWith('ไม่พบ') ? 'bad' : 'info'}">${esc(v)}</span>`
+  : /date$/.test(k) && /^\d{4}-\d\d-\d\d/.test(v) ? dShort(v) : DQ_NUM.has(k) ? fmt(v, ['ton','closing_ton'].includes(k) ? 3 : Number.isInteger(+v) ? 0 : 2) : esc(v);
+const dqTable = (cols, rows) => `<table><thead><tr>${cols.map(c => `<th class="${DQ_NUM.has(c) ? 'num' : ''}">${esc(DQL[c] || c)}</th>`).join('')}</tr></thead>
+  <tbody>${rows.map(r => `<tr>${cols.map(c => `<td class="${DQ_NUM.has(c) ? 'num' : ''}">${dqCell(c, r[c])}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+
+async function renderDQ(){
   const dq = await q('v_data_quality');
-  $('#dqTbl').innerHTML = table([{k:'check_name',l:'รายการตรวจ'},{k:'row_count',l:'จำนวน',num:1,f:v=>`<span class="pill ${v>0?'warn':'ok'}">${fmt0(v)}</span>`}], dq);
-  UM = await fetchAll('v_unmatched_materials', ['material']); UM.sort((a, b) => b.ton - a.ton);
-  $('#umInfo').textContent = `${fmt0(UM.length)} Code · ${fmt(sum(UM,'ton'),2)} ตัน`;
-  $('#umTbl').innerHTML = table([{k:'material',l:'Material',f:v=>`<b>${esc(v)}</b>`},{k:'material_desc',l:'Description'},{k:'sources',l:'พบใน'},{k:'row_count',l:'แถว',num:1,f:fmt0},{k:'ton',l:'ตัน',num:1,f:v=>fmt(v,3)},{k:'last_date',l:'ล่าสุด'}], UM, 'ทุก Code มีใน Master แล้ว');
-  await loadRules();
-  ZERO = await q('v_zero_weight_report', x=>x.order('posting_date',{ascending:false}).limit(1000));
-  $('#zeroTbl').innerHTML = table([{k:'posting_date',l:'วันที่'},{k:'material',l:'Material'},{k:'mov_type',l:'Mov'},{k:'qty',l:'จำนวน',num:1,f:fmt0},
-    {k:'sales_order',l:'SO'},{k:'so_item',l:'Item'},{k:'weight_final_kg',l:'น้ำหนักที่ใช้ (กก.)',num:1,f:v=>fmt(v,2)},
-    {k:'weight_source',l:'ที่มา',f:v=>`<span class="pill ${String(v).startsWith('ไม่พบ')?'bad':'info'}">${esc(v)}</span>`},
-    {k:'is_valid',l:'ผ่านเงื่อนไข',f:v=>v?`<span class="pill ok">ผ่าน</span>`:`<span class="pill warn">ตัดออก</span>`}], ZERO, 'ไม่มีรายการน้ำหนัก 0');
+  const items = dq.map(d => { const m = dqMeta(d.check_name) || { k:null, t:d.check_name, sev:'warn', gcols:[], cols:[] };
+    return { ...m, name:d.check_name, n:+d.row_count, s: +d.row_count > 0 ? m.sev : 'ok' }; });
+  const rank = { bad:0, warn:1, info:2, ok:3 }; items.sort((a, b) => rank[a.s] - rank[b.s] || b.n - a.n);
+  const c = s => items.filter(i => i.s === s).length;
+  $('#dqSum').innerHTML = ['bad','warn','info','ok'].map(s => `<span class="dq-chip ${s}"><b>${c(s)}</b> ${DQ_SEV[s][0]}</span>`).join('')
+    + `<span class="muted" style="margin-left:auto">คลิกแต่ละรายการเพื่อดูความหมาย วิธีแก้ และตัวอย่าง</span>`;
+  $('#dqTbl').innerHTML = items.map(i => `<div class="dq-item ${i.s} ${DQ.open[i.k] ? 'open' : ''}" data-k="${i.k || ''}">
+      <button class="dq-h"><span class="dq-dot"></span><span class="dq-t"><b>${esc(i.t)}</b><small>${esc(i.what || i.name)}</small></span>
+        <span class="pill ${DQ_SEV[i.s][1]}">${DQ_SEV[i.s][0]}</span><span class="dq-n">${fmt0(i.n)}</span><svg class="i chev"><use href="#i-down2"/></svg></button>
+      <div class="dq-b"></div></div>`).join('');
+  $('#dqTbl').querySelectorAll('.dq-item').forEach(el => {
+    const it = items.find(x => (x.k || '') === el.dataset.k);
+    el.querySelector('.dq-h').onclick = () => { const o = !el.classList.contains('open'); el.classList.toggle('open', o); DQ.open[it.k] = o; if (o) dqBody(el, it); };
+    if (el.classList.contains('open')) dqBody(el, it);
+  });
+}
+async function dqBody(el, it){
+  const b = el.querySelector('.dq-b');
+  const head = `<div class="dq-info"><div><span>ความหมาย</span>${esc(it.what || '-')}</div><div><span>ผลกระทบ</span>${esc(it.impact || '-')}</div><div><span>วิธีแก้</span>${esc(it.fix || '-')}</div></div>`;
+  if (!it.k || !it.n){ b.innerHTML = head + `<div class="muted" style="padding:6px 2px">${it.n ? '' : '✓ ไม่พบรายการ'}</div>`; return; }
+  b.innerHTML = head + '<div class="dq-load"></div>'; loading(b.querySelector('.dq-load'));
+  let d = DQ.cache[it.k];
+  if (!d){ const { data, error } = await sb.rpc('grgi_dq_detail', { p_check: it.k, p_limit: 50 }); if (error){ b.querySelector('.dq-load').innerHTML = `<div class="muted">${esc(errMsg(error))}</div>`; return; } d = DQ.cache[it.k] = data; }
+  const shown = d.rows.length;
+  b.innerHTML = head
+    + (d.groups.length && it.gcols.length ? `<h4>สรุปแยกกลุ่ม <span class="muted">(${fmt0(d.groups.length)} กลุ่ม · เรียงจากมากไปน้อย)</span></h4><div class="tbl" style="max-height:300px">${dqTable(it.gcols, d.groups)}</div>` : '')
+    + `<h4>ตัวอย่าง ${fmt0(shown)}${it.n > shown ? ` จาก ${fmt0(it.n)}` : ''} รายการ</h4><div class="tbl" style="max-height:420px">${dqTable(it.cols, d.rows)}</div>
+      <div class="row" style="margin-top:10px"><button class="btn ghost sm" data-csv>${icon('down', 15)}CSV ทั้งหมด (สูงสุด 5,000 แถว)</button>
+        ${it.go ? `<button class="btn sm" data-go="${it.go[0]}">${esc(it.go[1])} →</button>` : ''}</div>`;
+  b.querySelector('[data-csv]').onclick = async e => { const btn = e.currentTarget; busy(btn, true, 'กำลังดึง...');
+    const { data, error } = await sb.rpc('grgi_dq_detail', { p_check: it.k, p_limit: 5000 }); busy(btn, false);
+    if (error) return toast(errMsg(error), true);
+    downloadCsv(`DQ_${it.k}.csv`, data.rows.map(r => Object.fromEntries(it.cols.map(c => [DQL[c] || c, r[c] ?? '']))));
+    if (data.groups.length && it.gcols.length) downloadCsv(`DQ_${it.k}_groups.csv`, data.groups.map(r => Object.fromEntries(it.gcols.map(c => [DQL[c] || c, r[c] ?? '']))));
+  };
+  const g = b.querySelector('[data-go]'); if (g) g.onclick = () => go(g.dataset.go);
+}
+
+async function loadQualityPage(){
+  loading('#dqTbl'); loading('#ruleTbl'); DQ.cache = {};
+  await Promise.all([renderDQ(), loadRules()]);
 }
 async function loadRules(){
   const rs = await q('v_movement_rule_summary', x=>{ x=x.order('posting_date',{ascending:false}).order('category').order('mov_type'); return $('#onlyExcluded').checked ? x.eq('is_valid',false) : x; });
@@ -2071,8 +2261,6 @@ async function loadRules(){
     {k:'rows',l:'แถว',num:1,f:fmt0},{k:'qty',l:'จำนวน',num:1,f:fmt0},{k:'ton',l:'ตัน',num:1,f:v=>fmt(v,3)}], rs);
 }
 $('#onlyExcluded').onchange = loadRules;
-$('#zeroCsv').onclick = () => downloadCsv('zero_weight.csv', ZERO);
-$('#umCsv').onclick = () => downloadCsv('unmatched_codes.csv', UM);
 
 // =====================================================================
 // SETTINGS (Admin แก้ได้ / คนอื่นดู)
