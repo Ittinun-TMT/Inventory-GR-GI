@@ -724,6 +724,29 @@
   .fc input[type=date],.fc .msel-btn{background:#f7fafb!important;border:1px solid rgba(12,56,67,.16)!important}
   .fs{background:#fff!important;border:1px solid rgba(12,56,67,.10)!important}
   .fs.fac{background:#fff1e7!important} .fs.cat{background:#eaf2f8!important} .fs.date{background:#e8f0f3!important}
+  /* ---- Pop-up รายโรง ---- */
+  .modal{background:rgba(255,255,255,.97)!important}
+  .modal.fm{width:min(1040px,95vw);max-height:90vh;overflow:auto;padding:22px 24px}
+  .fm-head{display:flex;gap:16px;align-items:center;margin-bottom:14px} .fm-head .ring b{font-size:15px}
+  .fm-title h3{margin:0 0 4px!important;display:flex;align-items:center;gap:10px;font-size:21px!important}
+  .fm-kpi{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
+  .fm-kpi > div{background:#f5f8fa;border:1px solid #e6edf0;border-radius:12px;padding:10px 12px;display:flex;flex-direction:column}
+  .fm-kpi span{font-size:12px;color:var(--muted)} .fm-kpi b{font-size:19px;font-weight:500;color:var(--navy);font-variant-numeric:tabular-nums}
+  .fm-kpi .ok{background:#eaf3f9} .fm-kpi .ok b{color:#2f74a8} .fm-kpi .over{background:#ffece0} .fm-kpi .over b,.fm-kpi .over span{color:var(--bad)}
+  .fm-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px} .fm-note{margin-left:auto}
+  .fm-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .fm-col{background:#fff;border:1px solid #e6edf0;border-radius:14px;padding:12px 14px} .fm-col h4,.fm-h{margin:0 0 8px;font-size:15px;font-weight:500;color:var(--navy)}
+  .fm-h{margin:16px 0 8px}
+  .fm-r{padding:7px 0;border-bottom:1px dashed #edf1f3} .fm-r:last-child{border-bottom:0}
+  .fm-rh{display:flex;justify-content:space-between;gap:10px;font-size:13.5px} .fm-rh .nm{display:flex;align-items:center;gap:7px;color:var(--navy);min-width:0}
+  .fm-rh .nm i{width:10px;height:10px;border-radius:3px;flex:none} .fm-rh .pc{font-weight:500;color:var(--navy);font-variant-numeric:tabular-nums}
+  .fm-tr{height:8px;border-radius:5px;background:#eef2f4;margin:5px 0 4px;overflow:hidden} .fm-tr span{display:block;height:100%;width:0;border-radius:5px;transition:width .9s var(--ease)}
+  .fm-rs{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;font-variant-numeric:tabular-nums} .fm-rs b{font-weight:500;color:var(--navy)} .fm-rs span{color:var(--muted)}
+  .fm-chips{display:flex;gap:6px;flex-wrap:wrap} .fm-chip{background:#f3f7f9;border:1px solid #e3eaee;border-radius:9px;padding:4px 10px;font-size:13px;color:var(--navy)} .fm-chip em{font-style:normal;color:var(--muted);font-size:12px}
+  .fm-tbl{max-height:none;background:#fff} .fm-md{color:var(--navy);font-size:13.5px} .fm-mb{height:4px;border-radius:3px;background:#eef2f4;margin-top:4px;max-width:340px;overflow:hidden} .fm-mb i{display:block;height:100%;width:0;transition:width .9s var(--ease)}
+  .fm-tbl td.hl{font-weight:500;color:var(--navy);background:#f6f9fb}
+  @media (max-width:800px){ .fm-cols{grid-template-columns:1fr} .fm-kpi{grid-template-columns:repeat(2,1fr)} .fm-note{margin-left:0} }
+  .hs-del{color:var(--bad)!important;border-color:rgba(224,72,72,.35)!important} .hs-del:hover{background:var(--bad-soft)!important;border-color:var(--bad)!important}
 </style>
 </head>
 <body>
@@ -1051,7 +1074,11 @@
 
 <!-- ===== HISTORY ===== -->
 <section data-page="history" class="page hidden">
-  <div class="card"><h2><span class="dot"></span>ประวัติการนำเข้า</h2><p class="desc">100 ครั้งล่าสุด</p><div class="tbl" id="histTbl" style="max-height:680px"></div></div>
+  <div class="card"><h2><span class="dot"></span>ประวัติการนำเข้า</h2>
+    <p class="desc">100 ครั้งล่าสุด · "ใช้งานอยู่" = จำนวนแถวของไฟล์นั้นที่ยังถูกนับในระบบ · ปุ่มลบ = ลบข้อมูลของไฟล์นั้นทั้งไฟล์ (เก็บประวัติไว้ ตรวจย้อนหลังได้ แล้วนำเข้าใหม่ได้) · ลบได้เฉพาะ ZMMR004 / ZSDR0013 / ZSDR0010</p>
+    <div class="row" style="margin:0 0 12px"><div class="seg" id="hsSheet"><button data-v="" class="active">ทั้งหมด</button><button data-v="ZMMR004">ZMMR004</button><button data-v="ZSDR0013">ZSDR0013</button><button data-v="ZSDR0010">ZSDR0010</button><button data-v="other">อื่นๆ</button></div>
+      <label class="toggle"><input type="checkbox" id="hsActive">เฉพาะที่ยังใช้งานอยู่</label><span class="muted" id="hsInfo" style="margin-left:auto"></span></div>
+    <div class="tbl" id="histTbl" style="max-height:680px"></div></div>
 </section>
 
     </div>
@@ -1871,17 +1898,60 @@ function sumGroupOf(r){
   const g = SUM_GROUPS.find(x => x.slocs && x.slocs.includes(r.sloc)); if (g) return g.key;
   const gp = kGp(r); return (SUM_GROUPS.find(x => x.gps && x.gps.includes(gp)) || SUM_GROUPS[SUM_GROUPS.length - 1]).key;
 }
+// ---------- Pop-up รายโรง: แยก Group Sale / Product Type / Group Product — สลับ น้ำหนัก ↔ จำนวน ----------
 function facModal(fac){
-  const rs = balF().filter(r => kFac(r) === fac && posKg(r) > 0), t = sum(rs, posKg) / 1000;
-  const f = factoryStats().find(x => x.fac === fac) || { cap:0, pct:null, tier:'none' };
-  const byGp = {}; rs.forEach(r => { const k = kCat(r) + ' · ' + kGp(r); byGp[k] = (byGp[k] || 0) + posKg(r) / 1000; });
-  const byMat = {}; rs.forEach(r => { const o = byMat[r.material] ||= { material:r.material, description:r.description, ton:0, qty:0 }; o.ton += posKg(r)/1000; o.qty += +r.closing_qty; });
-  const slocs = [...new Set(rs.map(r => r.sloc))].join(', ');
-  modal(`${esc(fac)} — เก็บอะไรบ้าง`, `<div class="row" style="gap:16px;margin-bottom:12px">${ring(f.pct, f.tier, 84, 9)}<div><div class="muted">Stock ${fmt(t,2)} ตัน · ความจุ ${f.cap > 0 ? fmt0(f.cap) : '—'} ตัน</div><div class="muted">Sloc: ${esc(slocs || '—')}</div><span class="tier ${f.tier}">${TIER_TXT[f.tier]}</span></div></div>
-    <h3 style="font-size:15px;color:var(--navy)">ตามหมวด · Group Product</h3>${hbars(Object.entries(byGp).sort((a,b)=>b[1]-a[1]).map(([k,v],i) => ({ name:k, v, color:GP_PAL[i % GP_PAL.length] })), { d:2 })}
-    <h3 style="font-size:15px;color:var(--navy);margin-top:16px">Top 15 Material</h3>
-    ${table([{k:'material',l:'Material',f:v=>`<b>${esc(v)}</b>`},{k:'description',l:'Description'},{k:'qty',l:'จำนวน',num:1,f:fmt0},{k:'ton',l:'ตัน',num:1,f:v=>fmt(v,3)}], Object.values(byMat).sort((a,b)=>b.ton-a.ton).slice(0,15))}`);
-  setTimeout(() => animateRings(document.querySelector('.modal')), 30);
+  const rs = balF().filter(r => kFac(r) === fac && posKg(r) > 0);
+  const f = factoryStats().find(x => x.fac === fac) || { cap:0, pct:null, tier:'none', remain:0 };
+  const T = sum(rs, posKg) / 1000, Q = sum(rs, r => Math.max(0, +r.closing_qty || 0)), skus = new Set(rs.map(r => r.material)).size;
+  const slocs = [...new Set(rs.map(r => r.sloc))].sort().join(', ');
+  const members = (D.area.find(a => a.factory === fac) || {}).members || [];
+  const agg = kf => { const m = {}; rs.forEach(r => { const o = m[kf(r)] ||= { k:kf(r), t:0, q:0, mats:new Set() }; o.t += posKg(r) / 1000; o.q += Math.max(0, +r.closing_qty || 0); o.mats.add(r.material); }); return Object.values(m); };
+  const dims = { gs: agg(kGs), pt: agg(kPt), gp: agg(r => kGp(r)) };
+  const mats = agg(r => r.material).map(o => ({ ...o, d: (rs.find(r => r.material === o.k) || {}).description || '' }));
+  const st = { by:'t' };
+  const bg = document.createElement('div'); bg.className = 'modal-bg';
+  bg.innerHTML = `<div class="modal wide fm">
+    <div class="fm-head">${ring(f.pct, f.tier, 78, 8)}
+      <div class="fm-title"><h3>${esc(fac)} <span class="tier ${f.tier}">${TIER_TXT[f.tier]}</span></h3>
+        <div class="muted">Sloc ${esc(slocs || '—')}${members.length > 1 ? ` · รวม ${esc(members.join(' + '))}` : ''}</div></div>
+      <button class="btn ghost sm" data-x style="margin-left:auto;align-self:flex-start">ปิด</button></div>
+    <div class="fm-kpi">
+      <div><span>Stock (ตัน)</span><b>${fmt(T, 2)}</b></div>
+      <div><span>จำนวน (ชิ้น)</span><b>${fmt0(Q)}</b></div>
+      <div><span>SKU</span><b>${fmt0(skus)}</b></div>
+      <div><span>ความจุ (ตัน)</span><b>${f.cap > 0 ? fmt(f.cap, 2) : '—'}</b></div>
+      <div class="${f.cap > 0 ? (f.remain < 0 ? 'over' : 'ok') : ''}"><span>${f.cap > 0 ? (f.remain < 0 ? 'เกินพิกัด (ตัน)' : 'ว่างเหลือ (ตัน)') : 'คงเหลือ'}</span><b>${f.cap > 0 ? fmt(Math.abs(f.remain), 2) : '—'}</b></div></div>
+    <div class="fm-bar"><span class="muted">แสดงตาม</span><div class="seg" data-seg><button data-v="t" class="active">น้ำหนัก (ตัน)</button><button data-v="q">จำนวน (ชิ้น)</button></div>
+      <span class="muted fm-note">% = สัดส่วนในโรงนี้ · ชี้ที่แถบเพื่อดูทั้งตันและชิ้น</span></div>
+    <div class="fm-cols"><div class="fm-col"><h4>🏷️ ตาม Group Sale</h4><div data-d="gs"></div></div><div class="fm-col"><h4>📦 ตาม Product Type</h4><div data-d="pt"></div></div></div>
+    <div class="fm-col" style="margin-top:12px"><h4>🧱 ตาม Group Product</h4><div class="fm-chips" data-d="gpc"></div></div>
+    <h4 class="fm-h">Top 15 สินค้า <span class="muted" data-tn></span></h4><div class="tbl fm-tbl" data-d="mat"></div></div>`;
+  document.body.appendChild(bg);
+  const close = () => { bg.remove(); document.removeEventListener('keydown', esc_); }, esc_ = e => { if (e.key === 'Escape') close(); };
+  bg.querySelector('[data-x]').onclick = close; bg.onclick = e => { if (e.target === bg) close(); }; document.addEventListener('keydown', esc_);
+  const draw = () => {
+    const v = o => st.by === 't' ? o.t : o.q, tot = st.by === 't' ? T : Q, unit = st.by === 't' ? 'ตัน' : 'ชิ้น', d = st.by === 't' ? 2 : 0;
+    const rows = (arr, pal) => { const a = arr.filter(o => v(o) > 0).sort((x, y) => v(y) - v(x)), mx = a.length ? v(a[0]) : 1;
+      return a.length ? a.map((o, i) => { const p = tot > 0 ? 100 * v(o) / tot : 0, col = pal[i % pal.length];
+        return `<div class="fm-r" title="${esc(o.k)} · ${fmt(o.t, 2)} ตัน · ${fmt0(o.q)} ชิ้น · ${fmt0(o.mats.size)} SKU">
+          <div class="fm-rh"><span class="nm"><i style="background:${col}"></i>${esc(o.k)}</span><span class="pc">${p.toFixed(1)}%</span></div>
+          <div class="fm-tr"><span style="background:${col}" data-w="${100 * v(o) / mx}"></span></div>
+          <div class="fm-rs"><b>${fmt(v(o), d)} ${unit}</b><span>${st.by === 't' ? fmt0(o.q) + ' ชิ้น' : fmt(o.t, 2) + ' ตัน'} · ${fmt0(o.mats.size)} SKU</span></div></div>`; }).join('')
+        : '<div class="empty">ไม่มีข้อมูล</div>'; };
+    bg.querySelector('[data-d=gs]').innerHTML = rows(dims.gs, GP_PAL);
+    bg.querySelector('[data-d=pt]').innerHTML = rows(dims.pt, ['#4f8fc2','#ff6a05','#0c3843','#2a7d8f','#fdc440','#8bbade','#ff8a3d','#6b7c83','#1d5a6a','#a3b1b6']);
+    bg.querySelector('[data-d=gpc]').innerHTML = dims.gp.filter(o => v(o) > 0).sort((x, y) => v(y) - v(x)).map(o =>
+      `<span class="fm-chip"><b>${esc(o.k)}</b> ${fmt(v(o), d)} ${unit} <em>${tot > 0 ? (100 * v(o) / tot).toFixed(1) : 0}%</em></span>`).join('') || '<span class="muted">—</span>';
+    const top = mats.sort((x, y) => v(y) - v(x)).slice(0, 15), mx = top.length ? v(top[0]) : 1;
+    bg.querySelector('[data-tn]').textContent = `(เรียงตาม${st.by === 't' ? 'น้ำหนัก' : 'จำนวน'})`;
+    bg.querySelector('[data-d=mat]').innerHTML = `<table><thead><tr><th>#</th><th>สินค้า</th><th class="num">จำนวน (ชิ้น)</th><th class="num">น้ำหนัก (ตัน)</th><th class="num">% ในโรง</th></tr></thead><tbody>${
+      top.map((o, i) => `<tr><td><span class="rank">${i + 1}</span></td><td><div class="fm-md">${esc(o.d || o.k)}</div><div class="muted">${esc(o.k)}</div>
+        <div class="fm-mb"><i style="background:${st.by === 't' ? C_NET : C_OUT}" data-w="${100 * v(o) / mx}"></i></div></td>
+        <td class="num ${st.by === 'q' ? 'hl' : ''}">${fmt0(o.q)}</td><td class="num ${st.by === 't' ? 'hl' : ''}">${fmt(o.t, 2)}</td><td class="num muted">${tot > 0 ? (100 * v(o) / tot).toFixed(1) : 0}%</td></tr>`).join('')}</tbody></table>`;
+    animateBars(bg);
+  };
+  bg.querySelectorAll('[data-seg] button').forEach(b => b.onclick = () => { st.by = b.dataset.v; bg.querySelectorAll('[data-seg] button').forEach(x => x.classList.toggle('active', x === b)); draw(); });
+  draw(); setTimeout(() => animateRings(bg), 30);
 }
 // ---------- แคปรูป (html2canvas) ----------
 document.querySelectorAll('[data-cap]').forEach(b => b.onclick = async () => {
@@ -2732,14 +2802,38 @@ async function loadSettings(){
 // =====================================================================
 // HISTORY
 // =====================================================================
+const HS = { sheet:'', active:false, rows:[], act:{} };
 async function loadHistory(){
   loading('#histTbl');
-  const h = (await q('import_batches', x=>x.order('id',{ascending:false}).limit(120))).filter(r => !String(r.sheet_name).startsWith('_')).slice(0, 100);
-  $('#histTbl').innerHTML = table([{k:'id',l:'#'},{k:'imported_at',l:'เวลา',f:v=>new Date(v).toLocaleString('th-TH')},{k:'sheet_name',l:'ชีท',f:v=>`<span class="pill info">${esc(v)}</span>`},
-    {k:'action',l:'รายการ',f:(v,r)=>v==='REMOVE'?'<span class="pill bad">ลบข้อมูล</span>':r.note==='restore'?'<span class="pill warn">กู้คืน</span>':'<span class="pill ok">นำเข้า</span>'},
-    {k:'file_name',l:'ไฟล์ / รายละเอียด',f:(v,r)=>esc(r.action==='REMOVE' ? (r.note_detail||v) : v) + (r.note==='restore' && r.note_detail ? `<div class="muted">${esc(r.note_detail)}</div>` : '')},{k:'as_of_date',l:'วันที่ข้อมูล'},{k:'row_count',l:'แถวนำเข้า',num:1,f:fmt0},
-    {k:'superseded_rows',l:'แทนที่/ลบ',num:1,f:fmt0},{k:'imported_by',l:'ผู้ทำรายการ'}], h);
+  const [h, act] = await Promise.all([q('import_batches', x => x.order('id', { ascending:false }).limit(160)), fetchAll('v_batch_active', ['import_batch_id'])]);
+  HS.rows = h.filter(r => !String(r.sheet_name).startsWith('_')); HS.act = Object.fromEntries(act.map(a => [a.import_batch_id, +a.active_rows]));
+  renderHistory();
 }
+const HS_DEL = ['ZMMR004','ZSDR0013','ZSDR0010'];
+function renderHistory(){
+  let rs = HS.rows.filter(r => !HS.sheet || (HS.sheet === 'other' ? !HS_DEL.includes(r.sheet_name) : r.sheet_name === HS.sheet));
+  if (HS.active) rs = rs.filter(r => r.action === 'IMPORT' && (HS.act[r.id] || 0) > 0);
+  rs = rs.slice(0, 100);
+  $('#hsInfo').textContent = `${fmt0(rs.length)} รายการ`;
+  $('#histTbl').innerHTML = table([{k:'id',l:'#'},{k:'imported_at',l:'เวลา',f:v=>new Date(v).toLocaleString('th-TH',{dateStyle:'short',timeStyle:'short'})},{k:'sheet_name',l:'ชีท',f:v=>`<span class="pill info">${esc(v)}</span>`},
+    {k:'action',l:'รายการ',f:(v,r)=>v==='REMOVE'?'<span class="pill bad">ลบข้อมูล</span>':r.note==='restore'?'<span class="pill warn">กู้คืน</span>':'<span class="pill ok">นำเข้า</span>'},
+    {k:'file_name',l:'ไฟล์ / รายละเอียด',f:(v,r)=>esc(r.action==='REMOVE' ? (r.note_detail||v) : v) + (r.note==='restore' && r.note_detail ? `<div class="muted">${esc(r.note_detail)}</div>` : '')},
+    {k:'as_of_date',l:'วันที่ข้อมูล',f:v=>v?dShort(v):''},{k:'row_count',l:'แถวนำเข้า',num:1,f:fmt0},
+    {k:'id',l:'ใช้งานอยู่',num:1,f:(v,r)=>{ if (r.action !== 'IMPORT' || !(HS_DEL.includes(r.sheet_name) || r.sheet_name === 'Master')) return '<span class="muted">—</span>';
+      const n = HS.act[v] || 0; return n === 0 ? '<span class="pill">0 · ถูกแทน/ลบแล้ว</span>' : n < +r.row_count ? `<span class="pill warn">${fmt0(n)}</span>` : `<span class="pill ok">${fmt0(n)}</span>`; }},
+    {k:'superseded_rows',l:'แทนที่/ลบ',num:1,f:fmt0},{k:'imported_by',l:'ผู้ทำรายการ',f:v=>esc(shortName(v))},
+    {k:'id',l:'',f:(v,r)=> canImport() && r.action === 'IMPORT' && HS_DEL.includes(r.sheet_name) && (HS.act[v] || 0) > 0
+      ? `<button class="btn ghost sm hs-del" data-del="${v}" title="ลบข้อมูลของไฟล์นี้">${icon('trash',14)}ลบ</button>` : ''}], rs, 'ไม่มีรายการ');
+  $('#histTbl').querySelectorAll('[data-del]').forEach(b => b.onclick = async () => {
+    const r = HS.rows.find(x => x.id === +b.dataset.del), n = HS.act[r.id] || 0;
+    if (!confirm(`ลบข้อมูลของไฟล์นี้?\n\n#${r.id} ${r.sheet_name} · ${r.file_name}\nนำเข้าเมื่อ ${new Date(r.imported_at).toLocaleString('th-TH')}\nแถวที่จะไม่ถูกนับอีก: ${fmt0(n)} แถว\n\nข้อมูลยังเก็บในประวัติ ตรวจย้อนหลังได้ และนำเข้าใหม่ได้`)) return;
+    busy(b, true, '...');
+    try{ const d = await call('grgi_remove_batch', { p_batch_id: r.id }); toast(`ลบแล้ว ${fmt0(d?.removed ?? 0)} แถว — ${r.file_name}`); D.loaded = false; IMP.covLoaded = false; refreshBadge(); loadHistory(); }
+    catch(e){ busy(b, false); toast(errMsg(e), true); }
+  });
+}
+segBind('hsSheet', HS, 'sheet', 'v', renderHistory);
+$('#hsActive').onchange = e => { HS.active = e.target.checked; renderHistory(); };
 
 
 // =====================================================================
