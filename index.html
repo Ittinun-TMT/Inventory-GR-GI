@@ -710,6 +710,20 @@
   @media (max-width:1000px){ .mgr-hero{grid-template-columns:1fr 1fr} .summary-grid{grid-template-columns:1fr}
     .mf-row{flex-wrap:wrap;row-gap:8px} .mf-name{flex:1 1 auto} .mf-track{flex:1 1 100%;order:3} .mf-nums{flex:1 1 100%;order:4;grid-template-columns:repeat(4,minmax(0,1fr))} .mfn{align-items:flex-start} .mf-share{align-items:flex-start;flex:0 1 auto} }
   @media (max-width:700px){ .kpi-grid5{grid-template-columns:1fr 1fr} .mgr-value{font-size:22px} .mfn b{font-size:14px} .mfn span{white-space:normal} }
+  /* ---- ตัวกรอง: แยกการ์ดให้ชัดจากพื้นหลัง (28 พ.ย.) ---- */
+  .fpanel{background:linear-gradient(150deg,rgba(226,236,241,.78),rgba(240,245,248,.7))!important;border:1px solid rgba(12,56,67,.10)!important}
+  .fc{background:#fff!important;border:1px solid rgba(12,56,67,.12)!important;box-shadow:0 2px 8px rgba(12,56,67,.07)!important;position:relative;overflow:hidden;padding-top:11px}
+  .fc::before{content:'';position:absolute;left:0;top:0;right:0;height:3px;background:linear-gradient(90deg,var(--orange),var(--orange-2))}
+  .fc:nth-child(2)::before{background:linear-gradient(90deg,#0c3843,#4f8fc2)} .fc:nth-child(3)::before{background:linear-gradient(90deg,#1f9d63,#8bd3b0)} .fc:nth-child(4)::before{background:linear-gradient(90deg,#b07a00,#fdc440)}
+  .fc-h{font-size:13.5px}
+  .fc .seg{background:#f2f6f8!important;border-color:rgba(12,56,67,.12)!important}
+  .fcc,.ffc{background:#f7fafb!important;border:1.5px solid rgba(12,56,67,.14)!important}
+  .fcc:hover,.ffc:hover{border-color:var(--navy)!important}
+  .fcc.on{background:color-mix(in srgb,var(--cc) 16%,#fff)!important;border-color:var(--cc)!important}
+  .ffc.on{background:#ffe9d9!important;border-color:var(--orange)!important}
+  .fc input[type=date],.fc .msel-btn{background:#f7fafb!important;border:1px solid rgba(12,56,67,.16)!important}
+  .fs{background:#fff!important;border:1px solid rgba(12,56,67,.10)!important}
+  .fs.fac{background:#fff1e7!important} .fs.cat{background:#eaf2f8!important} .fs.date{background:#e8f0f3!important}
 </style>
 </head>
 <body>
@@ -864,7 +878,7 @@
       เกณฑ์แบ่งระดับต่อโรงงาน:<br><span class="tier normal">✅ ปกติ</span> ใช้พื้นที่ไม่เกิน 80%<br><span class="tier warn">⚠️ ใกล้เต็ม</span> ใช้พื้นที่ 80–100%<br><span class="tier critical">⛔ เกินพิกัด</span> ใช้พื้นที่เกิน 100%
       <div class="muted" id="capDesc" style="margin-top:6px"></div></div></div>
 
-  <div class="sec-title">🧱 ภาพรวมตามกลุ่มสินค้าหลัก <span class="tag">Flat / Long / Trading / Other — แยก Group Product · ความจุ = โรงที่หมวดนั้นเป็นสินค้าหลัก</span></div>
+  <div class="sec-title">🧱 ภาพรวมตามกลุ่มสินค้าหลัก <span class="tag">Hot Rolled Sheet (2E03+2A08) · Flat Bar (2K04+2F01) · Pipe + C Channel · Section · อื่นๆ — ความจุ = โรงที่กลุ่มนั้นเป็นสินค้าหลัก</span></div>
   <div class="fam-ctx" id="famCtx"></div>
   <div class="family-grid" id="famCards"></div>
 
@@ -888,12 +902,6 @@
     <div><div class="sec-title sm">🔢 อันดับตามจำนวน <span class="tag">ชิ้น</span></div><div class="viz-block" id="topQ"></div></div>
   </div>
 
-  <div class="sec-title sp"><span>🔤 ABC Analysis <span class="tag">A = 80% แรกของน้ำหนัก · B = ถัดไปถึง 95% · C = ส่วนที่เหลือ · ตามตัวกรองด้านบน</span></span>
-    <button class="btn ghost sm" id="sumAbcCsv"><svg class="i" style="width:15px;height:15px"><use href="#i-down"/></svg>Export ABC (CSV)</button></div>
-  <div class="abc-insight" id="sumAbcIns"></div>
-  <div class="abc-cards" id="sumAbcCards"></div>
-  <div class="sec-title sm">เส้นสะสม (Pareto) <span class="tag">แกนนอน = สัดส่วนจำนวน SKU · แกนตั้ง = สัดส่วนน้ำหนักสะสม</span></div>
-  <div class="viz-block" id="sumPareto"></div>
 </section>
 
 <!-- ===== สมดุลรับ–จ่าย (GR vs GI) ===== -->
@@ -1485,14 +1493,22 @@ async function fetchAll(view, order = [], rpcArgs){
   }
   return out;
 }
+let FAC_MERGE = {};
+const facOf = f => FAC_MERGE[f] || f;
 async function loadData(force = false){
   if (D.loaded && !force) return;
   if (D.loading && !force) return D.loading;
   D.loading = (async () => {
-    const [bal, flow, area, slocs, kpi] = await Promise.all([
+    const [bal, flow, area0, slocs, kpi, cfg] = await Promise.all([
       fetchAll('v_stock_balance', ['material','batch','sloc']),
       fetchAll('v_daily_flow_detail', ['posting_date','factory','sloc','category','group_product','group_sale']),
-      q('factory_area', x => x.order('factory')), q('v_sloc_effective', x => x.order('sloc')), q('v_kpi_summary') ]);
+      q('factory_area', x => x.order('factory')), q('v_sloc_effective', x => x.order('sloc')), q('v_kpi_summary'), q('app_settings') ]);
+    // รวมโรงเพื่อแสดงผล (ตั้งค่าใน app_settings.factory_merge เช่น Fac B + Fac E = Fac B+E) — ความจุรวมกัน
+    FAC_MERGE = (cfg.find(c => c.key === 'factory_merge') || {}).value || {};
+    [bal, flow, slocs].forEach(arr => arr.forEach(r => { if (r.factory) r.factory = facOf(r.factory); }));
+    const am = {}; area0.forEach(a => { const f = facOf(a.factory), o = am[f] ||= { ...a, factory:f, capacity_ton_actual:0, capacity_ton_100:0, area_sqm:0, members:[] };
+      o.capacity_ton_actual += +a.capacity_ton_actual || 0; o.capacity_ton_100 += +a.capacity_ton_100 || 0; o.area_sqm += +a.area_sqm || 0; o.members.push(a.factory); });
+    const area = Object.values(am).sort((a, b) => a.factory.localeCompare(b.factory, 'th', { numeric:true }));
     Object.assign(D, { bal, flow, area, slocs, kpi: kpi[0] || null, matFlow: {}, loaded: true });
     D.dates = [...new Set(flow.map(r => r.posting_date))].sort();
     D.attr = {}; bal.forEach(r => { if (!D.attr[r.material]) D.attr[r.material] = { description:r.description, category:kCat(r), group_product:kGp(r), group_sale:kGs(r), product_type:kPt(r) }; });
@@ -1764,30 +1780,33 @@ async function renderSummary(){
     + `<div class="mgr-card" style="--mc:var(--orange)"><div class="mgr-label">สถานะโรงงาน</div><div class="row" style="gap:6px;margin-top:10px"><span class="tier normal">✅ ปกติ ${cnt('normal')}</span><span class="tier warn">⚠️ ใกล้เต็ม ${cnt('warn')}</span><span class="tier critical">⛔ เกิน ${cnt('critical')}</span></div></div>`;
   $('#capDesc').textContent = F.cats.length || F.gps.length || F.gss.length ? 'หมายเหตุ: กรองหมวด/กลุ่มสินค้าอยู่ — "ใช้งาน" นับเฉพาะสินค้าที่กรอง แต่ความจุคิดทั้งโรง' : '';
 
-  // ----- กลุ่มสินค้าหลัก: ความจุของโรงนับให้หมวดที่เป็นสินค้าหลักของโรงนั้น -----
-  const FAM_ICON = { Flat:'▭', Long:'◎', Trading:'⇄', Other:'·' };
+  // ----- กลุ่มสินค้าหลัก (เกณฑ์เดียวกับแดชบอร์ด WH2 เดิม): HRS / Flat Bar ตาม Sloc · ที่เหลือตาม Group Product -----
+  //   ความจุทั้งโรงตามไฟล์ Area นับให้กลุ่มที่มีน้ำหนักมากสุดในโรงนั้น (1 โรง = 1 กลุ่ม ไม่นับซ้ำ)
   $('#famCtx').innerHTML = `เก็บได้ทั้งหมด <b>${fmt(cap, 2)} ตัน</b> · ปัจจุบันมี <b>${fmt(usedAll, 2)} ตัน</b> · <span class="${remain < 0 ? 'rm-over' : 'rm-ok'}">${remain >= 0 ? 'คงเหลือ ' + fmt(remain, 2) : 'เกินพิกัดรวม ' + fmt(-remain, 2)} ตัน</span>`;
-  const famCap = {}, famLocs = {};
-  facs.forEach(f => { if (!(f.cap > 0)) return; const byCat = {}; f.top.forEach(([k, t]) => { const c = k.split(' · ')[0]; byCat[c] = (byCat[c] || 0) + t; });
-    const main = Object.entries(byCat).sort((a, b) => b[1] - a[1])[0]; if (!main) return;
-    famCap[main[0]] = (famCap[main[0]] || 0) + f.cap; (famLocs[main[0]] ||= []).push(`${f.fac} ${fmt0(f.cap)}`); });
-  const cats = (F.cats.length ? F.cats : CATS).filter(c => bal.some(r => kCat(r) === c) || flowR.some(r => kCat(r) === c));
-  $('#famCards').innerHTML = cats.map((c, i) => {
-    const rs = bal.filter(r => kCat(r) === c), t = sum(rs, posKg) / 1000, fr = flowR.filter(r => kCat(r) === c), fc = famCap[c] || 0, rm = fc - t;
-    const gps = {}; rs.forEach(r => { const o = gps[kGp(r)] ||= { t:0, mats:new Set(), facs:new Set() }; o.t += posKg(r) / 1000; o.mats.add(r.material); o.facs.add(kFac(r)); });
-    const parts = Object.entries(gps).filter(x => x[1].t > 0.0005).sort((a, b) => b[1].t - a[1].t);
-    return `<div class="family-card" style="--fc:${CAT_COLOR[c]};animation-delay:${i * .05}s">
-      <div class="family-head"><span class="family-icon" style="color:${CAT_COLOR[c]}">${FAM_ICON[c] || '·'}</span><span class="family-name">${c}</span><span class="pct">${stockT > 0 ? (100 * t / stockT).toFixed(1) : '0.0'}% ของสต็อกทั้งหมด</span></div>
+  const G = {}; SUM_GROUPS.forEach(g => G[g.key] = { t:0, mats:new Set(), parts:{}, byFac:{}, slocs:new Set(), in:0, out:0 });
+  bal.forEach(r => { const g = G[sumGroupOf(r)], t = posKg(r) / 1000; g.t += t; if (t > 0){ g.mats.add(r.material); g.slocs.add(r.sloc); }
+    g.byFac[kFac(r)] = (g.byFac[kFac(r)] || 0) + t; const o = g.parts[kGp(r)] ||= { t:0, mats:new Set(), facs:new Set() }; o.t += t; if (t > 0){ o.mats.add(r.material); o.facs.add(kFac(r)); } });
+  flowR.forEach(r => { const g = G[sumGroupOf(r)]; g.in += +r.in_ton; g.out += +r.out_ton; });
+  const gCap = {}, gLocs = {};
+  facs.forEach(f => { if (!(f.cap > 0)) return; const best = SUM_GROUPS.map(g => [g.key, G[g.key].byFac[f.fac] || 0]).sort((a, b) => b[1] - a[1])[0];
+    if (!best || best[1] <= 0) return; gCap[best[0]] = (gCap[best[0]] || 0) + f.cap; (gLocs[best[0]] ||= []).push(`${f.fac} ${fmt(f.cap, 2)}`); });
+  const shown = SUM_GROUPS.filter(g => G[g.key].t > 0.0005 || G[g.key].in + G[g.key].out > 0.0005);
+  $('#famCards').innerHTML = shown.map((gd, i) => {
+    const g = G[gd.key], t = g.t, fc = gCap[gd.key] || 0, rm = fc - t, util = fc > 0 ? 100 * t / fc : null, tr = tierOf(util, fc, t);
+    const parts = Object.entries(g.parts).filter(x => x[1].t > 0.0005).sort((a, b) => b[1].t - a[1].t);
+    return `<div class="family-card" style="--fc:${gd.color};animation-delay:${i * .05}s">
+      <div class="family-head"><span class="family-icon" style="color:${gd.color}">${gd.icon}</span><span><span class="family-name">${esc(gd.label)}</span><div class="muted" style="font-size:12px">${esc(gd.sub)}</div></span>
+        <span class="tier ${tr}" style="margin-left:auto">${util === null ? 'ไม่มีความจุ' : util.toFixed(1) + '%'}</span></div>
       <div class="family-value">${fmt(t, 2)} <small style="font-size:14px;font-weight:300;color:var(--muted)">ตัน</small></div>
-      <div class="family-sub"><b>${fc > 0 ? `ใช้พื้นที่ ${(100 * t / fc).toFixed(1)}%` : 'ไม่มีโรงที่เป็นสินค้าหลัก'}</b> · ${fmt0(new Set(rs.map(r => r.material)).size)} SKU</div>
+      <div class="family-sub"><b>${util !== null ? `ใช้พื้นที่ ${util.toFixed(1)}%` : 'ไม่มีโรงที่เป็นสินค้าหลัก'}</b> · ${stockT > 0 ? (100 * t / stockT).toFixed(1) : '0.0'}% ของสต็อกทั้งหมด · ${fmt0(g.mats.size)} SKU</div>
       <div class="family-cap">ความจุ <b>${fmt(fc, 2)} ตัน</b> · <span class="${rm < 0 ? 'rm-over' : 'rm-ok'}">${fc > 0 ? (rm >= 0 ? 'เหลือ ' + fmt(rm, 2) : 'เกินพิกัด ' + fmt(-rm, 2)) + ' ตัน' : '—'}</span></div>
-      <div class="family-track">${parts.slice(0, 10).map(([g, o], j) => `<span style="background:${GP_PAL[j % GP_PAL.length]}" data-w="${fc > 0 ? Math.min(100, 100 * o.t / Math.max(fc, t)) : (t > 0 ? 100 * o.t / t : 0)}" title="${esc(g)} ${fmt(o.t, 1)} ตัน"></span>`).join('')}</div>
-      <div class="family-io"><span style="color:${C_IN}">${icon('in', 14)} รับ ${fmt(sum(fr, 'in_ton'), 1)}</span><span style="color:${C_OUT}">${icon('out', 14)} จ่าย ${fmt(sum(fr, 'out_ton'), 1)}</span><span class="muted">ตัน ในช่วงที่เลือก</span></div>
-      ${parts.length ? `<div class="family-parts">${parts.slice(0, 6).map(([g, o], j) => `<div class="fpart"><span class="n"><span class="sw" style="background:${GP_PAL[j % GP_PAL.length]}"></span>${esc(g)}</span><span class="v">${fmt(o.t, 2)} ตัน</span>
-          <span class="m">${t > 0 ? (100 * o.t / t).toFixed(1) : 0}% ของ ${c} · ${fmt0(o.mats.size)} SKU · ${esc([...o.facs].sort().join(', '))}</span>
+      <div class="family-track" title="หลอดเต็ม = ความจุ 100%"><span style="background:${TIER[tr]}" data-w="${util === null ? 0 : Math.min(100, util)}"></span></div>
+      <div class="family-io"><span style="color:${C_IN}">${icon('in', 14)} รับ ${fmt(g.in, 1)}</span><span style="color:${C_OUT}">${icon('out', 14)} จ่าย ${fmt(g.out, 1)}</span><span class="muted">ตัน ในช่วงที่เลือก</span></div>
+      ${parts.length ? `<div class="family-parts">${parts.slice(0, 6).map(([gp, o], j) => `<div class="fpart"><span class="n"><span class="sw" style="background:${GP_PAL[j % GP_PAL.length]}"></span>${esc(gp)}</span><span class="v">${fmt(o.t, 2)} ตัน</span>
+          <span class="m">${t > 0 ? (100 * o.t / t).toFixed(1) : 0}% ของกลุ่ม · ${fmt0(o.mats.size)} SKU · ${esc([...o.facs].sort().join(', '))}</span>
           <span class="b"><i style="background:${GP_PAL[j % GP_PAL.length]}" data-w="${t > 0 ? 100 * o.t / t : 0}"></i></span></div>`).join('')}
           ${parts.length > 6 ? `<div class="muted" style="font-size:12px">+ อีก ${parts.length - 6} กลุ่ม · ${fmt(sum(parts.slice(6), x => x[1].t), 2)} ตัน</div>` : ''}</div>` : ''}
-      <div class="family-cap" style="margin-top:8px">ความจุตามไฟล์ Area: ${esc((famLocs[c] || []).join(' + ') || '—')}</div></div>`;
+      <div class="family-cap" style="margin-top:8px">Sloc: ${esc([...g.slocs].sort().join(', ') || '—')} · ความจุตามไฟล์ Area: ${esc((gLocs[gd.key] || []).join(' + ') || '—')}</div></div>`;
   }).join('') || '<div class="empty">ไม่มีข้อมูลตามตัวกรอง</div>';
   animateBars($('#famCards'));
 
@@ -1838,19 +1857,20 @@ async function renderSummary(){
   $('#topQ').innerHTML = t5([...ml].sort((a, b) => b.q - a.q).slice(0, 5), o => o.q, 'ชิ้น', 0, C_OUT);
   animateBars($('#topW')); animateBars($('#topQ'));
 
-  // ----- ABC ตามน้ำหนัก Stock -----
-  const abc = [...ml].filter(o => o.t > 0).sort((a, b) => b.t - a.t), tt = sum(abc, 't'); let cum = 0;
-  abc.forEach((o, i) => { cum += o.t; o.cum = tt > 0 ? 100 * cum / tt : 0; o.cls = o.cum - 100 * o.t / tt < 80 ? 'A' : o.cum - 100 * o.t / tt < 95 ? 'B' : 'C'; o.sku_pct = 100 * (i + 1) / abc.length; });
-  SUMV.abc = abc;
-  const cl = k => abc.filter(o => o.cls === k), AC = { A:'#ff6a05', B:'#0c3843', C:'#8bbade' };
-  const nA = cl('A').length;
-  $('#sumAbcIns').innerHTML = abc.length ? `สินค้า <b>${fmt0(nA)} SKU (${abc.length ? (100 * nA / abc.length).toFixed(1) : 0}%)</b> ถือน้ำหนัก <b>80%</b> ของ Stock ทั้งหมด (${fmt0(sum(cl('A'), 't'))} ตัน) — ควรจัดวางใกล้ทางเข้า–ออก และนับตรวจบ่อยที่สุด · กลุ่ม C มี ${fmt0(cl('C').length)} SKU แต่รวมเพียง ${fmt(sum(cl('C'), 't'), 1)} ตัน` : 'ยังไม่มีข้อมูล';
-  $('#sumAbcCards').innerHTML = ['A','B','C'].map(k => `<div class="abc" style="--ac:${AC[k]}"><b>${k}</b> <span class="muted">${fmt0(cl(k).length)} SKU</span><div class="s">${fmt(sum(cl(k), 't'), 1)} ตัน · ${tt > 0 ? (100 * sum(cl(k), 't') / tt).toFixed(1) : 0}% ของน้ำหนัก</div></div>`).join('');
-  $('#sumPareto').innerHTML = paretoChart(abc.map(o => ({ sku_pct:o.sku_pct, cum_pct:o.cum })));
   animateRings(document.querySelector('[data-page=summary]'));
 }
 const SUMV = { abc:[] };
-$('#sumAbcCsv').onclick = () => downloadCsv('ABC_stock_weight.csv', SUMV.abc.map((o, i) => ({ อันดับ:i + 1, Material:o.m, Description:o.d, 'Group Product':o.gp, ตัน:+o.t.toFixed(3), สะสม_pct:+o.cum.toFixed(2), กลุ่ม:o.cls })));
+// กลุ่มสินค้าหลักของหน้าสรุปผล (ผู้ใช้กำหนด: HRS = Sloc 2E03 + 2A08 · Flat Bar = 2K04 + 2F01 · ที่เหลือตาม Group Product)
+const SUM_GROUPS = [
+  { key:'HRS', label:'Hot Rolled Sheet', sub:'HS · Sloc 2E03 + 2A08 (Fac B+E)', color:'#0c3843', icon:'▭', slocs:['2E03','2A08'], gps:['HS','Plate'] },
+  { key:'FB', label:'Flat Bar', sub:'Sloc 2K04 + 2F01 (Fac K)', color:'#2a7d8f', icon:'▬', slocs:['2K04','2F01'], gps:['Flat Bars'] },
+  { key:'PIPE', label:'Pipe + C Channel', sub:'Pipe · CH', color:'#4f8fc2', icon:'◎', gps:['Pipe','CH'] },
+  { key:'SEC', label:'Section', sub:'Beam', color:'#ff6a05', icon:'⌶', gps:['Beam'] },
+  { key:'OTH', label:'Scrap / อื่นๆ', sub:'สินค้าที่ไม่อยู่ในกลุ่มข้างต้น / ไม่พบใน Master', color:'#a3b1b6', icon:'·' } ];
+function sumGroupOf(r){
+  const g = SUM_GROUPS.find(x => x.slocs && x.slocs.includes(r.sloc)); if (g) return g.key;
+  const gp = kGp(r); return (SUM_GROUPS.find(x => x.gps && x.gps.includes(gp)) || SUM_GROUPS[SUM_GROUPS.length - 1]).key;
+}
 function facModal(fac){
   const rs = balF().filter(r => kFac(r) === fac && posKg(r) > 0), t = sum(rs, posKg) / 1000;
   const f = factoryStats().find(x => x.fac === fac) || { cap:0, pct:null, tier:'none' };
@@ -1936,7 +1956,7 @@ $('#trCsv').onclick = () => downloadCsv('daily_flow.csv', TRV.table || []);
 let ANV = { dim:'factory', dead:[] };
 async function getMatFlow(){
   const [a, b] = dateRange(), key = `${a}|${b}`;
-  if (!D.matFlow[key]) D.matFlow[key] = await fetchAll('grgi_material_flow', ['material','factory'], { p_from:a, p_to:b });
+  if (!D.matFlow[key]) D.matFlow[key] = (await fetchAll('grgi_material_flow', ['material','factory'], { p_from:a, p_to:b })).map(r => ({ ...r, factory: facOf(r.factory) }));
   return D.matFlow[key];
 }
 async function loadAnalysisPage(){ await loadData(); ['#anBars','#anTbl','#topOut','#topIn','#topStock','#abcChart','#deadTbl'].forEach(loading); renderAnalysis(); }
@@ -2343,7 +2363,7 @@ async function loadCoverage(){
   const [cov, bt] = await Promise.all([fetchAll('v_import_coverage', ['sheet','data_date','grp']),
     q('import_batches', x => x.order('id', { ascending:false }).limit(400))]);
   IMP.cov = cov; IMP.covLoaded = true; IMP.batches = bt.filter(b => !String(b.sheet_name).startsWith('_'));
-  if (!D.slocs.length) D.slocs = await q('v_sloc_effective', x => x.order('sloc'));
+  if (!D.slocs.length) await loadData();
   renderCoverage();
 }
 // วาดใหม่ทุกส่วนที่ใช้ข้อมูลความครอบคลุม (Monitor + กล่องลบข้อมูล)
