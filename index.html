@@ -538,6 +538,23 @@
   .content{max-width:1680px;padding:18px 22px 40px}
   .card{padding:18px;margin-bottom:14px} .pagehead{margin-bottom:12px} .kpis{margin-bottom:14px;gap:12px} .grid2{gap:14px}
   .brief{padding:20px 22px;margin-bottom:14px} .bl-hero{margin-bottom:14px}
+  /* Top 5 รายโรง */
+  .tp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,820px),1fr));gap:12px}
+  .tp-cols{gap:22px!important}
+  .tp-card{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:#fff;animation:fadeUp .45s var(--ease) both;transition:box-shadow .2s}
+  .tp-card:hover{box-shadow:var(--shadow-h)}
+  .tp-h{display:flex;align-items:baseline;gap:10px;margin-bottom:8px;font-size:13px} .tp-h b{font-size:16px;color:var(--navy);font-weight:500;margin-right:4px}
+  .tp-h .btn{margin-left:auto;align-self:center}
+  .tp-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .tp-t{display:flex;align-items:center;gap:5px;font-size:12.5px;font-weight:500;margin-bottom:4px}
+  .tp-r{display:grid;grid-template-columns:20px 1fr auto;gap:8px;align-items:start;padding:5px 0;border-bottom:1px dashed #eef2f4;font-size:12.5px}
+  .tp-r .rk{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11px;background:color-mix(in srgb,var(--rc) 14%,#fff);color:var(--rc);font-weight:500}
+  .tp-r .nm{min-width:0;display:flex;flex-direction:column;line-height:1.35} .tp-r .nm b{font-weight:400;color:var(--navy);font-size:13px;white-space:normal;word-break:break-word}
+  .tp-r .nm small{color:var(--muted);font-size:11px;white-space:normal;word-break:break-all}
+  .tp-r .vv{display:flex;flex-direction:column;align-items:flex-end;gap:3px;font-variant-numeric:tabular-nums;min-width:70px;font-weight:500;white-space:nowrap}
+  .tp-r .vv i{display:block;height:4px;border-radius:3px;width:0;transition:width .9s var(--ease);align-self:stretch;margin-left:auto;max-width:70px}
+  .tp-r .vv em{font-style:normal;font-weight:300;font-size:10.5px;color:var(--muted)}
+  @media (max-width:700px){ .tp-grid{grid-template-columns:1fr} .tp-cols{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
@@ -711,9 +728,11 @@
   <div class="card"><h2><span class="dot"></span>ตารางสมดุล</h2>
     <div class="row" style="margin:4px 0 12px"><button class="btn ghost sm" id="blCsv"><svg class="i" style="width:15px;height:15px"><use href="#i-down"/></svg>CSV</button><span class="muted" id="blTblInfo"></span></div>
     <div class="tbl" id="blTbl"></div></div>
-  <div class="card"><h2><span class="dot"></span>ที่มาของตัวเลข (ราย Movement Type)</h2>
-    <p class="desc">อะไรถูกนับเป็นรับเข้า/จ่ายออก และอะไรไม่นับเพราะไม่ตรงเงื่อนไขชีท Condition · กรองตามช่วงวันที่ / หมวด / โรง</p>
-    <div class="tbl" id="blMov" style="max-height:520px"></div></div>
+  <div class="card"><h2><span class="dot"></span>Top 5 รับเข้า–จ่ายออก รายโรง</h2>
+    <p class="desc">Material ที่รับเข้า / จ่ายออกมากที่สุดของแต่ละโรง (ตัน) ในช่วงวันที่และตัวกรองที่เลือก · เรียงโรงจากที่เคลื่อนไหวมากสุด · 602 ยกเลิกการจ่ายหักจากจ่ายออกแล้ว</p>
+    <div class="row" style="margin:0 0 12px"><div class="seg" id="tpBy"><button data-v="ton" class="active">ตามตัน</button><button data-v="qty">ตามจำนวน (ชิ้น)</button></div>
+      <button class="btn ghost sm" id="tpCsv"><svg class="i" style="width:15px;height:15px"><use href="#i-down"/></svg>CSV ทุกโรง</button><span class="muted" id="tpInfo"></span></div>
+    <div class="tp-grid" id="blTop"></div></div>
 </section>
 
 <!-- ===== TRENDS ===== -->
@@ -2289,7 +2308,7 @@ async function loadSettings(){
     const types = $('#setInferTypes').value.split(/[\s,]+/).map(x => x.trim()).filter(Boolean);
     if (!types.length) return toast('ใส่ Mov.Type อย่างน้อย 1 ตัว', true);
     if (await adm('grgi_admin_set_setting', { p_key:'infer_transfer_partner', p_value: $('#setInfer').checked }, null)
-     && await adm('grgi_admin_set_setting', { p_key:'infer_mov_types', p_value: types }, 'บันทึกแล้ว — กำลังคำนวณใหม่')){ BLV.mov = null; await loadData(true); }
+     && await adm('grgi_admin_set_setting', { p_key:'infer_mov_types', p_value: types }, 'บันทึกแล้ว — กำลังคำนวณใหม่')){ await loadData(true); }
   };
   // ---- patterns ----
   const pats = await q('sloc_type_patterns', x=>x.order('priority'));
@@ -2381,7 +2400,7 @@ async function loadHistory(){
 // GR/GI = รับเข้า ÷ จ่ายออก · สมดุลเมื่ออยู่ในช่วง 1 ± BAL_TOL
 // =====================================================================
 const BAL_TOL = 0.10;
-let BLV = { by:'day', noInt:false, mov:null, table:[] };
+let BLV = { by:'day', noInt:false, table:[], tpBy:'ton', tp:[] };
 const ST_TXT = { ok:'สมดุล', in:'รับมากกว่าจ่าย', out:'จ่ายมากกว่ารับ', none:'ไม่มีความเคลื่อนไหว' };
 const ST_COLOR = { ok:'#1f9d63', in:'#2f74a8', out:'#ff6a05', none:'#adb5bd' };
 function balStatus(gr, gi){
@@ -2468,7 +2487,6 @@ function divBars(items, clickable){
 
 async function loadBalancePage(){
   await loadData();
-  if (!BLV.mov) BLV.mov = await fetchAll('v_flow_by_movtype', ['posting_date','factory','sloc','category','mov_type','direction']);
   renderBalance();
 }
 function renderBalance(){
@@ -2511,7 +2529,7 @@ function renderBalance(){
   if (D.dates.length && days.length < 2) notes.push(['warn', `ตอนนี้มีข้อมูลเคลื่อนไหว (ZMMR004) ในช่วงที่เลือก <b>${days.length} วัน</b>${days.length ? ' (' + days.map(d => dShort(d.key)).join(', ') + ')' : ''} — กราฟรายวัน/รายสัปดาห์จะเห็นแนวโน้มเมื่อนำเข้า ZMMR004 ต่อเนื่องหลายวัน`]);
   const extInf = Math.max(0, tot.grInf - tot.grInt);
   if (extInf > 0.5) notes.push(['info', `รับเข้า 311 จำนวน <b>${fmt0(extInf)} ตัน</b> ไฟล์ ZMMR004 ไม่มี Sloc ต้นทาง — ระบบจับคู่ขาโอนจาก Mat.Doc เดียวกัน: พบคู่ = โอนภายในคลัง · ไม่พบคู่ = รับจากนอกคลัง (ผลิต/TEMP/OTH) · ปิด/เปิดได้ที่หน้า ตั้งค่า`]);
-  if (tot.exIn + tot.exOut > 0.5) notes.push(['info', `ไม่นับ ${fmt0(tot.exIn)} ตัน (ขาเข้า) และ ${fmt0(tot.exOut)} ตัน (ขาออก) เพราะไม่ตรงเงื่อนไข Condition เช่น 309/413 เปลี่ยนรหัส, 343/344 เปลี่ยนสถานะ — ดูตารางด้านล่าง`]);
+  if (tot.exIn + tot.exOut > 0.5) notes.push(['info', `ไม่นับ ${fmt0(tot.exIn)} ตัน (ขาเข้า) และ ${fmt0(tot.exOut)} ตัน (ขาออก) เพราะไม่ตรงเงื่อนไข Condition เช่น 309/413 เปลี่ยนรหัส, 343/344 เปลี่ยนสถานะ — ดูรายละเอียดที่หน้า ตรวจคุณภาพข้อมูล`]);
   $('#blNote').innerHTML = notes.map(([k, t]) => `<div class="callout ${k === 'warn' ? 'warn' : ''}"><span class="ic">${icon(k === 'warn' ? 'alert' : 'scale', 17)}</span><div>${t}</div></div>`).join('');
   // ---------- กราฟ ----------
   $('#blChart').innerHTML = flowChart(all.map(p => ({ date:p.key, in:p.gr, out:p.gi, lab:p.lab, tl:p.tl })));
@@ -2535,21 +2553,48 @@ function renderBalance(){
     {k:'gr',l:'GR/GI',num:1,f:(v,r)=>ratioTxt(r.gr,r.gi)},{k:'st',l:'สถานะ',f:stPill},
     {k:'grInt',l:'โอนภายใน รับ/จ่าย',num:1,f:(v,r)=>`<span class="muted">${fmt(r.grInt,1)} / ${fmt(r.giInt,1)}</span>`},
     {k:'exIn',l:'ไม่นับ เข้า/ออก',num:1,f:(v,r)=>r.exIn + r.exOut > 0.0005 ? `<span class="pill warn">${fmt(r.exIn,1)} / ${fmt(r.exOut,1)}</span>` : '<span class="muted">0</span>'}], [...all].reverse(), 'ไม่มีข้อมูลในช่วงที่เลือก');
-  // ---------- ราย Movement Type ----------
-  const mv = {};
-  (BLV.mov || []).filter(r => inRange(r.posting_date) && (!F.cats.length || F.cats.includes(kCat(r))) && (!F.facs.length || F.facs.includes(kFac(r)))).forEach(r => {
-    const k = [r.direction, r.mov_type, r.is_valid, r.route || '', r.label || ''].join('|');
-    const o = mv[k] ||= { direction:r.direction, mov_type:r.mov_type, is_valid:r.is_valid, route:r.route || '', label:r.label || '', rows:0, ton:0, cats:new Set() };
-    o.rows += +r.rows_n; o.ton += +r.ton; o.cats.add(kCat(r)); });
-  const mvRows = Object.values(mv).sort((a, b) => String(a.direction).localeCompare(String(b.direction)) || (b.is_valid - a.is_valid) || b.ton - a.ton);
-  $('#blMov').innerHTML = table([{k:'direction',l:'ทิศ',f:v=>v==='IN'?`<span class="pill info">รับเข้า</span>`:v==='OUT'?`<span class="pill or">จ่ายออก</span>`:'<span class="muted">—</span>'},
-    {k:'mov_type',l:'Mov',f:v=>`<b>${esc(v)}</b>`},{k:'is_valid',l:'นับ?',f:v=>v?'<span class="pill ok">นับ</span>':'<span class="pill bad">ไม่นับ</span>'},
-    {k:'route',l:'เส้นทาง',f:v=>v?`<span class="muted">${esc(v)}</span>`:''},{k:'label',l:'กฎ / เหตุผล'},{k:'cats',l:'หมวด',f:v=>esc([...v].join(', '))},
-    {k:'rows',l:'แถว',num:1,f:fmt0},{k:'ton',l:'ตัน',num:1,f:v=>fmt(v,1)}], mvRows, 'ไม่มีข้อมูลในช่วงที่เลือก');
+  renderTopFac();
 }
 segBind('blBy', BLV, 'by', 'v', renderBalance);
 $('#blNoInt').onchange = e => { BLV.noInt = e.target.checked; renderBalance(); };
 $('#blCsv').onclick = () => downloadCsv(`GR-GI_balance_${BLV.by}.csv`, BLV.table || []);
+// ---------- Top 5 รับเข้า–จ่ายออก รายโรง (ข้อมูลจาก grgi_material_flow ตามช่วงวันที่) ----------
+async function renderTopFac(){
+  const box = $('#blTop'); if (!box) return;
+  if (!D.matFlow[dateRange().join('|')]) loading(box);
+  const mf = (await getMatFlow()).filter(r => passAttr(r.material, r.factory));
+  // คำอธิบาย Material: จาก Stock ก่อน ถ้าไม่มีดึงจาก Master
+  const need = [...new Set(mf.map(r => r.material))].filter(m => !D.attr[m] && !(D.desc || {})[m]);
+  D.desc ||= {};
+  for (let i = 0; i < need.length; i += 150){ const rs = await q('v_material_lookup', x => x.in('mat_code', need.slice(i, i + 150)));
+    rs.forEach(r => D.desc[r.mat_code] = r.description); need.slice(i, i + 150).forEach(m => D.desc[m] ??= ''); }
+  const desc = m => (D.attr[m] && D.attr[m].description) || D.desc[m] || '';
+  const vIn = r => BLV.tpBy === 'ton' ? +r.in_ton : +r.in_qty, vOut = r => BLV.tpBy === 'ton' ? +r.out_ton : +r.out_qty;
+  const unit = BLV.tpBy === 'ton' ? 'ตัน' : 'ชิ้น', d = BLV.tpBy === 'ton' ? 1 : 0;
+  const by = {}; mf.forEach(r => (by[kFac(r)] ||= []).push(r));
+  const facs = Object.entries(by).map(([f, rs]) => ({ f, rs, gr: sum(rs, 'in_ton'), gi: sum(rs, 'out_ton') }))
+    .filter(x => x.gr + x.gi > 0.0005).sort((a, b) => (b.gr + b.gi) - (a.gr + a.gi));
+  BLV.tp = [];
+  const list = (rs, val, col, kind, f, tot) => { const top = rs.filter(r => val(r) > 0.0005).sort((a, b) => val(b) - val(a)).slice(0, 5), mx = top.length ? val(top[0]) : 1;
+    top.forEach((r, i) => BLV.tp.push({ โรง:f, ประเภท:kind, อันดับ:i + 1, Material:r.material, Description:desc(r.material), ตัน:+(+(kind === 'รับเข้า' ? r.in_ton : r.out_ton)).toFixed(3), จำนวน:+(kind === 'รับเข้า' ? r.in_qty : r.out_qty) }));
+    return top.length ? top.map((r, i) => `<div class="tp-r" title="${esc(r.material)} · ${esc(desc(r.material))}"><span class="rk" style="--rc:${col}">${i + 1}</span>
+        <span class="nm"><b>${esc(desc(r.material) || r.material)}</b>${desc(r.material) ? `<small>${esc(r.material)}</small>` : ''}</span>
+        <span class="vv"><span>${fmt(val(r), d)} <em>${tot > 0 ? Math.round(100 * val(r) / tot) + '%' : ''}</em></span><i style="background:${col}" data-w="${100 * val(r) / mx}"></i></span></div>`).join('')
+      : '<div class="muted" style="padding:8px 2px">ไม่มีรายการ</div>'; };
+  $('#tpInfo').textContent = facs.length ? `${facs.length} โรง · หน่วย: ${unit} · % = สัดส่วนในโรงนั้น` : '';
+  box.innerHTML = facs.length ? facs.map((x, i) => { const tin = sum(x.rs, vIn), tout = sum(x.rs, vOut);
+    return `<div class="tp-card" style="animation-delay:${Math.min(i * .04, .4)}s"><div class="tp-h"><b>${esc(x.f)}</b>
+        <span style="color:${C_IN}">รับ ${fmt(tin, d)}</span><span style="color:${C_OUT}">จ่าย ${fmt(tout, d)}</span><span class="muted">${unit}</span>
+        <button class="btn ghost sm" data-fac="${esc(x.f)}" title="กรองเฉพาะโรงนี้">กรอง</button></div>
+      <div class="tp-cols"><div><div class="tp-t" style="color:${C_IN}">${icon('in', 14)}Top 5 รับเข้า</div>${list(x.rs, vIn, C_IN, 'รับเข้า', x.f, tin)}</div>
+        <div><div class="tp-t" style="color:${C_OUT}">${icon('out', 14)}Top 5 จ่ายออก</div>${list(x.rs, vOut, C_OUT, 'จ่ายออก', x.f, tout)}</div></div></div>`; }).join('')
+    : '<div class="empty">ไม่มีการเคลื่อนไหวในช่วงที่เลือก</div>';
+  box.querySelectorAll('[data-fac]').forEach(b => b.onclick = () => { F.facs = [b.dataset.fac]; MSEL.fFac(); onFilter(); toast(`กรองเฉพาะ ${b.dataset.fac}`); });
+  animateBars(box);
+}
+segBind('tpBy', BLV, 'tpBy', 'v', renderTopFac);
+$('#tpCsv').onclick = () => downloadCsv('Top5_GR_GI_by_factory.csv', BLV.tp || []);
+
 
 // ---------- start: ตรวจ session ที่ค้างอยู่ ----------
 (async () => {
