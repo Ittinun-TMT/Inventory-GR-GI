@@ -2093,6 +2093,8 @@ function renderMonDay(x){
   const k = (cls, ic, t, v, s) => `<div class="mk ${cls}"><div class="t">${icon(ic, 15)}${t}</div><div class="v">${v}</div><div class="s">${s}</div></div>`;
   const rows = x.exp.map(s => { const r = x.z4.find(z => z.grp === s), z13 = snap13(s); return { s, fac: facOf(s), r, z13 }; })
     .sort((a, b) => (!!a.r - !!b.r) || a.s.localeCompare(b.s));
+  // Stock ตั้งต้นใช้ค่าล่าสุดของแต่ละ Sloc (ไม่จำเป็นต้องวางทุกวัน)
+  const s13 = rows.filter(r => r.z13), miss13 = rows.filter(r => !r.z13).map(r => r.s), d13 = [...new Set(s13.map(r => r.z13.data_date))].sort();
   $('#monDay').innerHTML = `<div class="md-head"><div><div class="eyebrow">ข้อมูลวันที่ (Posting / GI date)</div><h2>${dLong(d)}</h2></div>
       <span class="stp ${x.st}">${MON_ST[x.st]}${x.st === 'part' ? ` · ขาด ${x.miss.length}` : ''}</span>
       <div class="row"><button class="btn ghost sm" data-step="-1">‹ วันก่อน</button><button class="btn ghost sm" data-step="1">วันถัดไป ›</button>
@@ -2102,8 +2104,8 @@ function renderMonDay(x){
         x.z4.length ? `${fmt0(z4rows)} แถว · รับ ${fmt0(z4in)} / จ่าย ${fmt0(z4out)} ตัน` : 'ยังไม่มีข้อมูลวันนี้')}
       ${k(x.z10 ? 'ok' : '', 'out', 'ZSDR0010 ขาออก', x.z10 ? esc(x.z10.grp) : '<small>ยังไม่วาง</small>',
         x.z10 ? `${fmt0(x.z10.row_count)} แถว · ${fmt0(x.z10.ton)} ตัน · ${x.z10.file_count} ไฟล์` : 'ใช้เติมน้ำหนักขาออกที่เป็น 0')}
-      ${k(x.z13.length ? 'info' : '', 'box', 'ZSDR0013 Stock ตั้งต้น', x.z13.length ? `${x.z13.length}<small> Sloc</small>` : '<small>ไม่มีในวันนี้</small>',
-        x.z13.length ? `${fmt0(sum(x.z13, 'row_count'))} มัด · ${fmt0(sum(x.z13, 'ton'))} ตัน` : 'วางเฉพาะวันที่ตั้งต้น Stock')}
+      ${k(!s13.length ? 'bad' : miss13.length ? 'warn' : 'ok', 'box', 'ZSDR0013 Stock ตั้งต้น', s13.length ? `${s13.length}<small> / ${rows.length} Sloc</small>` : '<small>ยังไม่เคยวาง</small>',
+        s13.length ? `ณ ${d13.map(dShort).join(', ')} · ${fmt0(sum(s13, r => r.z13.row_count))} มัด · ${fmt0(sum(s13, r => r.z13.ton))} ตัน${miss13.length ? ` · ยังไม่มี: ${esc(miss13.join(', '))}` : ''}` : 'วาง Stock By Bundle ที่แท็บ นำเข้าไฟล์')}
       ${k(ups.length ? 'info' : '', 'clock', 'กดนำเข้าในวันนี้', `${ups.length}<small> ครั้ง</small>`, ups.length ? esc(who.slice(0, 3).join(', ')) + (who.length > 3 ? ` +${who.length - 3}` : '') : 'ยังไม่มีการนำเข้า')}
     </div>
     <h3>รายการตาม Sloc ${x.miss.length && x.z4.length ? `<span class="pill bad" style="margin-left:6px">ยังขาด ${x.miss.length} Sloc: ${esc(x.miss.join(', '))}</span>` : ''}</h3>
