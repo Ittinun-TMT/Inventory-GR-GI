@@ -555,6 +555,161 @@
   .tp-r .vv i{display:block;height:4px;border-radius:3px;width:0;transition:width .9s var(--ease);align-self:stretch;margin-left:auto;max-width:70px}
   .tp-r .vv em{font-style:normal;font-weight:300;font-size:10.5px;color:var(--muted)}
   @media (max-width:700px){ .tp-grid{grid-template-columns:1fr} .tp-cols{grid-template-columns:1fr} }
+  /* ================= Stock คงเหลือ ================= */
+  .sk-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:14px}
+  .sk{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:var(--shadow);animation:fadeUp .45s var(--ease) both;min-width:0}
+  .sk .ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--info-soft);color:var(--navy);flex:none}
+  .sk.bad .ic{background:var(--bad-soft);color:var(--bad)} .sk.ok .ic{background:var(--ok-soft);color:var(--ok)}
+  .sk > div:last-child{min-width:0} .sk .l{font-size:13px;color:var(--muted)} .sk .v{font-size:22px;font-weight:500;color:var(--navy);line-height:1.25;white-space:nowrap}
+  .sk .v small{font-size:13px;font-weight:300;color:var(--muted)} .sk .s{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .stk-bar{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+  .stk-search{flex:1;min-width:260px;display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);border-radius:12px;padding:0 12px;background:#fff;transition:.18s}
+  .stk-search:focus-within{border-color:var(--orange);box-shadow:0 0 0 3px var(--orange-soft)} .stk-search svg{color:var(--muted)}
+  .stk-search input{border:0;box-shadow:none!important;flex:1;font-size:15px;padding:10px 0;background:none}
+  .seg.big button{padding:8px 16px;font-size:14.5px}
+  .stk-opt{margin-bottom:12px;gap:12px}
+  .sl-h{display:grid;grid-template-columns:minmax(0,1fr) minmax(140px,.55fr) 170px;gap:14px;padding:0 14px 6px;font-size:12px;color:var(--muted);border-bottom:1px solid var(--line)}
+  .sl-h .r{text-align:right}
+  .sl{border-bottom:1px solid #eef2f4;transition:background .15s} .sl:hover{background:#fbfcfc} .sl.open{background:#f8fafb}
+  .sl.neg .sl-r{box-shadow:inset 3px 0 0 var(--bad)}
+  .sl-r{display:grid;grid-template-columns:minmax(0,1fr) minmax(140px,.55fr) 170px;gap:14px;align-items:center;width:100%;border:0;background:none;padding:11px 14px;text-align:left;cursor:pointer;font-family:inherit;color:var(--text)}
+  .sl-r .d{display:flex;flex-direction:column;gap:2px;min-width:0} .sl-r .d b{font-weight:400;font-size:14.5px;color:var(--navy);line-height:1.4}
+  .sl-r .d small{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+  .ctag{display:inline-block;font-size:11px;padding:0 7px;border-radius:8px;color:var(--cc);background:color-mix(in srgb,var(--cc) 12%,#fff);font-weight:500}
+  .sl-r .f{display:flex;gap:4px;flex-wrap:wrap} .fchip{font-size:12px;background:#f1f5f7;border-radius:7px;padding:2px 7px;color:var(--navy);white-space:nowrap} .fchip em{font-style:normal;color:var(--muted)}
+  .sl-r .t{display:flex;flex-direction:column;align-items:flex-end;gap:2px;text-align:right} .sl-r .t b{font-size:17px;font-weight:500;font-variant-numeric:tabular-nums}
+  .sl-r .t b small{font-size:12px;font-weight:300;color:var(--muted)} .sl-r .t > small{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .sl-r .t i{display:block;height:4px;border-radius:3px;background:var(--navy);width:0;max-width:150px;transition:width .9s var(--ease);opacity:.75}
+  .mv{margin-left:6px}
+  .sl-b{display:none;padding:0 14px 14px} .sl.open .sl-b{display:block;animation:fadeUp .3s var(--ease) both}
+  .stk-t{font-size:13px} .stk-t tr.neg td{background:#fff5f5}
+  .sl-b .stk-t{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .stk-more{display:block;margin:14px auto 0}
+  .sf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,400px),1fr));gap:12px}
+  .sf{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:#fff;animation:fadeUp .45s var(--ease) both}
+  .sf-h{display:flex;gap:12px;align-items:center;margin-bottom:6px} .sf-h b{font-size:16px;color:var(--navy);font-weight:500} .sf-h .tier{margin-left:auto}
+  .sf-h .ring b{font-size:12px}
+  .sf-r{display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:10px;align-items:center;padding:6px 0;border-bottom:1px dashed #eef2f4}
+  .sf-r .d{display:flex;flex-direction:column;min-width:0} .sf-r .d b{font-weight:400;font-size:13.5px;color:var(--navy);line-height:1.35} .sf-r .d small{font-size:11.5px;color:var(--muted)}
+  .sf-r .t{text-align:right;font-weight:500;font-variant-numeric:tabular-nums;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+  .sf-r .t i{display:block;height:4px;border-radius:3px;width:0;max-width:92px;transition:width .9s var(--ease)}
+  .sf-more{margin-top:8px}
+  @media (max-width:1100px){ .sk-grid{grid-template-columns:repeat(3,1fr)} }
+  @media (max-width:700px){ .sk-grid{grid-template-columns:1fr 1fr} .sl-h{display:none} .sl-r{grid-template-columns:1fr auto} .sl-r .f{grid-column:1/-1;order:3} .stk-search{min-width:100%} }
+  /* ================= GLASS THEME + ตอบสนองการกด (28 พ.ย.) ================= */
+  :root{--glass:rgba(255,255,255,.58);--glass-2:rgba(255,255,255,.42);--glass-b:rgba(255,255,255,.75);--glass-sh:0 10px 34px rgba(12,56,67,.10),inset 0 1px 0 rgba(255,255,255,.85);--blur:blur(16px) saturate(165%)}
+  body{background:radial-gradient(1100px 620px at 8% -8%,#d6e9ef 0%,transparent 60%),radial-gradient(900px 560px at 105% 4%,#ffe3cf 0%,transparent 55%),
+    radial-gradient(900px 700px at 60% 115%,#dbe7f3 0%,transparent 60%),radial-gradient(500px 400px at 35% 45%,rgba(255,106,5,.05),transparent 70%),#edf2f5;background-attachment:fixed}
+  #app::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:
+    radial-gradient(circle at 78% 22%,rgba(255,138,61,.16),transparent 18%),radial-gradient(circle at 22% 78%,rgba(79,143,194,.14),transparent 20%);animation:glassDrift 26s ease-in-out infinite alternate}
+  @keyframes glassDrift{to{transform:translate(-30px,24px) scale(1.04)}}
+  .main{position:relative;z-index:1}
+  /* พื้นผิวหลัก = กระจก (blur เฉพาะชั้นนอก เพื่อความลื่น) */
+  .card,.kpi,.sk,.brief,.bl-hero,.fpanel,.imp-tabs,.dq-item,.tp-card,.sf{background:var(--glass)!important;-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);
+    border:1px solid var(--glass-b)!important;box-shadow:var(--glass-sh)!important}
+  .brief,.bl-hero{background:linear-gradient(150deg,rgba(255,255,255,.72),rgba(255,255,255,.46))!important}
+  .card:hover,.kpi:hover,.sk:hover,.tp-card:hover{box-shadow:0 16px 40px rgba(12,56,67,.14),inset 0 1px 0 rgba(255,255,255,.9)!important}
+  /* ชั้นใน = กระจกใส ไม่ blur ซ้ำ */
+  .bk,.cap-card,.fam,.fac,.act,.mk,.bl-tile,.fc,.sc,.tp-card .tp-r,.callout,.dq-info > div,.rule-box,.sum-line,.mon-sum span,.sl.open,.fcc,.ffc,.fs{background:var(--glass-2)!important;border-color:rgba(255,255,255,.7)!important}
+  .bk,.fam,.fac,.mk,.bl-tile,.sc,.act{box-shadow:0 4px 16px rgba(12,56,67,.06),inset 0 1px 0 rgba(255,255,255,.8)!important}
+  .fac.critical{background:linear-gradient(160deg,rgba(255,255,255,.55),rgba(255,233,220,.6))!important}
+  .fcc.on{background:color-mix(in srgb,var(--cc) 14%,rgba(255,255,255,.6))!important;border-color:var(--cc)!important}
+  .ffc.on{background:rgba(255,241,231,.85)!important;border-color:var(--orange)!important}
+  .tbl{border-color:rgba(255,255,255,.75);background:rgba(255,255,255,.35)} th{background:rgba(247,250,251,.85);backdrop-filter:blur(8px)}
+  td{border-bottom-color:rgba(12,56,67,.07)} tbody tr:hover{background:rgba(255,241,231,.45)}
+  .seg,.msel-btn,input,select,textarea,.stk-search,.btn.ghost{background:rgba(255,255,255,.62)!important;border-color:rgba(12,56,67,.10)!important}
+  .msel-pop,.me-menu,.modal{background:rgba(255,255,255,.82)!important;-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);border:1px solid var(--glass-b)}
+  .modal-bg{background:rgba(8,30,36,.32)}
+  .dt{transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s!important;background:color-mix(in srgb,var(--bg) 70%,transparent)!important;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border-color:rgba(255,255,255,.7)}
+  .dt.sel{background:rgba(255,255,255,.85)!important;border-color:var(--navy)}
+  .side{background:linear-gradient(180deg,rgba(12,56,67,.90) 0%,rgba(8,40,48,.94) 100%);-webkit-backdrop-filter:blur(20px) saturate(140%);backdrop-filter:blur(20px) saturate(140%);
+    border-right:1px solid rgba(255,255,255,.08);box-shadow:8px 0 30px rgba(8,30,36,.18)}
+  .mi.active{background:rgba(255,255,255,.92)}
+  .toast{background:rgba(12,56,67,.88);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)} .toast.err{background:rgba(224,72,72,.9)}
+  .fpanel.collapsed{background:rgba(255,255,255,.72)!important}
+  /* ---- ตอบสนองการกด: กดยุบ + คลื่น (ripple) ช้า ๆ นุ่ม ๆ ---- */
+  .btn,.mi,.seg button,.chip,.fcc,.ffc,.sl-r,.dq-h,.fac,.sc,.act,.bk.link,.imp-tabs button,.ftog,.grp-h,.me-btn,.dv[data-fac],.tp-card .btn{
+    position:relative;overflow:hidden;transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s,background .35s,color .3s,border-color .3s!important}
+  .btn:active:not(:disabled),.seg button:active,.chip:active,.fcc:active,.ffc:active,.imp-tabs button:active,.ftog:active,.me-btn:active{transform:scale(.95)!important;transition-duration:.12s!important}
+  .mi:active,.sl-r:active,.dq-h:active,.fac:active,.sc:active,.act:active,.bk.link:active,.dt:active{transform:scale(.985)!important;transition-duration:.12s!important}
+  .rpl{position:absolute;border-radius:50%;pointer-events:none;transform:translate(-50%,-50%) scale(0);background:radial-gradient(circle,rgba(255,138,61,.38) 0%,rgba(255,138,61,.16) 45%,transparent 70%);
+    animation:rpl .9s cubic-bezier(.22,1,.36,1) forwards;z-index:0}
+  .side .rpl,.btn:not(.ghost) .rpl,.seg button.active .rpl,.ftog .rpl{background:radial-gradient(circle,rgba(255,255,255,.45) 0%,rgba(255,255,255,.18) 45%,transparent 70%)}
+  @keyframes rpl{0%{transform:translate(-50%,-50%) scale(0);opacity:1}70%{opacity:.6}100%{transform:translate(-50%,-50%) scale(1);opacity:0}}
+  .seg button,.chip,.mi,.imp-tabs button{transition:all .4s cubic-bezier(.22,1,.36,1)!important}
+  .page{animation:pageIn .6s cubic-bezier(.22,1,.36,1) both} .page > *{animation:fadeUp .7s cubic-bezier(.22,1,.36,1) both}
+  @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){ .card,.kpi,.sk,.brief,.bl-hero,.fpanel{background:rgba(255,255,255,.94)!important} }
+  /* ================= สรุปผล — โครงแดชบอร์ด WH2 เดิม ================= */
+  .sec-title{display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:18px;font-weight:500;color:var(--navy);margin:26px 0 12px;position:relative}
+  .sec-title.sm{font-size:15.5px;margin:20px 0 10px}
+  .sec-title .tag{font-size:12.5px;font-weight:300;color:var(--muted);background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.8);border-radius:20px;padding:2px 10px}
+  .sec-title.sp{justify-content:space-between} .sec-title.sp > span:first-child{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  [data-page=summary] > .sec-title:first-child{margin-top:0}
+  .mgr-hero{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}
+  .mgr-card{position:relative;overflow:hidden;border-radius:16px;padding:16px 18px;background:var(--glass);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);border:1px solid var(--glass-b);box-shadow:var(--glass-sh);transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s;animation:fadeUp .5s var(--ease) both}
+  .mgr-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--mc,var(--navy))}
+  .mgr-card:hover{transform:translateY(-3px)}
+  .mgr-label{font-size:13px;color:var(--muted)} .mgr-value{font-size:28px;font-weight:500;color:var(--navy);margin-top:4px;font-variant-numeric:tabular-nums;line-height:1.2} .mgr-sub{font-size:12px;color:var(--muted);margin-top:2px}
+  .mgr-gauge-wrap{display:flex;gap:26px;align-items:center;flex-wrap:wrap;padding:18px 22px;border-radius:16px;background:var(--glass);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);border:1px solid var(--glass-b);box-shadow:var(--glass-sh)}
+  .mgr-gauge-wrap .gauge{margin:0}
+  .mgr-legend{flex:1;min-width:240px;font-size:13.5px;color:#4a6b75;line-height:2} .mgr-legend b{color:var(--navy)} .mgr-legend .tier{margin-right:6px}
+  .fam-ctx{font-size:14px;color:#4a6b75;margin:-2px 0 12px} .fam-ctx b{color:var(--navy)}
+  .family-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;align-items:start}
+  .family-card{position:relative;overflow:hidden;border-radius:16px;padding:16px 18px;background:var(--glass);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);border:1px solid var(--glass-b);box-shadow:var(--glass-sh);transition:transform .35s cubic-bezier(.22,1,.36,1);animation:fadeUp .5s var(--ease) both}
+  .family-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--fc)}
+  .family-card:hover{transform:translateY(-3px)}
+  .family-head{display:flex;align-items:center;gap:10px} .family-icon{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-size:17px;background:color-mix(in srgb,var(--fc) 14%,#fff)}
+  .family-name{font-size:16px;font-weight:500;color:var(--navy)} .family-head .pct{margin-left:auto;font-size:13px;color:var(--muted)}
+  .family-value{font-size:28px;font-weight:500;color:var(--navy);margin-top:8px;font-variant-numeric:tabular-nums}
+  .family-sub{font-size:13px;color:#4a6b75} .family-sub b{color:var(--navy)}
+  .family-cap{font-size:12.5px;color:var(--muted);margin-top:4px}
+  .rm-ok{color:var(--ok)} .rm-over{color:var(--bad);font-weight:500}
+  .family-track{height:9px;border-radius:6px;background:rgba(12,56,67,.07);margin-top:10px;overflow:hidden;display:flex}
+  .family-track span{display:block;height:100%;width:0;transition:width 1s var(--ease)}
+  .family-io{display:flex;gap:12px;font-size:12.5px;margin-top:8px}
+  .family-parts{margin-top:10px;border-top:1px dashed rgba(12,56,67,.12);padding-top:8px;display:flex;flex-direction:column;gap:7px}
+  .fpart{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center}
+  .fpart .n{display:flex;align-items:center;gap:7px;font-size:13.5px;color:var(--navy)} .fpart .sw{width:11px;height:11px;border-radius:3px;flex:none}
+  .fpart .v{font-size:13.5px;font-variant-numeric:tabular-nums;color:var(--navy);text-align:right} .fpart .m{grid-column:1/-1;font-size:11.5px;color:var(--muted)}
+  .fpart .b{grid-column:1/-1;height:4px;border-radius:3px;background:rgba(12,56,67,.06);overflow:hidden} .fpart .b i{display:block;height:100%;width:0;transition:width 1s var(--ease)}
+  .viz-block{border-radius:16px;padding:6px 18px;background:var(--glass);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);border:1px solid var(--glass-b);box-shadow:var(--glass-sh)}
+  .mf-row{display:flex;align-items:center;gap:14px;padding:13px 12px;margin:0 -12px;border-bottom:1px solid rgba(12,56,67,.07);border-radius:10px;cursor:pointer;transition:background .3s}
+  .mf-row:last-child{border-bottom:0} .mf-row:hover{background:rgba(255,255,255,.6)}
+  .mf-name{flex:0 0 190px;min-width:0;font-size:14.5px;font-weight:500;color:var(--navy)} .mf-name small{display:block;font-size:11.5px;font-weight:300;color:var(--muted);line-height:1.45;margin-top:2px}
+  .mf-track{flex:1 1 auto;height:16px;background:rgba(12,56,67,.07);border-radius:6px;min-width:60px;position:relative}
+  .mf-fill{height:100%;border-radius:6px;width:0;transition:width 1s cubic-bezier(.22,1,.36,1)}
+  .mf-fill.over{background:repeating-linear-gradient(-45deg,#ff6a05 0 7px,#c24e00 7px 14px)!important}
+  .mf-mark{position:absolute;top:-4px;bottom:-4px;left:80%;width:1px;background:#9fb3b9}
+  .mf-nums{flex:0 0 430px;display:grid;grid-template-columns:76px 1fr 1fr 1.1fr;gap:6px;font-variant-numeric:tabular-nums}
+  .mfn{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;padding:5px 8px;border-radius:9px;min-width:0}
+  .mfn span{font-size:11px;color:var(--muted);white-space:nowrap} .mfn b{font-size:16px;font-weight:500;color:var(--navy);white-space:nowrap}
+  .mfn.pct b{font-size:19px} .mfn.pct.critical b{color:var(--bad)} .mfn.pct.warn b{color:#b07a00}
+  .mfn.ok{background:rgba(232,241,248,.85)} .mfn.ok b{color:#2f74a8} .mfn.over{background:rgba(255,233,220,.9)} .mfn.over b,.mfn.over span{color:var(--bad)} .mfn.na{background:rgba(238,241,243,.9)}
+  .mf-share{flex:0 0 96px;display:flex;flex-direction:column;align-items:flex-end} .mf-share span{font-size:11px;color:var(--muted)} .mf-share b{font-size:15px;font-weight:500;color:var(--navy)}
+  .mf-row > .tier{flex:0 0 96px;justify-content:center}
+  .kpi-grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+  .k5{border-radius:16px;padding:14px 16px;background:var(--glass);-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);border:1px solid var(--glass-b);box-shadow:var(--glass-sh);animation:fadeUp .5s var(--ease) both;min-width:0}
+  .k5 .l{font-size:12.5px;color:var(--muted)} .k5 .v{font-size:26px;font-weight:500;color:var(--navy);margin-top:4px;font-variant-numeric:tabular-nums;white-space:nowrap} .k5 .s{font-size:12px;color:var(--muted)}
+  .summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 18px} .summary-grid > div{min-width:0}
+  .viz-block .hbar{grid-template-columns:minmax(120px,1.4fr) 2fr 96px}
+  .stk-row{margin:12px 0 14px} .stk-lbl{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;font-weight:500;color:var(--navy);margin-bottom:6px} .stk-lbl span{font-weight:300;color:var(--muted)}
+  .stk-bar{display:flex;height:26px;border-radius:8px;overflow:hidden;background:rgba(12,56,67,.07)}
+  .stk-seg{height:100%;position:relative;width:0;transition:width 1s var(--ease);display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;white-space:nowrap;overflow:hidden}
+  .stk-seg + .stk-seg{box-shadow:-2px 0 0 rgba(255,255,255,.9)}
+  .stk-leg{display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);padding:8px 0 10px} .stk-leg i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+  .top5{display:flex;flex-direction:column}
+  .t5{display:grid;grid-template-columns:26px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px dashed rgba(12,56,67,.09)} .t5:last-child{border-bottom:0}
+  .t5 .rk{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:12.5px;font-weight:500;background:var(--orange-soft);color:var(--orange)}
+  .t5:nth-child(1) .rk{background:var(--orange);color:#fff}
+  .t5 .d b{display:block;font-weight:400;font-size:14px;color:var(--navy);line-height:1.4} .t5 .d small{font-size:11.5px;color:var(--muted)}
+  .t5 .d .bar2{height:5px;border-radius:3px;background:rgba(12,56,67,.06);margin-top:5px;overflow:hidden} .t5 .d .bar2 i{display:block;height:100%;width:0;transition:width 1s var(--ease)}
+  .t5 .v{text-align:right;font-size:16px;font-weight:500;color:var(--navy);font-variant-numeric:tabular-nums} .t5 .v small{display:block;font-size:11.5px;font-weight:300;color:var(--muted)}
+  #sumPareto .chart svg{max-width:820px;margin:8px auto;display:block}
+  .abc-insight{font-size:14px;color:#33525b;line-height:1.7;padding:12px 16px;border-radius:14px;background:var(--glass);border:1px solid var(--glass-b);margin-bottom:12px} .abc-insight b{color:var(--navy)}
+  @media (max-width:1250px){ .mf-nums{flex:0 0 360px} .mf-name{flex-basis:150px} .kpi-grid5{grid-template-columns:repeat(3,1fr)} }
+  @media (max-width:1000px){ .mgr-hero{grid-template-columns:1fr 1fr} .summary-grid{grid-template-columns:1fr}
+    .mf-row{flex-wrap:wrap;row-gap:8px} .mf-name{flex:1 1 auto} .mf-track{flex:1 1 100%;order:3} .mf-nums{flex:1 1 100%;order:4;grid-template-columns:repeat(4,minmax(0,1fr))} .mfn{align-items:flex-start} .mf-share{align-items:flex-start;flex:0 1 auto} }
+  @media (max-width:700px){ .kpi-grid5{grid-template-columns:1fr 1fr} .mgr-value{font-size:22px} .mfn b{font-size:14px} .mfn span{white-space:normal} }
 </style>
 </head>
 <body>
@@ -637,8 +792,8 @@
       <div class="t"><b>Data Inventory GR&amp;GI</b><small>WAREHOUSE 2 · เข้า–ออก</small></div></div>
     <nav class="menu" id="menu">
       <div class="grp"><button class="grp-h"><span>ภาพรวม</span><svg class="i chev"><use href="#i-down2"/></svg></button><div class="grp-items">
-        <button class="mi active" data-tab="summary" title="สรุปผล"><svg class="i"><use href="#i-chart"/></svg><span>สรุปผล</span><em class="home">หน้าหลัก</em></button>
-        <button class="mi" data-tab="balance" title="สมดุลรับ–จ่าย"><svg class="i"><use href="#i-scale"/></svg><span>สมดุลรับ–จ่าย</span><em class="home" style="border-color:rgba(255,106,5,.6);color:#ffb37f">ใหม่</em></button>
+        <button class="mi active" data-tab="summary" title="สรุปผล"><svg class="i"><use href="#i-chart"/></svg><span>สรุปผล</span></button>
+        <button class="mi" data-tab="balance" title="สมดุลรับ–จ่าย"><svg class="i"><use href="#i-scale"/></svg><span>สมดุลรับ–จ่าย</span></button>
         <button class="mi" data-tab="trends" title="แนวโน้มเข้า–ออก"><svg class="i"><use href="#i-trend"/></svg><span>แนวโน้มเข้า–ออก</span></button>
       </div></div>
       <div class="grp"><button class="grp-h"><span>วิเคราะห์</span><svg class="i chev"><use href="#i-down2"/></svg></button><div class="grp-items">
@@ -688,12 +843,14 @@
         </div>
       </div>
 
-<!-- ===== SUMMARY (หน้าหลัก) ===== -->
+<!-- ===== SUMMARY (หน้าหลัก) — โครงเดียวกับแดชบอร์ด WH2 เดิม ===== -->
 <section data-page="summary" class="page">
+  <div class="sec-title sp"><span>👔 ภาพรวมคลังสินค้า <span class="tag">พื้นที่ทั้งหมด / ใช้งานปัจจุบัน / คงเหลือ — ทุกโรงงาน · รับ–จ่ายตามช่วงวันที่</span></span>
+    <span class="row"><button class="btn sm" id="capBtn" data-cap="brief"><svg class="i" style="width:15px;height:15px"><use href="#i-camera"/></svg>แคปสรุป (ส่งอีเมล)</button>
+      <button class="btn ghost sm" id="capAllBtn" data-cap="page"><svg class="i" style="width:15px;height:15px"><use href="#i-camera"/></svg>แคปทั้งหน้า</button></span></div>
+  <div id="sumCap">
   <section class="brief" id="brief">
-    <div class="row"><div class="eyebrow" id="bEyebrow">รายงานประจำวัน</div>
-      <div style="margin-left:auto" class="row"><button class="btn ghost sm" id="capBtn" data-cap="brief"><svg class="i" style="width:15px;height:15px"><use href="#i-camera"/></svg>แคปรูปสรุป</button>
-      <button class="btn ghost sm" id="capAllBtn" data-cap="page"><svg class="i" style="width:15px;height:15px"><use href="#i-camera"/></svg>แคปทั้งหน้า</button></div></div>
+    <div class="eyebrow" id="bEyebrow">รายงานประจำวัน</div>
     <h2 class="headline" id="bHead">กำลังสรุปข้อมูล…</h2>
     <p class="lede" id="bLede"></p>
     <div class="bk-grid" id="bKpis"></div>
@@ -701,11 +858,42 @@
     <div class="act-grid" id="bActs"></div>
     <div class="foot" id="bFoot"></div>
   </section>
-  <div class="card"><h2><span class="dot"></span>ภาพรวมพื้นที่คลัง</h2><p class="desc" id="capDesc">พื้นที่ทั้งหมด / ใช้งานปัจจุบัน / คงเหลือ ตามความจุจริงจากชีท Area</p>
-    <div class="cap-row"><div class="gauge" id="gauge"></div><div><div class="cap-cards" id="capCards"></div>
-      <div class="muted" style="margin-top:10px;line-height:1.8">เกณฑ์ต่อโรง: <span class="tier normal">ปกติ</span> ≤ 80% · <span class="tier warn">ใกล้เต็ม</span> 80–100% · <span class="tier critical">เกินพิกัด</span> &gt; 100% · % ใช้พื้นที่รวม = Stock รวม ÷ ความจุจริงรวม</div></div></div></div>
-  <div class="card"><h2><span class="dot"></span>ภาพรวมตามหมวดสินค้า</h2><p class="desc">Flat / Trading / Long / Other · แยก Group Product · รับเข้า–จ่ายออกตามช่วงวันที่ในตัวกรอง</p><div class="fam-grid" id="famCards"></div></div>
-  <div class="card"><h2><span class="dot"></span>รายโรงงาน เรียงจากวิกฤตที่สุดก่อน</h2><p class="desc">คลิกการ์ดเพื่อดูว่าโรงนั้นเก็บอะไรบ้าง</p><div class="fac-grid" id="facCards"></div></div>
+  <div class="mgr-hero" id="mgrHero"></div>
+  <div class="mgr-gauge-wrap"><div class="gauge" id="gauge"></div>
+    <div class="mgr-legend"><b>% ใช้พื้นที่รวม</b> = Stock ทั้งหมด ÷ พื้นที่ทั้งหมด × 100 <span class="muted">(คิดจากผลรวมทั้งคลังทีเดียว ไม่ใช่ค่าเฉลี่ย % ของแต่ละโรง)</span><br>
+      เกณฑ์แบ่งระดับต่อโรงงาน:<br><span class="tier normal">✅ ปกติ</span> ใช้พื้นที่ไม่เกิน 80%<br><span class="tier warn">⚠️ ใกล้เต็ม</span> ใช้พื้นที่ 80–100%<br><span class="tier critical">⛔ เกินพิกัด</span> ใช้พื้นที่เกิน 100%
+      <div class="muted" id="capDesc" style="margin-top:6px"></div></div></div>
+
+  <div class="sec-title">🧱 ภาพรวมตามกลุ่มสินค้าหลัก <span class="tag">Flat / Long / Trading / Other — แยก Group Product · ความจุ = โรงที่หมวดนั้นเป็นสินค้าหลัก</span></div>
+  <div class="fam-ctx" id="famCtx"></div>
+  <div class="family-grid" id="famCards"></div>
+
+  <div class="sec-title">🏭 รายโรงงานทั้งหมด <span class="tag">เรียงจากวิกฤตที่สุดก่อน · คลิกเพื่อดูว่ามีอะไรจัดเก็บบ้าง</span></div>
+  <div class="viz-block" id="facCards"></div>
+  </div>
+
+  <div class="sec-title">📊 ตัวเลขสต็อก <span class="tag">ตามตัวกรองด้านบน</span></div>
+  <div class="kpi-grid5" id="sumKpi"></div>
+
+  <div class="summary-grid">
+    <div><div class="sec-title sm">🏭 สรุปตามโรงงาน <span class="tag">อันดับตามน้ำหนัก</span></div><div class="viz-block" id="sumByFac"></div></div>
+    <div><div class="sec-title sm">🏷️ สรุปตาม Group Sale <span class="tag">อันดับตามน้ำหนัก</span></div><div class="viz-block" id="sumByGs"></div></div>
+  </div>
+  <div class="sec-title sm">🧭 สรุปตามโรงงาน + Group Sale <span class="tag">สัดส่วนองค์ประกอบต่อโรงงาน</span></div>
+  <div class="viz-block" id="sumStack"></div>
+
+  <div class="sec-title">🏆 Top 5 รายการสินค้า <span class="tag">จัดอันดับตาม Material รวมทุก Batch + Sloc · ตามตัวกรองด้านบน</span></div>
+  <div class="summary-grid">
+    <div><div class="sec-title sm">⚖️ อันดับตามน้ำหนัก <span class="tag">ตัน</span></div><div class="viz-block" id="topW"></div></div>
+    <div><div class="sec-title sm">🔢 อันดับตามจำนวน <span class="tag">ชิ้น</span></div><div class="viz-block" id="topQ"></div></div>
+  </div>
+
+  <div class="sec-title sp"><span>🔤 ABC Analysis <span class="tag">A = 80% แรกของน้ำหนัก · B = ถัดไปถึง 95% · C = ส่วนที่เหลือ · ตามตัวกรองด้านบน</span></span>
+    <button class="btn ghost sm" id="sumAbcCsv"><svg class="i" style="width:15px;height:15px"><use href="#i-down"/></svg>Export ABC (CSV)</button></div>
+  <div class="abc-insight" id="sumAbcIns"></div>
+  <div class="abc-cards" id="sumAbcCards"></div>
+  <div class="sec-title sm">เส้นสะสม (Pareto) <span class="tag">แกนนอน = สัดส่วนจำนวน SKU · แกนตั้ง = สัดส่วนน้ำหนักสะสม</span></div>
+  <div class="viz-block" id="sumPareto"></div>
 </section>
 
 <!-- ===== สมดุลรับ–จ่าย (GR vs GI) ===== -->
@@ -771,15 +959,21 @@
 
 <!-- ===== STOCK ===== -->
 <section data-page="stock" class="page hidden">
-  <div class="card"><h2><span class="dot"></span>Stock คงเหลือ</h2><p class="desc">ตั้งต้น + เข้า − ออก (เฉพาะรายการที่ผ่านเงื่อนไข) · ใช้ตัวกรองด้านบน</p>
-    <div class="row" style="margin-bottom:14px">
-      <input id="stkSearch" placeholder="ค้นหา Material / Batch / Description" style="min-width:260px">
-      <div class="seg" id="stkBy"><button data-v="row" class="active">ราย Batch/Sloc</button><button data-v="mat">รวมต่อ Material</button></div>
-      <label class="row muted" style="gap:6px"><input type="checkbox" id="stkNeg"> เฉพาะติดลบ</label>
-      <button class="btn ghost sm" id="stkCsv"><svg class="i" style="width:15px;height:15px"><use href="#i-down"/></svg>CSV</button>
-      <span class="muted" id="stkInfo"></span>
+  <div class="sk-grid" id="stkKpi"></div>
+  <div class="card">
+    <div class="stk-bar">
+      <div class="stk-search"><svg class="i"><use href="#i-search"/></svg><input id="stkSearch" placeholder="ค้นหาชื่อสินค้า / รหัส Material / Batch / Sloc / Group Product"></div>
+      <div class="seg big" id="stkBy"><button data-v="mat" class="active">ตามสินค้า</button><button data-v="fac">ตามโรง</button><button data-v="row">ราย Batch / Sloc</button></div>
     </div>
-    <div class="tbl" id="stkTbl" style="max-height:640px"></div>
+    <div class="row stk-opt">
+      <span class="muted">เรียง</span><div class="seg" id="stkSort"><button data-v="ton" class="active">ตันมากสุด</button><button data-v="qty">จำนวนชิ้น</button><button data-v="name">ชื่อ ก–ฮ</button></div>
+      <label class="toggle"><input type="checkbox" id="stkMoved">เฉพาะที่มีรับ/จ่าย</label>
+      <label class="toggle"><input type="checkbox" id="stkNeg">เฉพาะติดลบ</label>
+      <span class="muted" id="stkInfo" style="margin-left:auto"></span>
+      <button class="btn ghost sm" id="stkCsv"><svg class="i" style="width:15px;height:15px"><use href="#i-down"/></svg>CSV</button>
+    </div>
+    <div id="stkList"></div>
+    <p class="muted" style="margin:12px 0 0">คงเหลือ = Stock ตั้งต้น (ZSDR0013) + รับเข้า − จ่ายออก ที่ผ่านเงื่อนไข · คลิกสินค้าเพื่อดูแยก Batch / Sloc · ใช้ตัวกรองด้านบนร่วมได้</p>
   </div>
 </section>
 
@@ -1557,43 +1751,106 @@ async function renderSummary(){
   $('#bActs').querySelectorAll('[data-go]').forEach(b => b.onclick = () => go(b.dataset.go));
   $('#bFoot').textContent = 'การคาดการณ์เป็นเส้นตรงจากข้อมูลที่นำเข้า ไม่รวมแผนรับเข้า · นับเฉพาะรายการที่ผ่านเงื่อนไขชีท Condition';
 
-  // ----- พื้นที่คลัง -----
+  // ----- พื้นที่คลัง (การ์ด 4 ใบ + เกจ) -----
   const gt = pctAll === null ? 'none' : tierOf(pctAll, cap, usedAll), R = 70, C = 2 * Math.PI * R;
-  $('#gauge').innerHTML = `<svg width="170" height="170" viewBox="0 0 170 170"><circle cx="85" cy="85" r="${R}" fill="none" stroke="#eef2f4" stroke-width="16"/>
+  $('#gauge').innerHTML = `<svg width="170" height="170" viewBox="0 0 170 170"><circle cx="85" cy="85" r="${R}" fill="none" stroke="rgba(12,56,67,.08)" stroke-width="16"/>
     <circle class="arc" cx="85" cy="85" r="${R}" fill="none" stroke="${TIER[gt]}" stroke-width="16" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C}" data-off="${C*(1-Math.min(pctAll||0,100)/100)}"/></svg>
     <div class="c"><div><b>${pctAll === null ? '—' : pctAll.toFixed(1) + '%'}</b><span>ใช้พื้นที่รวม</span></div></div>`;
   const cnt = t => facs.filter(f => f.tier === t).length;
-  $('#capCards').innerHTML = `<div class="cap-card"><div class="l">พื้นที่ทั้งหมด (ตัน)</div><div class="v">${fmt0(cap)}</div><div class="s">${facs.filter(f=>f.cap>0).length} โรง/พื้นที่</div></div>
-    <div class="cap-card"><div class="l">ใช้งานปัจจุบัน (ตัน)</div><div class="v">${fmt0(usedAll)}</div><div class="s">${pctAll === null ? '' : pctAll.toFixed(1) + '% ของพื้นที่'}</div></div>
-    <div class="cap-card"><div class="l">คงเหลือ (ตัน)</div><div class="v" style="color:${remain < 0 ? '#c24e00' : 'var(--navy)'}">${fmt0(remain)}</div><div class="s">${remain < 0 ? 'เกินพิกัดรวม' : 'รับเพิ่มได้'}</div></div>
-    <div class="cap-card"><div class="l">สถานะโรงงาน</div><div class="row" style="gap:6px;margin-top:8px"><span class="tier normal">ปกติ ${cnt('normal')}</span><span class="tier warn">ใกล้เต็ม ${cnt('warn')}</span><span class="tier critical">เกิน ${cnt('critical')}</span></div></div>`;
-  $('#capDesc').textContent = F.cats.length || F.gps.length || F.gss.length
-    ? 'หมายเหตุ: กรองหมวด/กลุ่มสินค้าอยู่ — ตัวเลข "ใช้งาน" นับเฉพาะสินค้าที่กรอง แต่ความจุคิดทั้งโรง' : 'พื้นที่ทั้งหมด / ใช้งานปัจจุบัน / คงเหลือ ตามความจุจริงจากชีท Area';
+  const mc = (col, l, v, s) => `<div class="mgr-card" style="--mc:${col}"><div class="mgr-label">${l}</div><div class="mgr-value">${v}</div><div class="mgr-sub">${s}</div></div>`;
+  $('#mgrHero').innerHTML = mc('var(--navy)', 'พื้นที่ทั้งหมด (ตัน)', fmt(cap, 2), `รวม ${facs.filter(f => f.cap > 0).length} โรงงาน/พื้นที่จัดเก็บ`)
+    + mc('#4f8fc2', 'ใช้งานปัจจุบัน (ตัน)', fmt(usedAll, 2), pctAll === null ? '&nbsp;' : `${pctAll.toFixed(1)}% ของพื้นที่ทั้งหมด`)
+    + mc(remain < 0 ? '#e04848' : '#1f9d63', 'พื้นที่คงเหลือ (ตัน)', `<span style="color:${remain < 0 ? '#c24e00' : 'var(--navy)'}">${fmt(remain, 2)}</span>`, remain < 0 ? 'เกินความจุรวมแล้ว' : 'รับเพิ่มได้อีก')
+    + `<div class="mgr-card" style="--mc:var(--orange)"><div class="mgr-label">สถานะโรงงาน</div><div class="row" style="gap:6px;margin-top:10px"><span class="tier normal">✅ ปกติ ${cnt('normal')}</span><span class="tier warn">⚠️ ใกล้เต็ม ${cnt('warn')}</span><span class="tier critical">⛔ เกิน ${cnt('critical')}</span></div></div>`;
+  $('#capDesc').textContent = F.cats.length || F.gps.length || F.gss.length ? 'หมายเหตุ: กรองหมวด/กลุ่มสินค้าอยู่ — "ใช้งาน" นับเฉพาะสินค้าที่กรอง แต่ความจุคิดทั้งโรง' : '';
 
-  // ----- การ์ดหมวดสินค้า -----
+  // ----- กลุ่มสินค้าหลัก: ความจุของโรงนับให้หมวดที่เป็นสินค้าหลักของโรงนั้น -----
+  const FAM_ICON = { Flat:'▭', Long:'◎', Trading:'⇄', Other:'·' };
+  $('#famCtx').innerHTML = `เก็บได้ทั้งหมด <b>${fmt(cap, 2)} ตัน</b> · ปัจจุบันมี <b>${fmt(usedAll, 2)} ตัน</b> · <span class="${remain < 0 ? 'rm-over' : 'rm-ok'}">${remain >= 0 ? 'คงเหลือ ' + fmt(remain, 2) : 'เกินพิกัดรวม ' + fmt(-remain, 2)} ตัน</span>`;
+  const famCap = {}, famLocs = {};
+  facs.forEach(f => { if (!(f.cap > 0)) return; const byCat = {}; f.top.forEach(([k, t]) => { const c = k.split(' · ')[0]; byCat[c] = (byCat[c] || 0) + t; });
+    const main = Object.entries(byCat).sort((a, b) => b[1] - a[1])[0]; if (!main) return;
+    famCap[main[0]] = (famCap[main[0]] || 0) + f.cap; (famLocs[main[0]] ||= []).push(`${f.fac} ${fmt0(f.cap)}`); });
   const cats = (F.cats.length ? F.cats : CATS).filter(c => bal.some(r => kCat(r) === c) || flowR.some(r => kCat(r) === c));
   $('#famCards').innerHTML = cats.map((c, i) => {
-    const rs = bal.filter(r => kCat(r) === c), t = sum(rs, posKg) / 1000, fr = flowR.filter(r => kCat(r) === c);
-    const gps = {}; rs.forEach(r => gps[kGp(r)] = (gps[kGp(r)] || 0) + posKg(r) / 1000);
-    const list = Object.entries(gps).filter(x => x[1] > 0).sort((a, b) => b[1] - a[1]);
-    return `<div class="fam" style="--fc:${CAT_COLOR[c]};animation-delay:${i*.05}s"><div class="hd"><b>${c}</b><span class="muted">${list.length} Group Product</span><span class="pct">${stockT > 0 ? (100*t/stockT).toFixed(1) : '0.0'}%</span></div>
-      <div class="ton">${fmt(t, 2)} ตัน</div>
-      <div class="io"><span style="color:${C_IN}">${icon('in',15)} รับ ${fmt(sum(fr,'in_ton'),1)}</span><span style="color:${C_OUT}">${icon('out',15)} จ่าย ${fmt(sum(fr,'out_ton'),1)}</span><span class="muted">ตันในช่วงที่เลือก</span></div>
-      <div class="stack">${list.slice(0, 10).map(([g, v], j) => `<i style="background:${GP_PAL[j % GP_PAL.length]}" data-w="${t > 0 ? 100*v/t : 0}"></i>`).join('')}</div>
-      <ul>${list.slice(0, 5).map(([g, v], j) => `<li><span class="dot" style="background:${GP_PAL[j % GP_PAL.length]}"></span><span class="nm">${esc(g)}</span><span class="p">${t > 0 ? (100*v/t).toFixed(1) : 0}%</span><span class="t">${fmt(v,2)}</span></li>`).join('')}
-      ${list.length > 5 ? `<li class="muted"><span class="nm">อื่นๆ ${list.length - 5} กลุ่ม</span><span class="t">${fmt(sum(list.slice(5), x => x[1]),2)}</span></li>` : ''}</ul></div>`;
+    const rs = bal.filter(r => kCat(r) === c), t = sum(rs, posKg) / 1000, fr = flowR.filter(r => kCat(r) === c), fc = famCap[c] || 0, rm = fc - t;
+    const gps = {}; rs.forEach(r => { const o = gps[kGp(r)] ||= { t:0, mats:new Set(), facs:new Set() }; o.t += posKg(r) / 1000; o.mats.add(r.material); o.facs.add(kFac(r)); });
+    const parts = Object.entries(gps).filter(x => x[1].t > 0.0005).sort((a, b) => b[1].t - a[1].t);
+    return `<div class="family-card" style="--fc:${CAT_COLOR[c]};animation-delay:${i * .05}s">
+      <div class="family-head"><span class="family-icon" style="color:${CAT_COLOR[c]}">${FAM_ICON[c] || '·'}</span><span class="family-name">${c}</span><span class="pct">${stockT > 0 ? (100 * t / stockT).toFixed(1) : '0.0'}% ของสต็อกทั้งหมด</span></div>
+      <div class="family-value">${fmt(t, 2)} <small style="font-size:14px;font-weight:300;color:var(--muted)">ตัน</small></div>
+      <div class="family-sub"><b>${fc > 0 ? `ใช้พื้นที่ ${(100 * t / fc).toFixed(1)}%` : 'ไม่มีโรงที่เป็นสินค้าหลัก'}</b> · ${fmt0(new Set(rs.map(r => r.material)).size)} SKU</div>
+      <div class="family-cap">ความจุ <b>${fmt(fc, 2)} ตัน</b> · <span class="${rm < 0 ? 'rm-over' : 'rm-ok'}">${fc > 0 ? (rm >= 0 ? 'เหลือ ' + fmt(rm, 2) : 'เกินพิกัด ' + fmt(-rm, 2)) + ' ตัน' : '—'}</span></div>
+      <div class="family-track">${parts.slice(0, 10).map(([g, o], j) => `<span style="background:${GP_PAL[j % GP_PAL.length]}" data-w="${fc > 0 ? Math.min(100, 100 * o.t / Math.max(fc, t)) : (t > 0 ? 100 * o.t / t : 0)}" title="${esc(g)} ${fmt(o.t, 1)} ตัน"></span>`).join('')}</div>
+      <div class="family-io"><span style="color:${C_IN}">${icon('in', 14)} รับ ${fmt(sum(fr, 'in_ton'), 1)}</span><span style="color:${C_OUT}">${icon('out', 14)} จ่าย ${fmt(sum(fr, 'out_ton'), 1)}</span><span class="muted">ตัน ในช่วงที่เลือก</span></div>
+      ${parts.length ? `<div class="family-parts">${parts.slice(0, 6).map(([g, o], j) => `<div class="fpart"><span class="n"><span class="sw" style="background:${GP_PAL[j % GP_PAL.length]}"></span>${esc(g)}</span><span class="v">${fmt(o.t, 2)} ตัน</span>
+          <span class="m">${t > 0 ? (100 * o.t / t).toFixed(1) : 0}% ของ ${c} · ${fmt0(o.mats.size)} SKU · ${esc([...o.facs].sort().join(', '))}</span>
+          <span class="b"><i style="background:${GP_PAL[j % GP_PAL.length]}" data-w="${t > 0 ? 100 * o.t / t : 0}"></i></span></div>`).join('')}
+          ${parts.length > 6 ? `<div class="muted" style="font-size:12px">+ อีก ${parts.length - 6} กลุ่ม · ${fmt(sum(parts.slice(6), x => x[1].t), 2)} ตัน</div>` : ''}</div>` : ''}
+      <div class="family-cap" style="margin-top:8px">ความจุตามไฟล์ Area: ${esc((famLocs[c] || []).join(' + ') || '—')}</div></div>`;
   }).join('') || '<div class="empty">ไม่มีข้อมูลตามตัวกรอง</div>';
-  $('#famCards').querySelectorAll('.stack i').forEach(i => { i.style.width = '0'; }); animateBars($('#famCards'));
+  animateBars($('#famCards'));
 
-  // ----- การ์ดรายโรง -----
-  $('#facCards').innerHTML = facs.map((f, i) => `<button class="fac ${f.tier}" data-fac="${esc(f.fac)}" style="animation-delay:${Math.min(i*.04,.5)}s">${ring(f.pct, f.tier)}
-    <div class="info"><b>${esc(f.fac)} <span class="tier ${f.tier}">${TIER_TXT[f.tier]}</span></b>
-      <div class="s">${fmt(f.used,1)} / ${f.cap > 0 ? fmt0(f.cap) : '—'} ตัน · ${f.remain >= 0 ? 'ว่าง ' + fmt0(f.remain) : 'เกิน ' + fmt0(-f.remain)}</div>
-      <div class="s">${f.inL + f.outL > 0.05 ? `วันล่าสุด รับ <span style="color:${C_IN}">${fmt(f.inL,1)}</span> · จ่าย <span style="color:${C_OUT}">${fmt(f.outL,1)}</span> ตัน` : 'วันล่าสุดไม่มีเคลื่อนไหว'}</div>
-      <div class="c">${esc(f.top.slice(0, 2).map(([k]) => k.split(' · ')[1]).join(', ') || 'ไม่มี Stock')}</div></div></button>`).join('') || '<div class="empty">ไม่มีข้อมูล</div>';
+  // ----- รายโรงงานแบบแถว (เรียงวิกฤตก่อน) -----
+  $('#facCards').innerHTML = facs.length ? facs.map(f => { const noCap = !(f.cap > 0), share = usedAll > 0 ? 100 * f.used / usedAll : 0, over = !noCap && f.pct > 100;
+    return `<div class="mf-row" data-fac="${esc(f.fac)}" title="คลิกเพื่อดูว่ามีอะไรจัดเก็บบ้างในโรงงานนี้">
+      <div class="mf-name">${esc(f.fac)}<small>${esc(f.top.slice(0, 3).map(([k, t]) => `${k.split(' · ')[1]} ${fmt0(t)}`).join(' · ') || 'ไม่มี Stock')}</small></div>
+      <div class="mf-track"><div class="mf-fill ${over ? 'over' : ''}" style="background:${TIER[f.tier]}" data-w="${noCap ? (f.used > 0 ? 100 : 0) : Math.min(100, f.pct)}"></div><span class="mf-mark"></span></div>
+      <div class="mf-nums"><div class="mfn pct ${f.tier}"><span>ใช้พื้นที่</span><b>${noCap ? '—' : f.pct.toFixed(1) + '%'}</b></div>
+        <div class="mfn"><span>ใช้ไป (ตัน)</span><b>${fmt(f.used, 2)}</b></div><div class="mfn"><span>ความจุ (ตัน)</span><b>${noCap ? '—' : fmt(f.cap, 2)}</b></div>
+        <div class="mfn ${noCap ? 'na' : f.remain < 0 ? 'over' : 'ok'}"><span>${noCap ? 'ไม่มีข้อมูลความจุ' : f.remain >= 0 ? 'ว่างเหลือ (ตัน)' : 'เกินพิกัด (ตัน)'}</span><b>${noCap ? '—' : (f.remain < 0 ? '+' : '') + fmt(Math.abs(f.remain), 2)}</b></div></div>
+      <div class="mf-share"><span>สัดส่วนสต็อกรวม</span><b>${share.toFixed(1)}%</b></div>
+      <span class="tier ${f.tier}">${noCap ? '⚠️ ไม่มีความจุ' : { normal:'✅ ปกติ', warn:'⚠️ ใกล้เต็ม', critical:'⛔ เกินพิกัด', none:'—' }[f.tier]}</span></div>`; }).join('')
+    : '<div class="empty">ยังไม่มีข้อมูลพื้นที่คลัง — นำเข้าชีท Area</div>';
   $('#facCards').querySelectorAll('[data-fac]').forEach(b => b.onclick = () => facModal(b.dataset.fac));
+  animateBars($('#facCards'));
+
+  // ----- ตัวเลขสต็อก -----
+  const matSet = new Set(bal.filter(r => posKg(r) > 0).map(r => r.material));
+  const k5 = (l, v, s) => `<div class="k5"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`;
+  $('#sumKpi').innerHTML = k5('รายการทั้งหมด', fmt0(bal.length), 'Material × Batch × Sloc') + k5('จำนวน SKU', fmt0(matSet.size), 'รหัสสินค้าที่มี Stock')
+    + k5('น้ำหนักรวม (ตัน)', fmt(stockT, 2), 'Stock คงเหลือ') + k5('จำนวนคงเหลือรวม', fmt0(sum(bal, r => Math.max(0, +r.closing_qty || 0))), 'ชิ้น')
+    + k5('โรงงาน/พื้นที่ที่ใช้งาน', fmt0(new Set(bal.filter(r => posKg(r) > 0).map(kFac)).size), 'ที่มี Stock อยู่จริง');
+
+  // ----- สรุปตามโรงงาน / Group Sale -----
+  const grp = kf => { const m = {}; bal.forEach(r => m[kf(r)] = (m[kf(r)] || 0) + posKg(r) / 1000); return Object.entries(m).filter(x => x[1] > 0.0005).sort((a, b) => b[1] - a[1]); };
+  const byFac = grp(kFac), byGs = grp(kGs);
+  $('#sumByFac').innerHTML = hbars(byFac.map(([k, v], i) => ({ name:k, v, color:C_NET, rank:i + 1 })), { d:2 });
+  $('#sumByGs').innerHTML = hbars(byGs.slice(0, 12).map(([k, v], i) => ({ name:k, v, color:GP_PAL[i % GP_PAL.length], rank:i + 1 })), { d:2 })
+    + (byGs.length > 12 ? `<div class="muted" style="padding:8px 0">+ อีก ${byGs.length - 12} กลุ่ม</div>` : '');
+  // ----- โรงงาน + Group Sale (แท่งซ้อน 100%) -----
+  const gsTop = byGs.slice(0, 8).map(x => x[0]), gsCol = g => gsTop.includes(g) ? GP_PAL[gsTop.indexOf(g) % GP_PAL.length] : '#c5cfd3';
+  $('#sumStack').innerHTML = byFac.length ? `<div class="stk-leg">${gsTop.map(g => `<span><i style="background:${gsCol(g)}"></i>${esc(g)}</span>`).join('')}${byGs.length > 8 ? '<span><i style="background:#c5cfd3"></i>อื่นๆ</span>' : ''}</div>`
+    + byFac.map(([f, t]) => { const m = {}; bal.filter(r => kFac(r) === f).forEach(r => { const g = gsTop.includes(kGs(r)) ? kGs(r) : 'อื่นๆ'; m[g] = (m[g] || 0) + posKg(r) / 1000; });
+      const segs = Object.entries(m).filter(x => x[1] > 0.0005).sort((a, b) => (gsTop.indexOf(a[0]) + 99 * (a[0] === 'อื่นๆ')) - (gsTop.indexOf(b[0]) + 99 * (b[0] === 'อื่นๆ')));
+      return `<div class="stk-row"><div class="stk-lbl">${esc(f)}<span>${fmt(t, 2)} ตัน</span></div><div class="stk-bar">${segs.map(([g, v]) => { const p = 100 * v / t;
+        return `<span class="stk-seg" style="background:${g === 'อื่นๆ' ? '#c5cfd3' : gsCol(g)}" data-w="${p}" title="${esc(g)} ${fmt(v, 2)} ตัน (${p.toFixed(1)}%)">${p >= 9 ? esc(g) + ' ' + p.toFixed(0) + '%' : ''}</span>`; }).join('')}</div></div>`; }).join('')
+    : '<div class="empty">ไม่มีข้อมูล</div>';
+  animateBars($('#sumByFac')); animateBars($('#sumByGs')); animateBars($('#sumStack'));
+
+  // ----- Top 5 สินค้า (รวมทุก Batch + Sloc) -----
+  const mats = {}; bal.forEach(r => { const o = mats[r.material] ||= { m:r.material, d:r.description, gp:kGp(r), t:0, q:0, facs:new Set() }; o.t += posKg(r) / 1000; o.q += Math.max(0, +r.closing_qty || 0); if (posKg(r) > 0) o.facs.add(kFac(r)); });
+  const ml = Object.values(mats);
+  const t5 = (arr, val, unit, d, col) => { const mx = arr.length ? val(arr[0]) : 1;
+    return `<div class="top5">${arr.map((o, i) => `<div class="t5"><span class="rk">${i + 1}</span><span class="d"><b>${esc(o.d || o.m)}</b><small>${esc(o.m)} · ${esc(o.gp)} · ${esc([...o.facs].join(', '))}</small>
+      <span class="bar2"><i style="background:${col}" data-w="${100 * val(o) / mx}"></i></span></span><span class="v">${fmt(val(o), d)}<small>${unit}</small></span></div>`).join('') || '<div class="empty">ไม่มีข้อมูล</div>'}</div>`; };
+  $('#topW').innerHTML = t5([...ml].sort((a, b) => b.t - a.t).slice(0, 5), o => o.t, 'ตัน', 2, C_NET);
+  $('#topQ').innerHTML = t5([...ml].sort((a, b) => b.q - a.q).slice(0, 5), o => o.q, 'ชิ้น', 0, C_OUT);
+  animateBars($('#topW')); animateBars($('#topQ'));
+
+  // ----- ABC ตามน้ำหนัก Stock -----
+  const abc = [...ml].filter(o => o.t > 0).sort((a, b) => b.t - a.t), tt = sum(abc, 't'); let cum = 0;
+  abc.forEach((o, i) => { cum += o.t; o.cum = tt > 0 ? 100 * cum / tt : 0; o.cls = o.cum - 100 * o.t / tt < 80 ? 'A' : o.cum - 100 * o.t / tt < 95 ? 'B' : 'C'; o.sku_pct = 100 * (i + 1) / abc.length; });
+  SUMV.abc = abc;
+  const cl = k => abc.filter(o => o.cls === k), AC = { A:'#ff6a05', B:'#0c3843', C:'#8bbade' };
+  const nA = cl('A').length;
+  $('#sumAbcIns').innerHTML = abc.length ? `สินค้า <b>${fmt0(nA)} SKU (${abc.length ? (100 * nA / abc.length).toFixed(1) : 0}%)</b> ถือน้ำหนัก <b>80%</b> ของ Stock ทั้งหมด (${fmt0(sum(cl('A'), 't'))} ตัน) — ควรจัดวางใกล้ทางเข้า–ออก และนับตรวจบ่อยที่สุด · กลุ่ม C มี ${fmt0(cl('C').length)} SKU แต่รวมเพียง ${fmt(sum(cl('C'), 't'), 1)} ตัน` : 'ยังไม่มีข้อมูล';
+  $('#sumAbcCards').innerHTML = ['A','B','C'].map(k => `<div class="abc" style="--ac:${AC[k]}"><b>${k}</b> <span class="muted">${fmt0(cl(k).length)} SKU</span><div class="s">${fmt(sum(cl(k), 't'), 1)} ตัน · ${tt > 0 ? (100 * sum(cl(k), 't') / tt).toFixed(1) : 0}% ของน้ำหนัก</div></div>`).join('');
+  $('#sumPareto').innerHTML = paretoChart(abc.map(o => ({ sku_pct:o.sku_pct, cum_pct:o.cum })));
   animateRings(document.querySelector('[data-page=summary]'));
 }
+const SUMV = { abc:[] };
+$('#sumAbcCsv').onclick = () => downloadCsv('ABC_stock_weight.csv', SUMV.abc.map((o, i) => ({ อันดับ:i + 1, Material:o.m, Description:o.d, 'Group Product':o.gp, ตัน:+o.t.toFixed(3), สะสม_pct:+o.cum.toFixed(2), กลุ่ม:o.cls })));
 function facModal(fac){
   const rs = balF().filter(r => kFac(r) === fac && posKg(r) > 0), t = sum(rs, posKg) / 1000;
   const f = factoryStats().find(x => x.fac === fac) || { cap:0, pct:null, tier:'none' };
@@ -1609,7 +1866,7 @@ function facModal(fac){
 // ---------- แคปรูป (html2canvas) ----------
 document.querySelectorAll('[data-cap]').forEach(b => b.onclick = async () => {
   if (!window.html2canvas) return toast('โหลดตัวแคปรูปไม่สำเร็จ', true);
-  const target = b.dataset.cap === 'brief' ? $('#brief') : document.querySelector('[data-page=summary]');
+  const target = b.dataset.cap === 'brief' ? $('#sumCap') : document.querySelector('[data-page=summary]');
   busy(b, true, 'กำลังแคป...');
   try{
     const cv = await html2canvas(target, { scale: 2, backgroundColor: '#f5f7f9', ignoreElements: el => el.hasAttribute && el.hasAttribute('data-cap') });
@@ -1733,26 +1990,94 @@ $('#deadCsv').onclick = () => downloadCsv('dead_stock.csv', ANV.dead);
 // =====================================================================
 // Stock คงเหลือ
 // =====================================================================
-let STV = { by:'row', rows:[] };
 async function loadStockPage(){ await loadData(); renderStock(); }
-function renderStock(){
+let STV = { by:'mat', sort:'ton', neg:false, moved:false, rows:[], limit:60, open:{} };
+// =====================================================================
+// Stock คงเหลือ — 3 มุมมอง: ตามสินค้า (รวมทุก Batch/Sloc) · ตามโรง · ราย Batch/Sloc
+// =====================================================================
+function stkBase(){
   const t = $('#stkSearch').value.trim().toLowerCase();
-  let rows = balF().filter(r => !t || [r.material, r.batch, r.description].some(x => String(x||'').toLowerCase().includes(t)));
-  if (STV.by === 'mat'){ const m = {}; rows.forEach(r => { const o = m[r.material] ||= { material:r.material, description:r.description, category:kCat(r), group_product:kGp(r), batch:'', sloc:new Set(), factory:new Set(), open_qty:0, in_qty:0, out_qty:0, closing_qty:0, closing_kg:0 };
-      o.sloc.add(r.sloc); o.factory.add(kFac(r)); ['open_qty','in_qty','out_qty','closing_qty','closing_kg'].forEach(k => o[k] += +r[k]); });
-    rows = Object.values(m).map(o => ({ ...o, sloc:[...o.sloc].join(', '), factory:[...o.factory].join(', '), batch:'(รวม)', is_negative:o.closing_qty < 0 })); }
-  if ($('#stkNeg').checked) rows = rows.filter(r => r.is_negative);
-  rows.sort((a, b) => (+b.closing_kg) - (+a.closing_kg));
-  STV.rows = rows;
-  $('#stkInfo').textContent = `${fmt0(rows.length)} บรรทัด · ${fmt(sum(rows, posKg)/1000, 2)} ตัน${rows.length > 1000 ? ' (แสดง 1,000 แรก — CSV ได้ครบ)' : ''}`;
-  $('#stkTbl').innerHTML = table([{k:'material',l:'Material',f:v=>`<b>${esc(v)}</b>`},{k:'description',l:'Description'},{k:'category',l:'หมวด',f:v=>`<span class="pill info">${esc(v||'Other')}</span>`},{k:'batch',l:'Batch'},
-    {k:'sloc',l:'Sloc'},{k:'factory',l:'โรง'},{k:'open_qty',l:'ตั้งต้น',num:1,f:fmt0},{k:'in_qty',l:'เข้า',num:1,f:fmt0},{k:'out_qty',l:'ออก',num:1,f:fmt0},
-    {k:'closing_qty',l:'คงเหลือ',num:1,f:(v,r)=>`<b style="color:${r.is_negative?'var(--bad)':'var(--navy)'}">${fmt0(v)}</b>`},
-    {k:'closing_kg',l:'คงเหลือ (กก.)',num:1,f:v=>fmt(v,2)}], rows.slice(0, 1000));
+  let rows = balF().filter(r => !t || [r.material, r.batch, r.description, r.sloc, kGp(r)].some(x => String(x || '').toLowerCase().includes(t)));
+  if (STV.neg) rows = rows.filter(r => r.is_negative);
+  if (STV.moved) rows = rows.filter(r => +r.in_qty || +r.out_qty);
+  return rows;
 }
-let stkTimer; $('#stkSearch').addEventListener('input', () => { clearTimeout(stkTimer); stkTimer = setTimeout(renderStock, 250); });
-$('#stkNeg').onchange = renderStock; segBind('stkBy', STV, 'by', 'v', renderStock);
-$('#stkCsv').onclick = () => downloadCsv('stock_balance.csv', STV.rows.map(r => ({ Material:r.material, Description:r.description, หมวด:r.category, Batch:r.batch, Sloc:r.sloc, โรง:r.factory, ตั้งต้น:r.open_qty, เข้า:r.in_qty, ออก:r.out_qty, คงเหลือ:r.closing_qty, คงเหลือ_กก:r.closing_kg })));
+function stkGroupMat(rows){
+  const m = {};
+  rows.forEach(r => { const o = m[r.material] ||= { material:r.material, description:r.description, category:kCat(r), group_product:kGp(r), lines:[], facs:{}, open_qty:0, in_qty:0, out_qty:0, closing_qty:0, kg:0, in_kg:0, out_kg:0, neg:false };
+    o.lines.push(r); o.facs[kFac(r)] = (o.facs[kFac(r)] || 0) + posKg(r) / 1000;
+    o.open_qty += +r.open_qty || 0; o.in_qty += +r.in_qty || 0; o.out_qty += +r.out_qty || 0; o.closing_qty += +r.closing_qty || 0;
+    o.kg += posKg(r); o.in_kg += +r.in_kg || 0; o.out_kg += +r.out_kg || 0; o.neg = o.neg || r.is_negative; });
+  return Object.values(m);
+}
+const stkSort = (a, b) => STV.sort === 'name' ? String(a.description || a.material).localeCompare(String(b.description || b.material), 'th')
+  : STV.sort === 'qty' ? (b.closing_qty - a.closing_qty) : (b.kg - a.kg);
+const tonTxt = kg => kg >= 1e6 ? fmt(kg / 1000, 0) : fmt(kg / 1000, kg >= 1e5 ? 1 : 2);
+const moveTxt = o => (o.in_qty || o.out_qty) ? `<span class="mv"><span style="color:${C_IN}">+${fmt0(o.in_qty)}</span> <span style="color:${C_OUT}">${fmt0(o.out_qty)}</span> ชิ้น</span>` : '';
+const catTag = c => `<span class="ctag" style="--cc:${CAT_COLOR[c] || '#a3b1b6'}">${esc(c)}</span>`;
+
+function renderStock(){
+  const rows = stkBase(), mats = stkGroupMat(rows);
+  const tKg = sum(rows, posKg), facSet = new Set(rows.filter(r => posKg(r) > 0).map(kFac)), negN = rows.filter(r => r.is_negative).length;
+  const kp = (ic, l, v, s, cls = '') => `<div class="sk ${cls}"><div class="ic">${icon(ic, 18)}</div><div><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div></div>`;
+  $('#stkKpi').innerHTML = kp('box', 'Stock คงเหลือ', `${fmt0(tKg / 1000)} <small>ตัน</small>`, `${fmt0(sum(rows, 'closing_qty'))} ชิ้น`)
+    + kp('layers', 'สินค้า (Material)', fmt0(mats.length), `${fmt0(rows.length)} Batch/Sloc`)
+    + kp('pie', 'โรงที่มี Stock', fmt0(facSet.size), [...facSet].slice(0, 4).join(', ') + (facSet.size > 4 ? '…' : ''))
+    + kp('trend', 'มีเคลื่อนไหวหลังตั้งต้น', fmt0(mats.filter(o => o.in_qty || o.out_qty).length), 'Material ที่มีรับ/จ่าย')
+    + kp('alert', 'ติดลบ', fmt0(negN), negN ? 'บรรทัด — ตรวจที่หน้า ตรวจคุณภาพ' : 'ไม่มี', negN ? 'bad' : 'ok');
+  const box = $('#stkList'), more = n => n > STV.limit ? `<button class="btn ghost stk-more" id="stkMore">แสดงเพิ่มอีก ${fmt0(Math.min(60, n - STV.limit))} รายการ (ทั้งหมด ${fmt0(n)})</button>` : '';
+  if (STV.by === 'mat'){
+    mats.sort(stkSort); STV.rows = mats; const mx = Math.max(...mats.map(o => o.kg), 1);
+    $('#stkInfo').textContent = `${fmt0(mats.length)} สินค้า · ${fmt0(tKg / 1000)} ตัน`;
+    box.innerHTML = mats.length ? `<div class="sl-h"><span>สินค้า</span><span>อยู่ที่โรง</span><span class="r">คงเหลือ</span></div>` + mats.slice(0, STV.limit).map(o => {
+      const facs = Object.entries(o.facs).filter(x => x[1] > 0.0005).sort((a, b) => b[1] - a[1]);
+      return `<div class="sl ${STV.open[o.material] ? 'open' : ''} ${o.neg ? 'neg' : ''}" data-m="${esc(o.material)}"><button class="sl-r">
+          <span class="d"><b>${esc(o.description || o.material)}</b><small>${esc(o.material)} · ${catTag(o.category)} ${esc(o.group_product)}${o.lines.length > 1 ? ` · ${o.lines.length} Batch/Sloc` : ''}</small></span>
+          <span class="f">${facs.slice(0, 3).map(([f, t]) => `<span class="fchip">${esc(f)} <em>${fmt(t, 1)}</em></span>`).join('')}${facs.length > 3 ? `<span class="muted">+${facs.length - 3}</span>` : ''}</span>
+          <span class="t"><b style="color:${o.neg ? 'var(--bad)' : 'var(--navy)'}">${tonTxt(o.kg)} <small>ตัน</small></b><small>${fmt0(o.closing_qty)} ชิ้น ${moveTxt(o)}</small><i data-w="${100 * o.kg / mx}"></i></span></button>
+        <div class="sl-b"></div></div>`; }).join('') + more(mats.length) : '<div class="empty">ไม่พบสินค้าตามเงื่อนไข</div>';
+    box.querySelectorAll('.sl').forEach(el => { const o = mats.find(x => x.material === el.dataset.m);
+      const fill = () => el.querySelector('.sl-b').innerHTML = stkLines(o.lines);
+      if (el.classList.contains('open')) fill();
+      el.querySelector('.sl-r').onclick = () => { const op = !el.classList.contains('open'); el.classList.toggle('open', op); STV.open[o.material] = op; if (op) fill(); }; });
+  } else if (STV.by === 'fac'){
+    const fx = {}; rows.forEach(r => (fx[kFac(r)] ||= []).push(r));
+    const facs = Object.entries(fx).map(([f, rs]) => { const a = D.area.find(x => x.factory === f), cap = a ? +a.capacity_ton_actual : 0, kg = sum(rs, posKg);
+      const pct = cap > 0 ? 100 * kg / 1000 / cap : null; return { f, rs, kg, cap, pct, tier: tierOf(pct, cap, kg / 1000), mats: stkGroupMat(rs).sort(stkSort) }; })
+      .filter(x => x.kg > 0.5 || x.rs.some(r => r.is_negative)).sort((a, b) => b.kg - a.kg);
+    STV.rows = facs.flatMap(x => x.mats.map(o => ({ ...o, factory:x.f })));
+    $('#stkInfo').textContent = `${facs.length} โรง · ${fmt0(tKg / 1000)} ตัน`;
+    box.innerHTML = facs.length ? `<div class="sf-grid">${facs.map((x, i) => { const top = x.mats.slice(0, STV.open['F:' + x.f] ? 50 : 8), mx = Math.max(...x.mats.map(o => o.kg), 1);
+      return `<div class="sf" style="animation-delay:${Math.min(i * .04, .4)}s"><div class="sf-h">${ring(x.pct, x.tier, 54, 6)}<div><b>${esc(x.f)}</b>
+          <div class="muted">${fmt0(x.kg / 1000)} / ${x.cap ? fmt0(x.cap) : '—'} ตัน · ${x.mats.length} สินค้า</div></div><span class="tier ${x.tier}">${TIER_TXT[x.tier]}</span></div>
+        ${top.map(o => `<div class="sf-r" title="${esc(o.material)}"><span class="d"><b>${esc(o.description || o.material)}</b><small>${esc(o.material)} · ${esc(o.group_product)}</small></span>
+          <span class="t">${tonTxt(o.kg)}<i data-w="${100 * o.kg / mx}" style="background:${CAT_COLOR[o.category] || C_NET}"></i></span></div>`).join('')}
+        ${x.mats.length > 8 ? `<button class="btn ghost sm sf-more" data-f="${esc(x.f)}">${STV.open['F:' + x.f] ? 'ย่อ' : `ดูทั้งหมด ${x.mats.length} สินค้า`}</button>` : ''}</div>`; }).join('')}</div>`
+      : '<div class="empty">ไม่พบข้อมูลตามเงื่อนไข</div>';
+    box.querySelectorAll('.sf-more').forEach(b => b.onclick = () => { const k = 'F:' + b.dataset.f; STV.open[k] = !STV.open[k]; renderStock(); });
+    animateRings(box);
+  } else {
+    const rs = [...rows].sort((a, b) => STV.sort === 'name' ? String(a.description).localeCompare(String(b.description), 'th') : STV.sort === 'qty' ? b.closing_qty - a.closing_qty : posKg(b) - posKg(a));
+    STV.rows = rs; $('#stkInfo').textContent = `${fmt0(rs.length)} บรรทัด · ${fmt0(tKg / 1000)} ตัน`;
+    box.innerHTML = rs.length ? `<div class="tbl" style="max-height:none">${stkLines(rs.slice(0, STV.limit * 2), true)}</div>` + (rs.length > STV.limit * 2 ? `<button class="btn ghost stk-more" id="stkMore">แสดงเพิ่ม (ทั้งหมด ${fmt0(rs.length)} บรรทัด)</button>` : '') : '<div class="empty">ไม่พบข้อมูล</div>';
+  }
+  const m = $('#stkMore'); if (m) m.onclick = () => { STV.limit += 60; renderStock(); };
+  animateBars(box);
+}
+// ตาราง Batch / Sloc (ใช้ทั้งตอนกดขยายสินค้า และมุมมองราย Batch)
+function stkLines(lines, full){
+  const ls = [...lines].sort((a, b) => posKg(b) - posKg(a));
+  return `<table class="stk-t"><thead><tr>${full ? '<th>สินค้า</th>' : ''}<th>Batch</th><th>Sloc</th><th>โรง</th><th class="num">ตั้งต้น</th><th class="num">รับเข้า</th><th class="num">จ่ายออก</th><th class="num">คงเหลือ (ชิ้น)</th><th class="num">คงเหลือ (ตัน)</th></tr></thead><tbody>${
+    ls.map(r => `<tr class="${r.is_negative ? 'neg' : ''}">${full ? `<td><b style="font-weight:400;color:var(--navy)">${esc(r.description || r.material)}</b><div class="muted">${esc(r.material)}</div></td>` : ''}
+      <td>${esc(r.batch || '—')}</td><td>${esc(r.sloc)}</td><td>${esc(kFac(r))}</td><td class="num">${fmt0(r.open_qty)}</td>
+      <td class="num" style="color:${C_IN}">${+r.in_qty ? '+' + fmt0(r.in_qty) : '·'}</td><td class="num" style="color:${C_OUT}">${+r.out_qty ? fmt0(r.out_qty) : '·'}</td>
+      <td class="num"><b style="color:${r.is_negative ? 'var(--bad)' : 'var(--navy)'}">${fmt0(r.closing_qty)}</b></td><td class="num">${fmt((+r.closing_kg || 0) / 1000, 3)}</td></tr>`).join('')}</tbody></table>`;
+}
+let stkTimer; $('#stkSearch').addEventListener('input', () => { clearTimeout(stkTimer); stkTimer = setTimeout(() => { STV.limit = 60; renderStock(); }, 250); });
+segBind('stkBy', STV, 'by', 'v', () => { STV.limit = 60; renderStock(); }); segBind('stkSort', STV, 'sort', 'v', renderStock);
+$('#stkNeg').onchange = e => { STV.neg = e.target.checked; renderStock(); };
+$('#stkMoved').onchange = e => { STV.moved = e.target.checked; renderStock(); };
+$('#stkCsv').onclick = () => downloadCsv('stock_balance.csv', stkBase().map(r => ({ Material:r.material, Description:r.description, หมวด:kCat(r), 'Group Product':kGp(r), Batch:r.batch, Sloc:r.sloc, โรง:kFac(r), ตั้งต้น:r.open_qty, รับเข้า:r.in_qty, จ่ายออก:r.out_qty, คงเหลือ:r.closing_qty, คงเหลือ_ตัน:+((+r.closing_kg || 0) / 1000).toFixed(3) })));
 
 // =====================================================================
 // ค้นหา Material
@@ -2597,6 +2922,17 @@ async function renderTopFac(){
 segBind('tpBy', BLV, 'tpBy', 'v', renderTopFac);
 $('#tpCsv').onclick = () => downloadCsv('Top5_GR_GI_by_factory.csv', BLV.tp || []);
 
+
+
+// ---------- ตอบสนองการกด: คลื่น (ripple) ตามจุดที่กด ----------
+const RPL_SEL = '.btn,.mi,.seg button,.chip,.fcc,.ffc,.sl-r,.dq-h,.fac,.sc,.act,.bk.link,.imp-tabs button,.ftog,.grp-h,.me-btn,.dv[data-fac]';
+document.addEventListener('pointerdown', e => {
+  const el = e.target.closest(RPL_SEL); if (!el || el.disabled) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const r = el.getBoundingClientRect(), d = Math.max(r.width, r.height) * 2.4, s = document.createElement('span');
+  s.className = 'rpl'; s.style.cssText = `width:${d}px;height:${d}px;left:${e.clientX - r.left}px;top:${e.clientY - r.top}px`;
+  el.appendChild(s); setTimeout(() => s.remove(), 950);
+}, { passive:true });
 
 // ---------- start: ตรวจ session ที่ค้างอยู่ ----------
 (async () => {
